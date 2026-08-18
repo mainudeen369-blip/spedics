@@ -131,14 +131,24 @@ Supported media: images (jpg, png, webp, svg) and video (mp4, webm, mov).
 
 ---
 
-## 7. Change testimonials
+## 7. Add a GEO / guide page
+
+Guide pages answer AI-style search questions (e.g. “How to choose teacher training in Chennai”).
+
+1. Create `data/guides/your-guide-slug.json` (copy an existing guide as template)
+2. Add the slug to `data/guides/index.json`
+3. Push — page appears at `guide.html?id=your-guide-slug`
+
+---
+
+## 8. Change testimonials
 
 Edit `data/testimonials.json`  
 Replace dummy names, quotes, and `avatar` image paths.
 
 ---
 
-## 8. Change FAQ / About / careers
+## 9. Change FAQ / About / careers
 
 | What | File |
 |------|------|
@@ -150,7 +160,7 @@ Replace dummy names, quotes, and `avatar` image paths.
 
 ---
 
-## 9. After you save changes
+## 10. After you save changes
 
 ```powershell
 cd C:\HajaWorkingFolder\oldFiles\Spedics

@@ -10,10 +10,37 @@
   },
   "contact": {
     "address": "4021, 6th Main Road, Ayapakkam, Chennai – 600077",
+    "streetAddress": "4021, 6th Main Road, Ayapakkam",
+    "addressLocality": "Chennai",
+    "addressRegion": "Tamil Nadu",
+    "postalCode": "600077",
+    "addressCountry": "IN",
     "phone": "7708743942",
     "whatsapp": "7708743942",
     "email": "Spedicsmont@gmail.com"
   },
+  "geo": {
+    "latitude": 13.0989,
+    "longitude": 80.1356
+  },
+  "openingHours": [
+    {
+      "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "opens": "09:00",
+      "closes": "18:00"
+    }
+  ],
+  "areasServed": [
+    "Chennai",
+    "Ayapakkam",
+    "Ambattur",
+    "Anna Nagar",
+    "Avadi",
+    "Padi",
+    "Mogappair",
+    "Thirumullaivoyal",
+    "Tamil Nadu"
+  ],
   "stats": [
     { "value": "13+", "label": "Courses" },
     { "value": "500+", "label": "Students Trained" },
@@ -27,6 +54,7 @@
     "whatsapp": "https://wa.me/917708743942"
   },
   "url": "https://spedics.vercel.app",
+  "image": "images/logo.svg",
   "footer": {
     "copyright": "© 2026 SPEDICS Institute of Skill Development. All Rights Reserved."
   }

@@ -95,6 +95,79 @@ function renderFAQItem(item, index) {
     </div>`;
 }
 
+async function loadGuides() {
+  const index = await fetchJSON('guides/index.json');
+  const items = await Promise.all((index.items || []).map((id) => fetchJSON(`guides/${id}.json`)));
+  return { title: index.title, subtitle: index.subtitle, items: items.filter(Boolean) };
+}
+
+async function loadGuide(id) {
+  return fetchJSON(`guides/${id}.json`);
+}
+
+function renderGuideCard(guide) {
+  return `
+    <article class="guide-card reveal">
+      <h3><a href="guide.html?id=${guide.id}">${guide.title}</a></h3>
+      <p>${guide.metaDescription || guide.intro}</p>
+      <a href="guide.html?id=${guide.id}" class="btn btn-outline btn-sm">Read guide</a>
+    </article>`;
+}
+
+function renderGuideSection(section) {
+  if (section.type === 'checklist') {
+    return `
+      <section class="guide-block">
+        <h2>${section.heading}</h2>
+        ${section.intro ? `<p class="guide-block-intro">${section.intro}</p>` : ''}
+        <div class="guide-checklist">
+          ${section.items.map((item) => `
+            <div class="guide-check-item">
+              <h3>${item.criterion}</h3>
+              <p><strong>What to check:</strong> ${item.detail}</p>
+              <p class="guide-spedics-note"><strong>At SPEDICS:</strong> ${item.spedics}</p>
+            </div>`).join('')}
+        </div>
+      </section>`;
+  }
+
+  if (section.type === 'list') {
+    return `
+      <section class="guide-block">
+        <h2>${section.heading}</h2>
+        <ul class="guide-list">${section.items.map((item) => `<li>${item}</li>`).join('')}</ul>
+      </section>`;
+  }
+
+  if (section.type === 'table') {
+    return `
+      <section class="guide-block">
+        <h2>${section.heading}</h2>
+        <div class="guide-table-wrap">
+          <table class="guide-table">
+            <thead><tr>${section.headers.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
+            <tbody>${section.rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
+          </table>
+        </div>
+      </section>`;
+  }
+
+  return `
+    <section class="guide-block">
+      <h2>${section.heading}</h2>
+      <p>${section.content || ''}</p>
+    </section>`;
+}
+
+function renderGuideFAQ(items) {
+  if (!items?.length) return '';
+  return `
+    <section class="guide-block">
+      <h2>Frequently Asked Questions</h2>
+      <div class="guide-faq-list">${items.map(renderFAQItem).join('')}</div>
+    </section>`;
+}
+
 async function loadGallery() {
   const index = await fetchJSON('gallery/index.json');
   const folders = index.items || [];
@@ -163,15 +236,147 @@ function renderMedia(src, alt, className = 'cert-media') {
   return `<a class="${className}-file" href="${src}" target="_blank" rel="noopener">Open file</a>`;
 }
 
-function renderGalleryItem(item) {
+function renderGalleryItem(item, index) {
   return `
-    <div class="gallery-item reveal">
+    <div class="gallery-item reveal" data-gallery-index="${index}" role="button" tabindex="0" aria-label="View ${item.title}">
       ${renderMedia(item.src, item.title, 'gallery-media')}
       <div class="gallery-overlay">
         <span>${item.title}</span>
         ${item.description ? `<small>${item.description}</small>` : ''}
       </div>
     </div>`;
+}
+
+function ensureGalleryLightbox() {
+  if (document.getElementById('gallery-lightbox')) return;
+
+  document.body.insertAdjacentHTML('beforeend', `
+    <div id="gallery-lightbox" class="gallery-lightbox" hidden aria-hidden="true">
+      <div class="gallery-lightbox-backdrop" data-gallery-close></div>
+      <div class="gallery-lightbox-dialog" role="dialog" aria-modal="true" aria-labelledby="gallery-lightbox-title">
+        <button type="button" class="gallery-lightbox-close" data-gallery-close aria-label="Close">&times;</button>
+        <button type="button" class="gallery-lightbox-prev" data-gallery-prev aria-label="Previous photo">&lsaquo;</button>
+        <button type="button" class="gallery-lightbox-next" data-gallery-next aria-label="Next photo">&rsaquo;</button>
+        <div class="gallery-lightbox-media" id="gallery-lightbox-media"></div>
+        <div class="gallery-lightbox-content">
+          <h3 id="gallery-lightbox-title"></h3>
+          <p id="gallery-lightbox-desc"></p>
+        </div>
+      </div>
+    </div>`);
+}
+
+let galleryLightboxItems = [];
+let galleryLightboxIndex = 0;
+
+function renderLightboxMedia(item) {
+  const mediaBox = document.getElementById('gallery-lightbox-media');
+  if (!mediaBox) return;
+
+  if (isVideoFile(item.src)) {
+    mediaBox.innerHTML = `<video class="gallery-lightbox-video" src="${item.src}" controls playsinline autoplay aria-label="${item.title}"></video>`;
+    return;
+  }
+
+  if (isImageFile(item.src)) {
+    mediaBox.innerHTML = `<img class="gallery-lightbox-image" src="${item.src}" alt="${item.title}">`;
+    return;
+  }
+
+  mediaBox.innerHTML = `<a class="gallery-lightbox-link" href="${item.src}" target="_blank" rel="noopener">Open file</a>`;
+}
+
+function updateGalleryLightbox() {
+  const item = galleryLightboxItems[galleryLightboxIndex];
+  if (!item) return;
+
+  renderLightboxMedia(item);
+
+  const titleEl = document.getElementById('gallery-lightbox-title');
+  const descEl = document.getElementById('gallery-lightbox-desc');
+  if (titleEl) titleEl.textContent = item.title || '';
+  if (descEl) {
+    descEl.textContent = item.description || '';
+    descEl.style.display = item.description ? '' : 'none';
+  }
+
+  const lightbox = document.getElementById('gallery-lightbox');
+  const prevBtn = lightbox?.querySelector('[data-gallery-prev]');
+  const nextBtn = lightbox?.querySelector('[data-gallery-next]');
+  const showNav = galleryLightboxItems.length > 1;
+  if (prevBtn) prevBtn.style.display = showNav ? '' : 'none';
+  if (nextBtn) nextBtn.style.display = showNav ? '' : 'none';
+}
+
+function openGalleryLightbox(index) {
+  if (!galleryLightboxItems.length) return;
+
+  ensureGalleryLightbox();
+  galleryLightboxIndex = ((index % galleryLightboxItems.length) + galleryLightboxItems.length) % galleryLightboxItems.length;
+  updateGalleryLightbox();
+
+  const lightbox = document.getElementById('gallery-lightbox');
+  if (!lightbox) return;
+
+  lightbox.hidden = false;
+  lightbox.classList.add('open');
+  lightbox.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('gallery-lightbox-open');
+  lightbox.querySelector('.gallery-lightbox-close')?.focus();
+}
+
+function closeGalleryLightbox() {
+  const lightbox = document.getElementById('gallery-lightbox');
+  if (!lightbox) return;
+
+  lightbox.querySelector('video')?.pause();
+  lightbox.hidden = true;
+  lightbox.classList.remove('open');
+  lightbox.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('gallery-lightbox-open');
+}
+
+function initGalleryLightbox(items) {
+  galleryLightboxItems = items || [];
+  ensureGalleryLightbox();
+
+  document.querySelectorAll('.gallery-item[data-gallery-index]').forEach((el) => {
+    const index = Number(el.dataset.galleryIndex);
+    const open = () => openGalleryLightbox(index);
+
+    el.addEventListener('click', open);
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        open();
+      }
+    });
+  });
+
+  const lightbox = document.getElementById('gallery-lightbox');
+  if (!lightbox || lightbox.dataset.bound === '1') return;
+  lightbox.dataset.bound = '1';
+
+  lightbox.querySelectorAll('[data-gallery-close]').forEach((el) => {
+    el.addEventListener('click', closeGalleryLightbox);
+  });
+
+  lightbox.querySelector('[data-gallery-prev]')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openGalleryLightbox(galleryLightboxIndex - 1);
+  });
+
+  lightbox.querySelector('[data-gallery-next]')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openGalleryLightbox(galleryLightboxIndex + 1);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeGalleryLightbox();
+    if (e.key === 'ArrowLeft') openGalleryLightbox(galleryLightboxIndex - 1);
+    if (e.key === 'ArrowRight') openGalleryLightbox(galleryLightboxIndex + 1);
+  });
 }
 
 async function loadCertificates() {
@@ -349,7 +554,7 @@ async function initHomePage() {
 
     document.title = `${site.name} | ${site.tagline}`;
 
-    initHomeSEO(site);
+    initHomeSEO(site, faq.items);
 
     const allCourseIds = [...new Set([
       ...coursesIndex.featured,
@@ -475,7 +680,17 @@ async function initHomePage() {
     setText('gallery-title', gallery.title);
     setText('gallery-subtitle', gallery.subtitle);
     const galleryGrid = document.getElementById('gallery-grid');
-    if (galleryGrid) galleryGrid.innerHTML = gallery.items.map(renderGalleryItem).join('');
+    if (galleryGrid) {
+      galleryGrid.innerHTML = gallery.items.map((item, index) => renderGalleryItem(item, index)).join('');
+      initGalleryLightbox(gallery.items);
+    }
+
+    // Guides — AI-search / GEO content pages
+    const guides = await loadGuides();
+    setText('guides-title', guides.title);
+    setText('guides-subtitle', guides.subtitle);
+    const guidesGrid = document.getElementById('guides-grid');
+    if (guidesGrid) guidesGrid.innerHTML = guides.items.map(renderGuideCard).join('');
 
     // FAQ
     const faqList = document.getElementById('faq-list');
@@ -599,6 +814,84 @@ async function initCoursePage() {
   }
 }
 
+async function initGuidePage() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if (!id) {
+    window.location.href = 'index.html#guides';
+    return;
+  }
+
+  try {
+    const [guide, site, coursesIndex, fees] = await Promise.all([
+      loadGuide(id),
+      fetchJSON('site.json'),
+      fetchJSON('courses/courses-index.json'),
+      fetchJSON('fees.json')
+    ]);
+
+    initGuideSEO(guide, site);
+
+    setText('data-guide-title', guide.title);
+    setText('data-guide-heading', guide.title);
+    setText('data-guide-intro', guide.intro);
+
+    const content = document.getElementById('guide-content');
+    if (content) {
+      content.innerHTML = [
+        ...(guide.sections || []).map(renderGuideSection),
+        renderGuideFAQ(guide.faqs)
+      ].join('');
+    }
+
+    const allIds = coursesIndex.categories.flatMap((c) => c.courses);
+    const allCourses = (await loadAllCourses(allIds)).filter(Boolean).map((c) => applyFeeData(c, fees));
+    const courseMap = Object.fromEntries(allCourses.map((c) => [c.id, c]));
+
+    const relatedCoursesBox = document.getElementById('guide-related-courses');
+    const coursesList = document.getElementById('guide-courses-list');
+    if (relatedCoursesBox && coursesList && guide.relatedCourses?.length) {
+      relatedCoursesBox.style.display = '';
+      coursesList.innerHTML = guide.relatedCourses
+        .map((cid) => courseMap[cid])
+        .filter(Boolean)
+        .map((c) => `<li><a href="course.html?id=${c.id}">${c.shortTitle || c.title}</a></li>`)
+        .join('');
+    }
+
+    const relatedGuidesBox = document.getElementById('guide-related-guides');
+    const guidesList = document.getElementById('guide-guides-list');
+    if (relatedGuidesBox && guidesList && guide.relatedGuides?.length) {
+      const allGuides = await loadGuides();
+      relatedGuidesBox.style.display = '';
+      guidesList.innerHTML = guide.relatedGuides
+        .map((gid) => allGuides.items.find((g) => g.id === gid))
+        .filter(Boolean)
+        .map((g) => `<li><a href="guide.html?id=${g.id}">${g.title}</a></li>`)
+        .join('');
+    }
+
+    const dropdown = document.getElementById('courses-dropdown');
+    if (dropdown) {
+      dropdown.innerHTML = allCourses.map((c) =>
+        `<a href="course.html?id=${c.id}" class="nav-dropdown-item">${c.shortTitle || c.title}</a>`
+      ).join('');
+    }
+
+    setText('data-phone', site.contact.phone);
+    setAttr('href-float-whatsapp', site.social.whatsapp);
+    setAttr('href-float-call', `tel:${site.contact.phone}`);
+
+    initFAQ();
+    initReveal();
+    initImageFallbacks();
+  } catch (err) {
+    console.error('Guide not found:', err);
+    document.querySelector('.guide-layout')?.insertAdjacentHTML('beforebegin',
+      '<p style="padding:4rem;text-align:center">Guide not found. <a href="index.html#guides">Browse all guides</a></p>');
+  }
+}
+
 function setText(id, text) {
   document.querySelectorAll(`[data-bind="${id}"]`).forEach((el) => { el.textContent = text; });
   const el = document.getElementById(id);
@@ -618,4 +911,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (document.body.dataset.page === 'home') initHomePage();
   else if (document.body.dataset.page === 'course') initCoursePage();
+  else if (document.body.dataset.page === 'guide') initGuidePage();
 });
