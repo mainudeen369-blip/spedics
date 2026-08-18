@@ -152,6 +152,7 @@ function initNav() {
     link.addEventListener('click', (e) => {
       if (window.innerWidth <= 768) {
         e.preventDefault();
+        e.stopPropagation();
         link.parentElement?.classList.toggle('open');
       }
     });
@@ -162,9 +163,14 @@ function initNav() {
   });
 
   document.querySelectorAll('a[href^="#"]').forEach((a) => {
-    a.addEventListener('click', () => {
+    a.addEventListener('click', (e) => {
+      // Keep mobile menu open when expanding/collapsing Courses dropdown
+      if (window.innerWidth <= 768 && a.matches('.nav-dropdown > .nav-link')) {
+        return;
+      }
       nav?.classList.remove('open');
       toggle?.classList.remove('active');
+      document.querySelectorAll('.nav-dropdown').forEach((d) => d.classList.remove('open'));
     });
   });
 }
