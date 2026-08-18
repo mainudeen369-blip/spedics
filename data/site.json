@@ -54,7 +54,8 @@
     "whatsapp": "https://wa.me/917708743942"
   },
   "url": "https://spedics.vercel.app",
-  "image": "images/logo.svg",
+  "image": "data/certificates/spedics-institute-official-seal/official-seal.jpeg",
+  "logoSeal": "data/certificates/spedics-institute-official-seal/official-seal.jpeg",
   "footer": {
     "copyright": "© 2026 SPEDICS Institute of Skill Development. All Rights Reserved."
   }

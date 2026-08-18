@@ -201,6 +201,63 @@ button, input, select, textarea { font: inherit; }
   height: var(--header-h);
   gap: 1rem;
 }
+.logo-wrap {
+  flex-shrink: 0;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+.logo-seal {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(8, 145, 178, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: #fff;
+}
+.logo-brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  min-width: 0;
+}
+.logo-brand-name {
+  font-family: var(--font);
+  font-size: clamp(1.15rem, 2.5vw, 1.55rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: linear-gradient(90deg, #0891b2, #0d9488, #d97706);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.logo-brand-tag {
+  margin-top: 0.15rem;
+  font-size: clamp(0.52rem, 1.2vw, 0.68rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #0f172a;
+  white-space: nowrap;
+}
+.footer-logo .logo-brand-name,
+.footer-logo .logo-brand-tag {
+  color: #fff;
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+}
+.footer-logo .logo-brand-name {
+  background: linear-gradient(90deg, #67e8f9, #fbbf24);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.footer-logo .logo-brand-tag { color: rgba(255,255,255,0.82); }
+.footer-logo .logo-seal { border-color: rgba(255,255,255,0.25); }
 .logo {
   height: 68px;
   width: auto;
@@ -212,7 +269,8 @@ button, input, select, textarea { font: inherit; }
   transform: scale(1.03);
   filter: drop-shadow(0 8px 20px rgba(124, 58, 237, 0.28));
 }
-.logo-wrap { flex-shrink: 0; min-width: 0; }
+.logo-wrap:hover .logo-seal { transform: scale(1.03); }
+.logo-wrap:hover .logo-brand-name { filter: brightness(1.05); }
 
 /* Safe desktop-only logo sparkle (no layout impact) */
 @media (hover: hover) and (pointer: fine) and (min-width: 1025px) {
@@ -1536,6 +1594,8 @@ body.gallery-lightbox-open { overflow: hidden; }
   /* Header: prevent right CTA from being pushed off-screen */
   .header-inner { gap: 0.5rem; }
   .logo-wrap { flex-shrink: 1; min-width: 0; }
+  .logo-seal { width: 52px; height: 52px; }
+  .logo-brand-tag { white-space: normal; max-width: 150px; line-height: 1.2; }
   .logo { height: 56px; max-width: 240px; }
   .header-cta { flex-shrink: 1; }
   .header-cta .btn-sm { padding: 0.7rem 1.05rem; font-size: 0.9rem; }
@@ -1626,6 +1686,9 @@ body.gallery-lightbox-open { overflow: hidden; }
 
   /* Keep CTA visible on very small phones */
   .header-inner { gap: 0.4rem; }
+  .logo-seal { width: 48px; height: 48px; }
+  .logo-brand-name { font-size: 1.05rem; }
+  .logo-brand-tag { font-size: 0.5rem; max-width: 130px; }
   .logo { height: 52px; max-width: 220px; }
   .header-cta .btn-sm { padding: 0.65rem 1rem; font-size: 0.88rem; }
   .float-actions { bottom: 1rem; right: 1rem; }

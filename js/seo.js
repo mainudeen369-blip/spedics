@@ -35,7 +35,7 @@ function injectJsonLd(id, data) {
 }
 
 function absUrl(path) {
-  if (!path) return `${SITE_URL}/images/logo.svg`;
+  if (!path) return `${SITE_URL}/data/certificates/spedics-institute-official-seal/official-seal.jpeg`;
   if (/^(https?:)?\/\//i.test(path)) return path;
   return `${SITE_URL}/${path.replace(/^\//, '')}`;
 }
@@ -70,8 +70,8 @@ function buildOrgSchema(site, desc) {
     name: site.name,
     alternateName: site.shortName,
     url: SITE_URL + '/',
-    logo: absUrl(site.image || 'images/logo.svg'),
-    image: absUrl(site.image || 'images/logo.svg'),
+    logo: absUrl(site.logoSeal || site.image || 'data/certificates/spedics-institute-official-seal/official-seal.jpeg'),
+    image: absUrl(site.image || site.logoSeal || 'data/certificates/spedics-institute-official-seal/official-seal.jpeg'),
     description: desc,
     email: contact.email,
     telephone: `+91${contact.phone}`,
