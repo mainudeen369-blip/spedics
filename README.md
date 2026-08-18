@@ -96,14 +96,37 @@ Supported media: images (jpg, png, webp, svg) and video (mp4, webm, mov).
 
 ---
 
-## 6. Change gallery photos
+## 6. Add or replace gallery photos (image or video)
 
-1. Add files in `images/gallery/`
-2. Edit `data/gallery.json` and add:
+Photo and caption live in the **same folder**. Name the folder after what the photo shows — you do not need to open the image to know what it is.
+
+1. Create a folder: `data/gallery/classroom-activity-name/`
+2. Put the file inside it, e.g. `photo.jpeg` or `clip.mp4`
+3. Create `data/gallery/classroom-activity-name/data.json`:
 
 ```json
-{ "id": "g9", "title": "Classroom photo", "image": "images/gallery/my-photo.jpg", "category": "classroom" }
+{
+  "id": "classroom-activity-name",
+  "title": "Classroom Activity Name",
+  "description": "Short caption for the website",
+  "file": "photo.jpeg",
+  "category": "classroom"
+}
 ```
+
+4. Add the folder name in `data/gallery/index.json`:
+
+```json
+{
+  "items": [
+    "principal-office-administration",
+    "nursery-place-value-lesson",
+    "classroom-activity-name"
+  ]
+}
+```
+
+Supported media: images (jpg, png, webp, svg) and video (mp4, webm, mov).
 
 ---
 

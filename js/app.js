@@ -94,12 +94,15 @@ function renderFAQItem(item, index) {
     </div>`;
 }
 
-function renderGalleryItem(item) {
-  return `
-    <div class="gallery-item reveal">
-      <img src="${item.image}" alt="${item.title}" loading="lazy">
-      <div class="gallery-overlay"><span>${item.title}</span></div>
-    </div>`;
+async function loadGallery() {
+  const index = await fetchJSON('gallery/index.json');
+  const folders = index.items || [];
+  const items = await Promise.all(folders.map(async (folder) => {
+    const data = await fetchJSON(`gallery/${folder}/data.json`);
+    const file = data.file || data.image;
+    return { ...data, folder, src: mediaSrc('gallery', folder, file), sectionTitle: index.title, sectionSubtitle: index.subtitle };
+  }));
+  return { title: index.title, subtitle: index.subtitle, items: items.filter(Boolean) };
 }
 
 function renderCareerCard(role) {
@@ -143,20 +146,31 @@ function isImageFile(path) {
   return /\.(jpe?g|png|gif|webp|svg|avif|bmp)$/i.test(path || '');
 }
 
-function mediaSrc(folder, file) {
+function mediaSrc(collection, folder, file) {
   if (!file) return 'images/placeholders/default.svg';
   if (/^(https?:)?\/\//i.test(file) || file.includes('/')) return file;
-  return `${DATA_BASE}/certificates/${folder}/${file}`;
+  return `${DATA_BASE}/${collection}/${folder}/${file}`;
 }
 
-function renderMedia(src, alt) {
+function renderMedia(src, alt, className = 'cert-media') {
   if (isVideoFile(src)) {
-    return `<video class="cert-media" src="${src}" controls playsinline muted loop preload="metadata" aria-label="${alt}"></video>`;
+    return `<video class="${className}" src="${src}" controls playsinline muted loop preload="metadata" aria-label="${alt}"></video>`;
   }
   if (isImageFile(src)) {
-    return `<img class="cert-media" src="${src}" alt="${alt}" loading="lazy">`;
+    return `<img class="${className}" src="${src}" alt="${alt}" loading="lazy">`;
   }
-  return `<a class="cert-file" href="${src}" target="_blank" rel="noopener">Open file</a>`;
+  return `<a class="${className}-file" href="${src}" target="_blank" rel="noopener">Open file</a>`;
+}
+
+function renderGalleryItem(item) {
+  return `
+    <div class="gallery-item reveal">
+      ${renderMedia(item.src, item.title, 'gallery-media')}
+      <div class="gallery-overlay">
+        <span>${item.title}</span>
+        ${item.description ? `<small>${item.description}</small>` : ''}
+      </div>
+    </div>`;
 }
 
 async function loadCertificates() {
@@ -165,7 +179,7 @@ async function loadCertificates() {
   const certs = await Promise.all(folders.map(async (folder) => {
     const data = await fetchJSON(`certificates/${folder}/data.json`);
     const file = data.file || data.image;
-    return { ...data, folder, src: mediaSrc(folder, file) };
+    return { ...data, folder, src: mediaSrc('certificates', folder, file) };
   }));
   return certs.filter(Boolean);
 }
@@ -319,12 +333,11 @@ function initImageFallbacks() {
 
 async function initHomePage() {
   try {
-    const [site, about, coursesIndex, testimonials, gallery, careers, faq, modes, admissions, affiliations, fees] = await Promise.all([
+    const [site, about, coursesIndex, testimonials, careers, faq, modes, admissions, affiliations, fees] = await Promise.all([
       fetchJSON('site.json'),
       fetchJSON('about.json'),
       fetchJSON('courses/courses-index.json'),
       fetchJSON('testimonials.json'),
-      fetchJSON('gallery.json'),
       fetchJSON('careers.json'),
       fetchJSON('faq.json'),
       fetchJSON('learning-modes.json'),
@@ -456,7 +469,10 @@ async function initHomePage() {
     const testTrack = document.getElementById('testimonials-track');
     if (testTrack) testTrack.innerHTML = testimonials.items.map(renderTestimonial).join('');
 
-    // Gallery
+    // Gallery — loaded dynamically from data/gallery/<folder>/
+    const gallery = await loadGallery();
+    setText('gallery-title', gallery.title);
+    setText('gallery-subtitle', gallery.subtitle);
     const galleryGrid = document.getElementById('gallery-grid');
     if (galleryGrid) galleryGrid.innerHTML = gallery.items.map(renderGalleryItem).join('');
 
