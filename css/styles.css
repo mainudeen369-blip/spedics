@@ -34,6 +34,7 @@ body {
   background: var(--bg);
   line-height: 1.65;
   overflow-x: hidden;
+  padding-top: calc(var(--topbar-h) + var(--header-h));
 }
 html { overflow-x: hidden; }
 img, svg { max-width: 100%; height: auto; display: block; }
@@ -116,8 +117,11 @@ button, input, select, textarea { font: inherit; }
   color: rgba(255,255,255,0.85);
   font-size: 0.8rem;
   padding: 0.5rem 0;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  min-height: var(--topbar-h);
   z-index: 1100;
 }
 .topbar-inner {
@@ -134,8 +138,10 @@ button, input, select, textarea { font: inherit; }
 
 /* Header */
 .header {
-  position: sticky;
+  position: fixed;
   top: var(--topbar-h);
+  left: 0;
+  right: 0;
   z-index: 1090;
   background: rgba(255,255,255,0.92);
   backdrop-filter: blur(16px);
