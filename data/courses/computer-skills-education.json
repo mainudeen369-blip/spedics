@@ -5,10 +5,14 @@
   "badge": "Essential",
   "description": "Build digital literacy with Word, Excel, PowerPoint and online tools essential for modern educators and administrators.",
   "image": "images/courses/computer-skills-education.svg",
-  "duration": "3 Months",
+  "duration": "3 / 6 months",
   "eligibility": "Basic literacy; no prior computer experience required",
   "mode": ["Online", "Offline", "Hybrid"],
   "fee": "₹10,000 – ₹15,000",
+  "packages": [
+    { "name": "Certified", "duration": "3 months", "fee": "₹10,000" },
+    { "name": "Diploma", "duration": "6 months", "fee": "₹15,000" }
+  ],
   "modules": [
     "Computer Fundamentals",
     "Operating System Basics",

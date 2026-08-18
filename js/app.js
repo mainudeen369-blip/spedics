@@ -39,13 +39,14 @@ function badgeClass(badge) {
 
 function applyFeeData(course, fees) {
   if (!course || !fees) return course;
-  const extra = (fees.courses && fees.courses[course.id]) || fees.default || {};
+  const fallback = fees.default || {};
+  const extra = (fees.courses && fees.courses[course.id]) || {};
   return {
     ...course,
-    duration: extra.duration || course.duration,
-    fee: extra.fee || course.fee,
+    duration: extra.duration || course.duration || fallback.duration,
+    fee: extra.fee || course.fee || fallback.fee,
     schedule: extra.schedule || course.schedule,
-    packages: extra.packages || course.packages
+    packages: extra.packages || course.packages || fallback.packages
   };
 }
 

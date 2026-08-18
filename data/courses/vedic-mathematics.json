@@ -5,10 +5,14 @@
   "badge": "Skill",
   "description": "Discover ancient calculation techniques for faster mental math, improving speed and accuracy for educators and learners.",
   "image": "images/courses/vedic-mathematics.svg",
-  "duration": "3 Months",
+  "duration": "3 / 6 months",
   "eligibility": "Basic arithmetic knowledge",
   "mode": ["Online", "Offline", "Hybrid"],
   "fee": "₹10,000 – ₹15,000",
+  "packages": [
+    { "name": "Certified", "duration": "3 months", "fee": "₹10,000" },
+    { "name": "Diploma", "duration": "6 months", "fee": "₹15,000" }
+  ],
   "modules": [
     "Number Concepts",
     "Vedic Techniques",

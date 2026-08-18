@@ -19,6 +19,6 @@
     { "name": "mode", "label": "Preferred Mode", "type": "select", "options": ["Online", "Offline", "Hybrid"], "required": true },
     { "name": "message", "label": "Message", "type": "textarea", "required": false }
   ],
-  "courseFee": "Montessori: Certified ₹10,000 (3 months), Diploma ₹15,000 (6 months), PG Diploma ₹35,000 (12 months). Spoken English/Hindi ₹3,000 (3 months, 3 classes/week). Phonics ₹5,000 (2 months, 2 classes/week). Tamil/Telugu ₹3,000 (3 months). Other courses ₹10,000–₹15,000.",
+  "courseFee": "Most courses: Certified ₹10,000 (3 months), Diploma ₹15,000 (6 months). Montessori also offers PG Diploma ₹35,000 (12 months). Spoken English/Hindi ₹3,000 (3 months, 3 classes/week). Phonics ₹5,000 (2 months, 2 classes/week). Tamil/Telugu ₹3,000 (3 months).",
   "documentsRequired": "ID proof, educational certificates, passport-size photograph (details provided on application)"
 }

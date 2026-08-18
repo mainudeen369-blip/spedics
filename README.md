@@ -31,6 +31,7 @@ Edit: `data/site.json`
 Examples:
 
 - Montessori packages → `courses.montessori-teacher-training.packages`
+- Most other courses → Certified 3 months ₹10,000 / Diploma 6 months ₹15,000 (`default.packages`)
 - Spoken English fee → `courses.spoken-english.fee` (example: `"₹3,000"`)
 - Duration → `courses.spoken-english.duration` (example: `"3 months"`)
 - Classes per week → `courses.spoken-english.schedule` (example: `"3 classes per week"`)

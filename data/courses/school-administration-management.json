@@ -5,10 +5,14 @@
   "badge": "Premium",
   "description": "Develop leadership and administrative skills to manage educational institutions effectively across academic, staff and operational functions.",
   "image": "images/courses/school-administration-management.svg",
-  "duration": "12 Months",
+  "duration": "3 / 6 months",
   "eligibility": "Graduate; experience in education preferred",
   "mode": ["Online", "Offline", "Hybrid"],
   "fee": "₹10,000 – ₹15,000",
+  "packages": [
+    { "name": "Certified", "duration": "3 months", "fee": "₹10,000" },
+    { "name": "Diploma", "duration": "6 months", "fee": "₹15,000" }
+  ],
   "modules": [
     "Introduction to School Administration",
     "Educational Leadership",

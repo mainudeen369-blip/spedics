@@ -1,11 +1,14 @@
 {
   "currency": "INR",
   "currencySymbol": "₹",
-  "note": "Fees provided by SPEDICS. Other diploma/skill courses are ₹10,000–₹15,000 unless listed below.",
+  "note": "Client fees: Certified 3 months ₹10,000; Diploma 6 months ₹15,000. Language and phonics listed separately. Montessori also offers PG Diploma 12 months ₹35,000.",
   "default": {
+    "duration": "3 / 6 months",
     "fee": "₹10,000 – ₹15,000",
-    "feeMin": 10000,
-    "feeMax": 15000
+    "packages": [
+      { "name": "Certified", "duration": "3 months", "fee": 10000, "feeLabel": "₹10,000" },
+      { "name": "Diploma", "duration": "6 months", "fee": 15000, "feeLabel": "₹15,000" }
+    ]
   },
   "courses": {
     "montessori-teacher-training": {
@@ -49,39 +52,60 @@
       "feeAmount": 3000
     },
     "child-psychology-development": {
+      "duration": "3 / 6 months",
       "fee": "₹10,000 – ₹15,000",
-      "feeMin": 10000,
-      "feeMax": 15000
+      "packages": [
+        { "name": "Certified", "duration": "3 months", "fee": 10000, "feeLabel": "₹10,000" },
+        { "name": "Diploma", "duration": "6 months", "fee": 15000, "feeLabel": "₹15,000" }
+      ]
     },
     "special-education": {
+      "duration": "3 / 6 months",
       "fee": "₹10,000 – ₹15,000",
-      "feeMin": 10000,
-      "feeMax": 15000
+      "packages": [
+        { "name": "Certified", "duration": "3 months", "fee": 10000, "feeLabel": "₹10,000" },
+        { "name": "Diploma", "duration": "6 months", "fee": 15000, "feeLabel": "₹15,000" }
+      ]
     },
     "school-administration-management": {
+      "duration": "3 / 6 months",
       "fee": "₹10,000 – ₹15,000",
-      "feeMin": 10000,
-      "feeMax": 15000
+      "packages": [
+        { "name": "Certified", "duration": "3 months", "fee": 10000, "feeLabel": "₹10,000" },
+        { "name": "Diploma", "duration": "6 months", "fee": 15000, "feeLabel": "₹15,000" }
+      ]
     },
     "pre-primary-school-management": {
+      "duration": "3 / 6 months",
       "fee": "₹10,000 – ₹15,000",
-      "feeMin": 10000,
-      "feeMax": 15000
+      "packages": [
+        { "name": "Certified", "duration": "3 months", "fee": 10000, "feeLabel": "₹10,000" },
+        { "name": "Diploma", "duration": "6 months", "fee": 15000, "feeLabel": "₹15,000" }
+      ]
     },
     "nutrition": {
+      "duration": "3 / 6 months",
       "fee": "₹10,000 – ₹15,000",
-      "feeMin": 10000,
-      "feeMax": 15000
+      "packages": [
+        { "name": "Certified", "duration": "3 months", "fee": 10000, "feeLabel": "₹10,000" },
+        { "name": "Diploma", "duration": "6 months", "fee": 15000, "feeLabel": "₹15,000" }
+      ]
     },
     "computer-skills-education": {
+      "duration": "3 / 6 months",
       "fee": "₹10,000 – ₹15,000",
-      "feeMin": 10000,
-      "feeMax": 15000
+      "packages": [
+        { "name": "Certified", "duration": "3 months", "fee": 10000, "feeLabel": "₹10,000" },
+        { "name": "Diploma", "duration": "6 months", "fee": 15000, "feeLabel": "₹15,000" }
+      ]
     },
     "vedic-mathematics": {
+      "duration": "3 / 6 months",
       "fee": "₹10,000 – ₹15,000",
-      "feeMin": 10000,
-      "feeMax": 15000
+      "packages": [
+        { "name": "Certified", "duration": "3 months", "fee": 10000, "feeLabel": "₹10,000" },
+        { "name": "Diploma", "duration": "6 months", "fee": 15000, "feeLabel": "₹15,000" }
+      ]
     }
   }
 }
