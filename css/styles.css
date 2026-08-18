@@ -82,7 +82,7 @@ button, input, select, textarea { font: inherit; }
   white-space: nowrap;
 }
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  background: linear-gradient(135deg, var(--primary) 0%, #2dd4bf 45%, var(--primary-light) 100%);
   color: var(--white);
   box-shadow: 0 8px 24px rgba(13, 115, 119, 0.35);
 }
@@ -91,9 +91,10 @@ button, input, select, textarea { font: inherit; }
   box-shadow: 0 12px 32px rgba(13, 115, 119, 0.45);
 }
 .btn-accent {
-  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  background: linear-gradient(135deg, var(--accent) 0%, #fbbf24 45%, var(--accent-light) 100%);
   color: var(--dark);
-  box-shadow: 0 8px 24px rgba(232, 168, 56, 0.35);
+  box-shadow: 0 10px 28px rgba(232, 168, 56, 0.35);
+  border-color: rgba(232, 168, 56, 0.25);
 }
 .btn-accent:hover { transform: translateY(-2px); }
 .btn-outline {
@@ -1131,7 +1132,7 @@ button, input, select, textarea { font: inherit; }
   .nav-toggle { display: flex; }
   .nav {
     position: fixed;
-    top: var(--header-h);
+    top: calc(var(--topbar-h) + var(--header-h));
     left: 0; right: 0;
     background: var(--white);
     flex-direction: column;
@@ -1141,7 +1142,7 @@ button, input, select, textarea { font: inherit; }
     opacity: 0;
     visibility: hidden;
     transition: all var(--transition);
-    max-height: calc(100vh - var(--header-h));
+    max-height: calc(100vh - (var(--topbar-h) + var(--header-h)));
     overflow-y: auto;
     align-items: stretch;
   }
@@ -1153,7 +1154,8 @@ button, input, select, textarea { font: inherit; }
     visibility: visible;
     transform: none;
     box-shadow: none;
-    padding-left: 1rem;
+    padding-left: 0;
+    width: 100%;
     display: none;
   }
   .nav-dropdown.open .nav-dropdown-menu { display: block; }
@@ -1182,8 +1184,42 @@ button, input, select, textarea { font: inherit; }
 
   /* Keep CTA visible on very small phones */
   .header-inner { gap: 0.4rem; }
-  .logo { height: 38px; max-width: 150px; }
+  .logo { height: 46px; max-width: 190px; }
   .header-cta .btn-sm { padding: 0.65rem 1rem; font-size: 0.88rem; }
   .float-actions { bottom: 1rem; right: 1rem; }
   .float-btn { width: 48px; height: 48px; font-size: 1.25rem; }
+}
+
+/* Mobile hero title shimmer (kept subtle to not spoil readability) */
+@keyframes titleShimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@media (max-width: 768px) {
+  .hero h1 {
+    color: transparent;
+    background: linear-gradient(90deg, #ffffff 0%, #d4fff8 30%, #e8a838 55%, #ffffff 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: titleShimmer 7s linear infinite;
+    text-shadow: none;
+  }
+}
+
+/* Course sidebar label/value alignment on mobile */
+@media (max-width: 480px) {
+  .sidebar-item {
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .sidebar-item span:first-child {
+    min-width: 120px;
+    white-space: nowrap;
+  }
+  .sidebar-item span:last-child {
+    flex: 1;
+    text-align: right;
+    word-break: break-word;
+  }
 }
