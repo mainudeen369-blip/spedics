@@ -149,9 +149,22 @@ button, input, select, textarea { font: inherit; }
   height: var(--header-h);
   gap: 1rem;
 }
-.logo { height: 48px; width: auto; transition: transform var(--transition); }
-.logo:hover { transform: scale(1.03); }
+.logo {
+  height: 48px;
+  width: auto;
+  transition: transform var(--transition), filter var(--transition);
+  filter: drop-shadow(0 4px 12px rgba(13, 115, 119, 0.22));
+  animation: logoFloat 4.5s ease-in-out infinite;
+}
+.logo:hover {
+  transform: scale(1.035);
+  filter: drop-shadow(0 8px 18px rgba(13, 115, 119, 0.32));
+}
 .logo-wrap { flex-shrink: 0; }
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.5px); }
+}
 
 .nav { display: flex; align-items: center; gap: 0.25rem; }
 .nav-link {
