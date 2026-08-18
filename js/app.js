@@ -526,6 +526,58 @@ function defaultWhatsAppMessage(site) {
   return `Hello ${name}, I would like to know more about your teacher training courses. Please share course details, fees and admission process.`;
 }
 
+function courseApplyMessage(course, site) {
+  const packages = (course.packages || [])
+    .map((p) => `${p.name} (${p.duration}) — ${p.feeLabel || p.fee}`)
+    .join(', ');
+  return [
+    `Hello ${site.shortName || 'SPEDICS'},`,
+    '',
+    `I would like to apply for *${course.title}*.`,
+    '',
+    `Duration: ${course.duration || '-'}`,
+    `Fee: ${course.fee || '-'}`,
+    packages ? `Packages: ${packages}` : '',
+    `Mode: ${(course.mode || []).join(' / ') || '-'}`,
+    '',
+    'Please share admission steps, next batch dates and how to enrol.',
+    '',
+    'Sent from the SPEDICS website course page.'
+  ].filter(Boolean).join('\n');
+}
+
+function courseCounsellorMessage(course, site) {
+  return `Hello ${site.shortName || 'SPEDICS'}, I have a question about *${course.title}*. Please share fee, duration, schedule and admission details.`;
+}
+
+function mailtoUrl(email, subject, body) {
+  return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function wireLink(id, url, extra = {}) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.setAttribute('href', url);
+  if (extra.target) el.setAttribute('target', extra.target);
+  if (extra.rel) el.setAttribute('rel', extra.rel);
+}
+
+function setupCourseApplyLinks(site, course) {
+  const phone = whatsappPhone(site);
+  const applyText = courseApplyMessage(course, site);
+  const counsellorText = courseCounsellorMessage(course, site);
+  const email = site.contact?.email || 'Spedicsmont@gmail.com';
+  const applyWa = whatsappUrl(phone, applyText);
+  const counsellorWa = whatsappUrl(phone, counsellorText);
+  const applyMail = mailtoUrl(email, `Course Application – ${course.title}`, applyText.replace(/\*/g, ''));
+
+  wireLink('href-course-apply-whatsapp', applyWa, { target: '_blank', rel: 'noopener' });
+  wireLink('href-header-apply', applyWa, { target: '_blank', rel: 'noopener' });
+  wireLink('href-course-apply-email', applyMail);
+  wireLink('href-course-counsellor', counsellorWa, { target: '_blank', rel: 'noopener' });
+  setupWhatsApp(site, counsellorText);
+}
+
 function buildApplicationWhatsAppMessage(form, site) {
   const fd = new FormData(form);
   const lines = [
@@ -550,7 +602,7 @@ function setupWhatsApp(site, customMessage) {
   const phone = whatsappPhone(site);
   const text = customMessage || defaultWhatsAppMessage(site);
   const url = whatsappUrl(phone, text);
-  ['href-whatsapp', 'href-float-whatsapp'].forEach((id) => {
+  ['href-whatsapp', 'href-float-whatsapp', 'href-header-apply'].forEach((id) => {
     setAttr(id, url);
     const el = document.getElementById(id);
     if (el) {
@@ -854,7 +906,7 @@ async function initCoursePage() {
     if (formCourse) formCourse.value = course.title;
 
     setText('data-phone', site.contact.phone);
-    setupWhatsApp(site, `Hello SPEDICS, I am interested in *${course.title}*. Please share fee, duration, schedule and admission details.`);
+    setupCourseApplyLinks(site, course);
     setAttr('href-float-call', `tel:${site.contact.phone}`);
 
     initReveal();
