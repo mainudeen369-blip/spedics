@@ -7,3 +7,4 @@ extract-docx.ps1
 generate-svgs.ps1
 content-extracted.txt
 
+.vercel
