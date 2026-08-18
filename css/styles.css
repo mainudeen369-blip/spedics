@@ -1064,6 +1064,14 @@ button, input, select, textarea { font: inherit; }
   /* Avoid rotated cards creating sideways whitespace on small tablets */
   .hero { min-height: unset; }
   .hero-card { transform: none; }
+
+  /* Header: prevent right CTA from being pushed off-screen */
+  .header-inner { gap: 0.5rem; }
+  .logo-wrap { flex-shrink: 1; min-width: 0; }
+  .logo { height: 40px; max-width: 170px; }
+  .header-cta { flex-shrink: 1; }
+  .header-cta .btn-sm { padding: 0.7rem 1.05rem; font-size: 0.9rem; }
+  .nav { gap: 0.25rem; }
   .nav-toggle { display: flex; }
   .nav {
     position: fixed;
@@ -1115,6 +1123,11 @@ button, input, select, textarea { font: inherit; }
   }
   .hero-actions .btn { width: 100%; }
   .hero-card { transform: none; }
+
+  /* Keep CTA visible on very small phones */
+  .header-inner { gap: 0.4rem; }
+  .logo { height: 38px; max-width: 150px; }
+  .header-cta .btn-sm { padding: 0.65rem 1rem; font-size: 0.88rem; }
   .float-actions { bottom: 1rem; right: 1rem; }
   .float-btn { width: 48px; height: 48px; font-size: 1.25rem; }
 }
