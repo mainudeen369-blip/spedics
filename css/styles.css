@@ -154,6 +154,24 @@ button, input, select, textarea { font: inherit; }
   box-shadow: var(--shadow);
 }
 .btn-sm { padding: 0.6rem 1.25rem; font-size: 0.85rem; }
+.btn-whatsapp {
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  color: var(--white);
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+.btn-whatsapp:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(37, 211, 102, 0.45);
+  color: var(--white);
+}
+.form-note {
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+}
 
 /* Top bar */
 .topbar {

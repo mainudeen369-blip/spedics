@@ -510,19 +510,72 @@ function initCounters() {
   counters.forEach((c) => observer.observe(c));
 }
 
-function initForm() {
+function whatsappPhone(site) {
+  const raw = site?.contact?.whatsapp || site?.contact?.phone || '7708743942';
+  const digits = String(raw).replace(/\D/g, '');
+  return digits.startsWith('91') ? digits : `91${digits}`;
+}
+
+function whatsappUrl(phone, text) {
+  const base = `https://wa.me/${phone}`;
+  return text ? `${base}?text=${encodeURIComponent(text)}` : base;
+}
+
+function defaultWhatsAppMessage(site) {
+  const name = site?.shortName || 'SPEDICS';
+  return `Hello ${name}, I would like to know more about your teacher training courses. Please share course details, fees and admission process.`;
+}
+
+function buildApplicationWhatsAppMessage(form, site) {
+  const fd = new FormData(form);
+  const lines = [
+    `*Course Application – ${site.name}*`,
+    '',
+    `*Full Name:* ${fd.get('fullName') || '-'}`,
+    `*Mobile:* ${fd.get('mobile') || '-'}`,
+    `*WhatsApp:* ${fd.get('whatsapp') || fd.get('mobile') || '-'}`,
+    `*Email:* ${fd.get('email') || '-'}`,
+    `*Qualification:* ${fd.get('qualification') || '-'}`,
+    `*City:* ${fd.get('city') || '-'}`,
+    `*Course Interested:* ${fd.get('course') || '-'}`,
+    `*Preferred Mode:* ${fd.get('mode') || '-'}`
+  ];
+  const message = (fd.get('message') || '').trim();
+  if (message) lines.push(`*Message:* ${message}`);
+  lines.push('', 'Sent from SPEDICS website application form.');
+  return lines.join('\n');
+}
+
+function setupWhatsApp(site, customMessage) {
+  const phone = whatsappPhone(site);
+  const text = customMessage || defaultWhatsAppMessage(site);
+  const url = whatsappUrl(phone, text);
+  ['href-whatsapp', 'href-float-whatsapp'].forEach((id) => {
+    setAttr(id, url);
+    const el = document.getElementById(id);
+    if (el) {
+      el.setAttribute('target', '_blank');
+      el.setAttribute('rel', 'noopener');
+    }
+  });
+  document.body.dataset.whatsappPhone = phone;
+  return phone;
+}
+
+function initForm(site) {
   const form = document.getElementById('apply-form');
-  form?.addEventListener('submit', (e) => {
+  if (!form || !site) return;
+
+  const phone = whatsappPhone(site);
+
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const btn = form.querySelector('[type=submit]');
-    const orig = btn.textContent;
-    btn.textContent = 'Submitted! We will contact you soon.';
-    btn.disabled = true;
-    setTimeout(() => {
-      btn.textContent = orig;
-      btn.disabled = false;
-      form.reset();
-    }, 4000);
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    const text = buildApplicationWhatsAppMessage(form, site);
+    window.open(whatsappUrl(phone, text), '_blank', 'noopener');
   });
 }
 
@@ -568,8 +621,8 @@ async function initHomePage() {
     setText('data-email', site.contact.email);
     setAttr('href-phone', `tel:${site.contact.phone}`);
     setAttr('href-email', `mailto:${site.contact.email}`);
-    setAttr('href-whatsapp', site.social.whatsapp);
-    setAttr('href-float-whatsapp', site.social.whatsapp);
+    setupWhatsApp(site);
+    initForm(site);
     setAttr('href-float-call', `tel:${site.contact.phone}`);
 
     // Hero
@@ -801,8 +854,7 @@ async function initCoursePage() {
     if (formCourse) formCourse.value = course.title;
 
     setText('data-phone', site.contact.phone);
-    setAttr('href-whatsapp', site.social.whatsapp);
-    setAttr('href-float-whatsapp', site.social.whatsapp);
+    setupWhatsApp(site, `Hello SPEDICS, I am interested in *${course.title}*. Please share fee, duration, schedule and admission details.`);
     setAttr('href-float-call', `tel:${site.contact.phone}`);
 
     initReveal();
@@ -879,7 +931,7 @@ async function initGuidePage() {
     }
 
     setText('data-phone', site.contact.phone);
-    setAttr('href-float-whatsapp', site.social.whatsapp);
+    setupWhatsApp(site);
     setAttr('href-float-call', `tel:${site.contact.phone}`);
 
     initFAQ();
@@ -906,7 +958,6 @@ function setAttr(id, value, attr = 'href') {
 
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
-  initForm();
   initImageFallbacks();
 
   if (document.body.dataset.page === 'home') initHomePage();
