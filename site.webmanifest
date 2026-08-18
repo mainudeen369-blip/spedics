@@ -1,0 +1,17 @@
+{
+  "name": "SPEDICS Institute of Skill Development",
+  "short_name": "SPEDICS",
+  "description": "Professional teacher training and skill development courses in Chennai. Online & offline.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafb",
+  "theme_color": "#0d7377",
+  "icons": [
+    {
+      "src": "/images/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

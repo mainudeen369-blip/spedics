@@ -278,6 +278,8 @@ async function initHomePage() {
 
     document.title = `${site.name} | ${site.tagline}`;
 
+    initHomeSEO(site);
+
     const allCourseIds = [...new Set([
       ...coursesIndex.featured,
       ...coursesIndex.categories.flatMap((c) => c.courses)
@@ -445,6 +447,8 @@ async function initCoursePage() {
     ]);
 
     document.title = `${course.title} | ${site.shortName}`;
+
+    initCourseSEO(course, site);
 
     setText('data-course-title', course.title);
     setText('data-course-title-heading', course.title);
