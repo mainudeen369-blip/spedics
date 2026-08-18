@@ -464,7 +464,7 @@ button, input, select, textarea { font: inherit; }
 .about-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  gap: 2rem;
   align-items: center;
 }
 .about-image {
@@ -504,7 +504,7 @@ button, input, select, textarea { font: inherit; }
 .vm-card h4 { color: var(--primary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
 .why-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 1rem;
   margin-top: 2rem;
 }
@@ -1138,15 +1138,14 @@ button, input, select, textarea { font: inherit; }
     flex-direction: column;
     padding: 1rem;
     box-shadow: var(--shadow-lg);
-    transform: translateY(-120%);
-    opacity: 0;
-    visibility: hidden;
-    transition: all var(--transition);
+    display: none;
+    transition: none;
     max-height: calc(100vh - (var(--topbar-h) + var(--header-h)));
     overflow-y: auto;
     align-items: stretch;
+    z-index: 1200;
   }
-  .nav.open { transform: translateY(0); opacity: 1; visibility: visible; }
+  .nav.open { display: flex; }
   .nav-link { padding: 0.85rem 1rem; }
   .nav-dropdown-menu {
     position: static;
@@ -1164,6 +1163,16 @@ button, input, select, textarea { font: inherit; }
   .footer-grid { grid-template-columns: 1fr; }
   .topbar-inner { font-size: 0.75rem; gap: 0.5rem; }
   .course-sidebar { position: static; }
+}
+
+/* Better desktop fit for About section */
+@media (min-width: 1025px) {
+  #about .container {
+    width: min(1320px, 100%);
+  }
+  #about .section-header {
+    max-width: 900px;
+  }
 }
 
 @media (max-width: 480px) {
