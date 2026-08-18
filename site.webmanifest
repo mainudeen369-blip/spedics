@@ -4,8 +4,8 @@
   "description": "Professional teacher training and skill development courses in Chennai. Online & offline.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f8fafb",
-  "theme_color": "#0d7377",
+  "background_color": "#ecfeff",
+  "theme_color": "#0891b2",
   "icons": [
     {
       "src": "/images/logo.svg",
