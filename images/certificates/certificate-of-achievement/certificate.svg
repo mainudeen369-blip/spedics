@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <rect width="400" height="300" rx="12" fill="#fffbeb"/>
+  <rect x="16" y="16" width="368" height="268" rx="8" fill="#fff" stroke="#e8a838" stroke-width="3"/>
+  <rect x="24" y="24" width="352" height="252" rx="6" fill="none" stroke="#0d7377" stroke-width="1"/>
+  <text x="200" y="70" text-anchor="middle" font-family="Georgia,serif" font-size="20" fill="#e8a838" font-weight="700">CERTIFICATE OF ACHIEVEMENT</text>
+  <text x="200" y="120" text-anchor="middle" font-family="Georgia,serif" font-size="13" fill="#64748b">Presented to</text>
+  <text x="200" y="155" text-anchor="middle" font-family="Georgia,serif" font-size="17" fill="#1a2332" font-style="italic">Sample Learner Name</text>
+  <text x="200" y="190" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#0d7377">For Excellence in Practical Assessment</text>
+  <polygon points="200,220 210,245 185,230 215,230 190,245" fill="#e8a838"/>
+</svg>

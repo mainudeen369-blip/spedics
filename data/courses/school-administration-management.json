@@ -1,0 +1,30 @@
+{
+  "id": "school-administration-management",
+  "title": "Diploma in School Administration & Management",
+  "shortTitle": "School Administration",
+  "badge": "Premium",
+  "description": "Develop leadership and administrative skills to manage educational institutions effectively across academic, staff and operational functions.",
+  "image": "images/courses/school-administration-management.svg",
+  "duration": "12 Months",
+  "eligibility": "Graduate; experience in education preferred",
+  "mode": ["Online", "Offline", "Hybrid"],
+  "fee": "Contact for fee details",
+  "modules": [
+    "Introduction to School Administration",
+    "Educational Leadership",
+    "School Organisation",
+    "Academic Administration",
+    "Curriculum Planning",
+    "Staff Coordination",
+    "Teacher Roles & Responsibilities",
+    "Student Records",
+    "Parent Communication",
+    "School Policies",
+    "Time Management",
+    "Event Management",
+    "School Safety & Hygiene",
+    "Resource Management",
+    "Quality Improvement",
+    "School Operations"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "title": "About SPEDICS",
+  "intro": "SPEDICS provides professionally structured training designed to develop practical knowledge, confidence and career-ready skills.",
+  "vision": {
+    "title": "Vision",
+    "text": "To empower educators and learners with practical skills to create better learning experiences and stronger futures."
+  },
+  "mission": {
+    "title": "Mission",
+    "text": "To provide quality, practical and child-centred training that builds confident and competent professionals."
+  },
+  "whyChoose": [
+    { "icon": "book", "title": "Structured Curriculum", "text": "Well-organised modules designed for progressive learning." },
+    { "icon": "hands", "title": "Practical Learning", "text": "Hands-on activities, demonstrations and real classroom strategies." },
+    { "icon": "devices", "title": "Online & Offline", "text": "Flexible modes to suit working professionals and homemakers." },
+    { "icon": "clipboard", "title": "Assessments", "text": "Assignments and evaluations to track your progress." },
+    { "icon": "users", "title": "Trainer Guidance", "text": "Experienced mentors supporting you throughout the journey." }
+  ],
+  "montessori": {
+    "title": "Why Montessori?",
+    "intro": "Montessori education encourages independence, hands-on learning and respect for each child's individual development.",
+    "points": [
+      "Builds independence and confidence",
+      "Encourages hands-on learning",
+      "Supports natural development",
+      "Develops concentration and coordination",
+      "Promotes a child-centred environment"
+    ]
+  },
+  "whoCanJoin": [
+    "Students and graduates",
+    "Existing teachers",
+    "Preschool educators",
+    "Homemakers",
+    "Parents",
+    "Career changers",
+    "Aspiring education professionals",
+    "Education entrepreneurs"
+  ]
+}

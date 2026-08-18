@@ -1,0 +1,26 @@
+{
+  "id": "montessori-teacher-training",
+  "title": "Diploma in Montessori Teacher Training",
+  "shortTitle": "Montessori Teacher Training",
+  "badge": "Premium",
+  "description": "A structured programme designed to develop practical knowledge and skills in Montessori education, preparing educators for child-centred classrooms worldwide.",
+  "image": "images/courses/montessori-teacher-training.svg",
+  "duration": "12 Months",
+  "eligibility": "10+2 or equivalent; passion for early childhood education",
+  "mode": ["Online", "Offline", "Hybrid"],
+  "fee": "Contact for fee details",
+  "modules": [
+    "Montessori Philosophy & History",
+    "Child Development",
+    "Practical Life",
+    "Sensorial Education",
+    "Montessori Language",
+    "Montessori Mathematics",
+    "Cultural Activities",
+    "Creative Activities",
+    "Classroom Management",
+    "Lesson Planning",
+    "Observation & Documentation",
+    "Teaching Practice"
+  ]
+}

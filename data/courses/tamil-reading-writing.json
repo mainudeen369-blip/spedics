@@ -1,0 +1,22 @@
+{
+  "id": "tamil-reading-writing",
+  "title": "Tamil Reading & Writing",
+  "shortTitle": "Tamil",
+  "badge": "Language",
+  "description": "Master Tamil script from uyir and mei ezhuthukkal to reading, writing and building everyday vocabulary.",
+  "image": "images/courses/tamil-reading-writing.svg",
+  "duration": "4 Months",
+  "eligibility": "Open to all learners",
+  "mode": ["Online", "Offline", "Hybrid"],
+  "fee": "Contact for fee details",
+  "modules": [
+    "Tamil Uyir Ezhuthukkal",
+    "Mei Ezhuthukkal",
+    "Uyirmei Ezhuthukkal",
+    "Word Formation",
+    "Reading Practice",
+    "Writing Practice",
+    "Vocabulary",
+    "Simple Sentences"
+  ]
+}

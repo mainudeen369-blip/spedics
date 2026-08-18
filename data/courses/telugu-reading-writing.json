@@ -1,0 +1,22 @@
+{
+  "id": "telugu-reading-writing",
+  "title": "Telugu Reading & Writing",
+  "shortTitle": "Telugu",
+  "badge": "Language",
+  "description": "Learn Telugu alphabet, guninthalu, word formation and simple sentences through structured reading and writing practice.",
+  "image": "images/courses/telugu-reading-writing.svg",
+  "duration": "4 Months",
+  "eligibility": "Open to all learners",
+  "mode": ["Online", "Offline", "Hybrid"],
+  "fee": "Contact for fee details",
+  "modules": [
+    "Telugu Alphabet",
+    "Vowels & Consonants",
+    "Guninthalu",
+    "Word Formation",
+    "Reading Practice",
+    "Writing Practice",
+    "Vocabulary",
+    "Simple Sentences"
+  ]
+}

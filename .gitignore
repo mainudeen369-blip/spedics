@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+*.log
+.env
+ReferDocs/
+extract-docx.ps1
+generate-svgs.ps1
+content-extracted.txt
+

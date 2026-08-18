@@ -1,0 +1,48 @@
+{
+  "title": "Student Testimonials",
+  "subtitle": "Real experiences from learners who transformed their careers with SPEDICS.",
+  "items": [
+    {
+      "name": "Priya Raman",
+      "location": "Chennai, Tamil Nadu",
+      "course": "Montessori Teacher Training",
+      "quote": "The practical sessions and trainer support helped me confidently step into my first preschool role. SPEDICS made learning engaging and career-focused.",
+      "avatar": "images/testimonials/avatar-1.svg"
+    },
+    {
+      "name": "Anitha Krishnan",
+      "location": "Coimbatore, Tamil Nadu",
+      "course": "Child Psychology",
+      "quote": "As a homemaker returning to work, I found the online mode perfect. The modules on child development changed how I support children every day.",
+      "avatar": "images/testimonials/avatar-2.svg"
+    },
+    {
+      "name": "Meera Joshi",
+      "location": "Bangalore, Karnataka",
+      "course": "Phonics & Early Literacy",
+      "quote": "Excellent structured curriculum with hands-on phonics activities. I now run my own reading enrichment sessions for young learners.",
+      "avatar": "images/testimonials/avatar-3.svg"
+    },
+    {
+      "name": "Kavitha Sundaram",
+      "location": "Hyderabad, Telangana",
+      "course": "Special Education",
+      "quote": "The inclusive education modules were eye-opening. Supportive faculty and practical IEP training prepared me for real classroom challenges.",
+      "avatar": "images/testimonials/avatar-4.svg"
+    },
+    {
+      "name": "Deepa Menon",
+      "location": "Kerala",
+      "course": "Pre-Primary Management",
+      "quote": "I opened my own preschool after completing this programme. The school setup and admissions modules were incredibly practical.",
+      "avatar": "images/testimonials/avatar-5.svg"
+    },
+    {
+      "name": "Ramesh Varma",
+      "location": "Chennai, Tamil Nadu",
+      "course": "Spoken English",
+      "quote": "My confidence in English communication improved dramatically. Great for teachers who want to excel in international school environments.",
+      "avatar": "images/testimonials/avatar-6.svg"
+    }
+  ]
+}

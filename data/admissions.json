@@ -1,0 +1,24 @@
+{
+  "title": "Admission Process",
+  "steps": [
+    { "step": 1, "title": "Choose Your Course", "text": "Browse our programmes and select the course that matches your goals." },
+    { "step": 2, "title": "Check Eligibility", "text": "Review eligibility criteria on the course page or speak with our team." },
+    { "step": 3, "title": "Submit Application", "text": "Fill out the online application form with your details." },
+    { "step": 4, "title": "Speak with Admissions", "text": "Our counsellor will guide you on mode, schedule and fee options." },
+    { "step": 5, "title": "Complete Formalities", "text": "Submit documents and complete payment as advised." },
+    { "step": 6, "title": "Begin Training", "text": "Start your learning journey with SPEDICS!" }
+  ],
+  "formFields": [
+    { "name": "fullName", "label": "Full Name", "type": "text", "required": true },
+    { "name": "mobile", "label": "Mobile Number", "type": "tel", "required": true },
+    { "name": "whatsapp", "label": "WhatsApp Number", "type": "tel", "required": false },
+    { "name": "email", "label": "Email Address", "type": "email", "required": true },
+    { "name": "qualification", "label": "Highest Qualification", "type": "text", "required": true },
+    { "name": "city", "label": "City", "type": "text", "required": true },
+    { "name": "course", "label": "Course Interested", "type": "select", "required": true },
+    { "name": "mode", "label": "Preferred Mode", "type": "select", "options": ["Online", "Offline", "Hybrid"], "required": true },
+    { "name": "message", "label": "Message", "type": "textarea", "required": false }
+  ],
+  "courseFee": "Contact for current fee structure",
+  "documentsRequired": "ID proof, educational certificates, passport-size photograph (details provided on application)"
+}

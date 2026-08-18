@@ -1,0 +1,14 @@
+{
+  "title": "Career Opportunities",
+  "intro": "Successful completion of a relevant programme can support learners in pursuing opportunities related to their area of training, subject to the eligibility requirements of individual institutions and employers.",
+  "roles": [
+    { "icon": "child", "title": "Montessori / Preschool Teacher", "text": "Lead child-centred classrooms in Montessori and early years settings." },
+    { "icon": "heart", "title": "Early Childhood Educator", "text": "Support holistic development in nurseries and daycare centres." },
+    { "icon": "chalkboard", "title": "Assistant Teacher", "text": "Assist lead teachers in primary and pre-primary classrooms." },
+    { "icon": "book-open", "title": "Phonics Educator", "text": "Specialise in early literacy and reading enrichment programmes." },
+    { "icon": "puzzle", "title": "Special Education Support", "text": "Work as shadow teachers and inclusive classroom aides." },
+    { "icon": "building", "title": "School Administration", "text": "Manage academic and operational functions in schools." },
+    { "icon": "users", "title": "Preschool Coordinator", "text": "Coordinate curriculum, staff and parent engagement." },
+    { "icon": "rocket", "title": "Education Entrepreneur", "text": "Start and manage your own preschool or training centre." }
+  ]
+}

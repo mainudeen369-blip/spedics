@@ -1,0 +1,23 @@
+{
+  "id": "vedic-mathematics",
+  "title": "Vedic Mathematics",
+  "shortTitle": "Vedic Mathematics",
+  "badge": "Skill",
+  "description": "Discover ancient calculation techniques for faster mental math, improving speed and accuracy for educators and learners.",
+  "image": "images/courses/vedic-mathematics.svg",
+  "duration": "3 Months",
+  "eligibility": "Basic arithmetic knowledge",
+  "mode": ["Online", "Offline", "Hybrid"],
+  "fee": "Contact for fee details",
+  "modules": [
+    "Number Concepts",
+    "Vedic Techniques",
+    "Addition & Subtraction",
+    "Multiplication",
+    "Division",
+    "Squares & Cubes",
+    "Fractions & Decimals",
+    "Mental Calculation",
+    "Speed & Accuracy"
+  ]
+}

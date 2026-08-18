@@ -1,0 +1,29 @@
+{
+  "id": "special-education",
+  "title": "Diploma in Special Education",
+  "shortTitle": "Special Education",
+  "badge": "Premium",
+  "description": "Learn inclusive strategies to support children with diverse learning needs through structured modules on disabilities, IEPs and classroom adaptations.",
+  "image": "images/courses/special-education.svg",
+  "duration": "14 Months",
+  "eligibility": "Graduate or teacher training background preferred",
+  "mode": ["Online", "Offline", "Hybrid"],
+  "fee": "Contact for fee details",
+  "modules": [
+    "Introduction to Special Education",
+    "Inclusive Education",
+    "Intellectual Disability",
+    "Autism Spectrum Disorder",
+    "ADHD",
+    "Specific Learning Disabilities",
+    "Cerebral Palsy",
+    "Hearing Impairment",
+    "Visual Impairment",
+    "Communication & Language Support",
+    "IEP – Individualised Education Plan",
+    "Behaviour Management",
+    "Classroom Adaptations",
+    "Assistive Strategies",
+    "Parent & Teacher Collaboration"
+  ]
+}

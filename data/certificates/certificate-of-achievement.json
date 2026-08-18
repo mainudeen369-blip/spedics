@@ -1,0 +1,17 @@
+{
+  "title": "Certificate of Achievement",
+  "type": "certificate-of-achievement",
+  "description": "Recognises outstanding performance, practical excellence or special accomplishments during the training programme.",
+  "image": "images/certificates/certificate-of-achievement/certificate.svg",
+  "features": [
+    "Excellence in practical assessment",
+    "Outstanding classroom demonstration",
+    "Leadership in group activities",
+    "Special recognition from trainers"
+  ],
+  "sampleData": {
+    "recipientName": "Sample Learner Name",
+    "achievement": "Excellence in Montessori Practical Life",
+    "awardedDate": "February 2026"
+  }
+}

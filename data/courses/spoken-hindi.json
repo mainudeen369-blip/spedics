@@ -1,0 +1,22 @@
+{
+  "id": "spoken-hindi",
+  "title": "Spoken Hindi",
+  "shortTitle": "Spoken Hindi",
+  "badge": "Language",
+  "description": "Learn conversational Hindi with practical vocabulary, sentence formation and pronunciation for everyday communication.",
+  "image": "images/courses/spoken-hindi.svg",
+  "duration": "4 Months",
+  "eligibility": "Open to all learners",
+  "mode": ["Online", "Offline", "Hybrid"],
+  "fee": "Contact for fee details",
+  "modules": [
+    "Hindi Basics",
+    "Common Vocabulary",
+    "Sentence Formation",
+    "Everyday Conversation",
+    "Pronunciation",
+    "Listening Practice",
+    "Speaking Practice",
+    "Practical Situations"
+  ]
+}

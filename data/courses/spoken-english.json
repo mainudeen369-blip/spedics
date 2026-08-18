@@ -1,0 +1,22 @@
+{
+  "id": "spoken-english",
+  "title": "Spoken English",
+  "shortTitle": "Spoken English",
+  "badge": "Popular",
+  "description": "Improve fluency, pronunciation and confidence in English for classroom communication, interviews and professional settings.",
+  "image": "images/courses/spoken-english.svg",
+  "duration": "4 Months",
+  "eligibility": "Basic reading ability in English",
+  "mode": ["Online", "Offline", "Hybrid"],
+  "fee": "Contact for fee details",
+  "modules": [
+    "Basic Grammar",
+    "Vocabulary Building",
+    "Everyday Conversation",
+    "Pronunciation",
+    "Listening Skills",
+    "Speaking Practice",
+    "Public Speaking",
+    "Interview & Workplace English"
+  ]
+}

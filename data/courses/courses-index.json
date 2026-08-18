@@ -1,0 +1,27 @@
+{
+  "title": "Our Courses",
+  "subtitle": "Choose from our extensive range of flexible programmes, created for aspiring and in-service educators.",
+  "categories": [
+    {
+      "id": "teacher-training",
+      "name": "Teacher Training",
+      "courses": ["montessori-teacher-training", "child-psychology-development", "special-education", "phonics-early-literacy"]
+    },
+    {
+      "id": "administration",
+      "name": "Administration & Management",
+      "courses": ["school-administration-management", "pre-primary-school-management"]
+    },
+    {
+      "id": "skills",
+      "name": "Skill Development",
+      "courses": ["nutrition", "computer-skills-education", "spoken-english", "spoken-hindi", "vedic-mathematics"]
+    },
+    {
+      "id": "languages",
+      "name": "Regional Languages",
+      "courses": ["telugu-reading-writing", "tamil-reading-writing"]
+    }
+  ],
+  "featured": ["montessori-teacher-training", "child-psychology-development", "special-education", "phonics-early-literacy", "school-administration-management", "spoken-english"]
+}

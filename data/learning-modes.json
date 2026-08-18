@@ -1,0 +1,37 @@
+{
+  "title": "Learning Modes",
+  "modes": [
+    {
+      "id": "online",
+      "title": "Online Training",
+      "description": "Flexible learning with live classes, digital resources, assignments, assessments and trainer guidance.",
+      "icon": "monitor",
+      "features": ["Live interactive sessions", "Digital study materials", "Recorded class access", "Online assessments"]
+    },
+    {
+      "id": "offline",
+      "title": "Offline Training",
+      "description": "Face-to-face classes with demonstrations, practical activities and direct trainer interaction.",
+      "icon": "school",
+      "features": ["Hands-on demonstrations", "Classroom practice", "Material handling", "Peer learning"]
+    },
+    {
+      "id": "hybrid",
+      "title": "Hybrid Training",
+      "description": "A combination of online learning and face-to-face practical training, where offered.",
+      "icon": "blend",
+      "features": ["Best of both modes", "Flexible theory online", "Practical sessions in-centre", "Ideal for working professionals"]
+    }
+  ],
+  "practicalLearning": {
+    "title": "Practical Learning",
+    "items": [
+      "Demonstrations and activities",
+      "Lesson planning",
+      "Assignments and projects",
+      "Micro-teaching, where applicable",
+      "Observation and documentation",
+      "Practical classroom strategies"
+    ]
+  }
+}

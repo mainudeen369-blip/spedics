@@ -1,0 +1,27 @@
+{
+  "id": "computer-skills-education",
+  "title": "Basic Computer Skills for Education Professionals",
+  "shortTitle": "Computer Skills",
+  "badge": "Essential",
+  "description": "Build digital literacy with Word, Excel, PowerPoint and online tools essential for modern educators and administrators.",
+  "image": "images/courses/computer-skills-education.svg",
+  "duration": "3 Months",
+  "eligibility": "Basic literacy; no prior computer experience required",
+  "mode": ["Online", "Offline", "Hybrid"],
+  "fee": "Contact for fee details",
+  "modules": [
+    "Computer Fundamentals",
+    "Operating System Basics",
+    "File & Folder Management",
+    "Typing Skills",
+    "Microsoft Word",
+    "PowerPoint",
+    "Excel",
+    "Internet & Email",
+    "Online Meeting Tools",
+    "Digital Learning Resources",
+    "Basic Data Management",
+    "Printing & Documents",
+    "Cyber Safety"
+  ]
+}

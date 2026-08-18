@@ -1,0 +1,18 @@
+{
+  "title": "Course Certificate",
+  "type": "course-certificate",
+  "description": "Awarded upon successful completion of programme requirements. Includes course name, learner details and affiliation credentials.",
+  "image": "images/certificates/course-certificate/certificate.svg",
+  "features": [
+    "Official SPEDICS Institute seal",
+    "Course title and completion date",
+    "Affiliation reference number",
+    "Transcript of modules completed"
+  ],
+  "sampleData": {
+    "recipientName": "Sample Learner Name",
+    "courseName": "Diploma in Montessori Teacher Training",
+    "completionDate": "March 2026",
+    "grade": "Distinction"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "nutrition",
+  "title": "Diploma in Nutrition",
+  "shortTitle": "Nutrition",
+  "badge": "New",
+  "description": "Understand balanced nutrition for children, adolescents and families with practical meal planning and food safety essentials.",
+  "image": "images/courses/nutrition.svg",
+  "duration": "8 Months",
+  "eligibility": "10+2 or equivalent",
+  "mode": ["Online", "Offline", "Hybrid"],
+  "fee": "Contact for fee details",
+  "modules": [
+    "Introduction to Nutrition",
+    "Macronutrients",
+    "Micronutrients",
+    "Balanced Diet",
+    "Child Nutrition",
+    "Adolescent Nutrition",
+    "Maternal & Family Nutrition",
+    "Food Safety & Hygiene",
+    "Healthy Meal Planning",
+    "Lifestyle & Nutrition",
+    "Common Nutrition Problems",
+    "Nutrition Education",
+    "Food Labels",
+    "Practical Meal Planning",
+    "Nutrition Awareness"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "pre-primary-school-management",
+  "title": "Diploma in Pre-Primary School Management",
+  "shortTitle": "Pre-Primary Management",
+  "badge": "Popular",
+  "description": "Learn to plan, set up and manage preschool environments with curriculum organisation, admissions and parent engagement strategies.",
+  "image": "images/courses/pre-primary-school-management.svg",
+  "duration": "10 Months",
+  "eligibility": "10+2 or Graduate",
+  "mode": ["Online", "Offline", "Hybrid"],
+  "fee": "Contact for fee details",
+  "modules": [
+    "Early Childhood Education",
+    "Preschool Planning",
+    "School Setup & Infrastructure",
+    "Curriculum Organisation",
+    "Timetable Planning",
+    "Classroom Management",
+    "Teacher Responsibilities",
+    "Child Safety",
+    "Parent Engagement",
+    "Activity Planning",
+    "Staff Coordination",
+    "Student Records",
+    "Admissions",
+    "School Events",
+    "Preschool Administration"
+  ]
+}

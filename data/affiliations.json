@@ -1,0 +1,31 @@
+{
+  "title": "Certification & Affiliation",
+  "subtitle": "Credentials designed to support your teaching and education career.",
+  "affiliations": [
+    {
+      "name": "Dr. Maria Montessori Foundation & Research Centre (MMFRC)",
+      "affiliationNo": "2011/MMFRC/036",
+      "period": "2026–2027",
+      "logo": "images/certificates/mmfrc/logo.svg"
+    },
+    {
+      "name": "Society for Rural & Urban Educational Development Organisation (SRUEDO)",
+      "affiliationNo": "2011/SRUEDO/055",
+      "period": "2026–2027",
+      "logo": "images/certificates/sruedo/logo.svg"
+    }
+  ],
+  "note": "Affiliation and recognition apply according to the scope and validity stated in the respective official documents.",
+  "certificateTypes": [
+    {
+      "id": "course-certificate",
+      "folder": "images/certificates/course-certificate",
+      "dataFile": "data/certificates/course-certificate.json"
+    },
+    {
+      "id": "certificate-of-achievement",
+      "folder": "images/certificates/certificate-of-achievement",
+      "dataFile": "data/certificates/certificate-of-achievement.json"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "phonics-early-literacy",
+  "title": "Diploma in Phonics & Early Literacy",
+  "shortTitle": "Phonics & Early Literacy",
+  "badge": "Popular",
+  "description": "Master phonics-based literacy instruction with practical techniques for blending, segmenting and building confident young readers.",
+  "image": "images/courses/phonics-early-literacy.svg",
+  "duration": "8 Months",
+  "eligibility": "10+2 or equivalent",
+  "mode": ["Online", "Offline", "Hybrid"],
+  "fee": "Contact for fee details",
+  "modules": [
+    "Foundations of Phonics",
+    "Phonemic Awareness",
+    "Letter-Sound Correspondence",
+    "Blending",
+    "Segmenting",
+    "CVC Words",
+    "Digraphs",
+    "Trigraphs",
+    "Long & Short Vowels",
+    "Sight Words",
+    "Spelling Patterns",
+    "Reading Fluency",
+    "Vocabulary Development",
+    "Phonics Activities & Games",
+    "Lesson Planning & Assessment"
+  ]
+}

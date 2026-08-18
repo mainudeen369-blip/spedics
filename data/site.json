@@ -1,0 +1,32 @@
+{
+  "name": "SPEDICS Institute of Skill Development",
+  "shortName": "SPEDICS",
+  "tagline": "Empowering Educators. Enriching Childhood. Building Futures.",
+  "hero": {
+    "badge": "Professional Skill Development & Teacher Training",
+    "title": "SPEDICS Institute of Skill Development",
+    "subtitle": "Structured, practical and career-oriented training programmes in education, child development and skill development.",
+    "highlights": ["Online & Offline Training Available", "13+ Professional Programmes", "Affiliated & Recognised Certificates"]
+  },
+  "contact": {
+    "address": "4021, 6th Main Road, Ayapakkam, Chennai – 600077",
+    "phone": "7708743942",
+    "whatsapp": "7708743942",
+    "email": "Spedicsmont@gmail.com"
+  },
+  "stats": [
+    { "value": "13+", "label": "Courses" },
+    { "value": "500+", "label": "Students Trained" },
+    { "value": "2", "label": "Affiliations" },
+    { "value": "100%", "label": "Practical Focus" }
+  ],
+  "social": {
+    "facebook": "#",
+    "instagram": "#",
+    "youtube": "#",
+    "whatsapp": "https://wa.me/917708743942"
+  },
+  "footer": {
+    "copyright": "© 2026 SPEDICS Institute of Skill Development. All Rights Reserved."
+  }
+}
