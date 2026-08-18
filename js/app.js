@@ -37,6 +37,18 @@ function badgeClass(badge) {
   return map[badge] || 'badge-popular';
 }
 
+function applyFeeData(course, fees) {
+  if (!course || !fees) return course;
+  const extra = (fees.courses && fees.courses[course.id]) || fees.default || {};
+  return {
+    ...course,
+    duration: extra.duration || course.duration,
+    fee: extra.fee || course.fee,
+    schedule: extra.schedule || course.schedule,
+    packages: extra.packages || course.packages
+  };
+}
+
 function renderCourseCard(course) {
   return `
     <article class="course-card reveal">
@@ -48,7 +60,7 @@ function renderCourseCard(course) {
         <h3>${course.title}</h3>
         <p>${course.description}</p>
         <div class="course-card-footer">
-          <span style="font-size:0.8rem;color:var(--text-muted)">${course.duration}</span>
+          <span style="font-size:0.8rem;color:var(--text-muted)">${course.duration}${course.fee ? ' · ' + course.fee : ''}</span>
           <a href="course.html?id=${course.id}" class="btn btn-primary btn-sm">Read More</a>
         </div>
       </div>
@@ -307,7 +319,7 @@ function initImageFallbacks() {
 
 async function initHomePage() {
   try {
-    const [site, about, coursesIndex, testimonials, gallery, careers, faq, modes, admissions, affiliations] = await Promise.all([
+    const [site, about, coursesIndex, testimonials, gallery, careers, faq, modes, admissions, affiliations, fees] = await Promise.all([
       fetchJSON('site.json'),
       fetchJSON('about.json'),
       fetchJSON('courses/courses-index.json'),
@@ -317,7 +329,8 @@ async function initHomePage() {
       fetchJSON('faq.json'),
       fetchJSON('learning-modes.json'),
       fetchJSON('admissions.json'),
-      fetchJSON('affiliations.json')
+      fetchJSON('affiliations.json'),
+      fetchJSON('fees.json')
     ]);
 
     document.title = `${site.name} | ${site.tagline}`;
@@ -328,7 +341,7 @@ async function initHomePage() {
       ...coursesIndex.featured,
       ...coursesIndex.categories.flatMap((c) => c.courses)
     ])];
-    const courses = (await loadAllCourses(allCourseIds)).filter(Boolean);
+    const courses = (await loadAllCourses(allCourseIds)).filter(Boolean).map((c) => applyFeeData(c, fees));
     const courseMap = Object.fromEntries(courses.map((c) => [c.id, c]));
 
     // Topbar & contact
@@ -481,11 +494,13 @@ async function initCoursePage() {
   }
 
   try {
-    const [course, site, coursesIndex] = await Promise.all([
+    const [courseRaw, site, coursesIndex, fees] = await Promise.all([
       loadCourse(id),
       fetchJSON('site.json'),
-      fetchJSON('courses/courses-index.json')
+      fetchJSON('courses/courses-index.json'),
+      fetchJSON('fees.json')
     ]);
+    const course = applyFeeData(courseRaw, fees);
 
     document.title = `${course.title} | ${site.shortName}`;
 
@@ -500,6 +515,31 @@ async function initCoursePage() {
     setText('data-course-fee', course.fee);
     setText('data-course-mode', course.mode.join(' / '));
     setText('data-course-badge', course.badge);
+
+    const scheduleRow = document.getElementById('course-schedule-row');
+    if (scheduleRow) {
+      if (course.schedule) {
+        scheduleRow.style.display = '';
+        setText('data-course-schedule', course.schedule);
+      } else {
+        scheduleRow.style.display = 'none';
+      }
+    }
+
+    const packagesBox = document.getElementById('course-packages');
+    if (packagesBox) {
+      if (course.packages && course.packages.length) {
+        packagesBox.style.display = '';
+        packagesBox.innerHTML = '<h3>Fee Packages</h3>' + course.packages.map((p) => `
+          <div class="package-item">
+            <strong>${p.name}</strong>
+            <span>${p.duration}</span>
+            <span>${p.feeLabel || p.fee}</span>
+          </div>`).join('');
+      } else {
+        packagesBox.style.display = 'none';
+      }
+    }
 
     const badgeEl = document.getElementById('course-badge-el');
     if (badgeEl) {
@@ -517,7 +557,7 @@ async function initCoursePage() {
     }
 
     const allIds = coursesIndex.categories.flatMap((c) => c.courses);
-    const allCourses = (await loadAllCourses(allIds)).filter(Boolean);
+    const allCourses = (await loadAllCourses(allIds)).filter(Boolean).map((c) => applyFeeData(c, fees));
     const dropdown = document.getElementById('courses-dropdown');
     if (dropdown) {
       dropdown.innerHTML = allCourses.map((c) =>

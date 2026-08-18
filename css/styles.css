@@ -1159,6 +1159,21 @@ button, input, select, textarea { font: inherit; }
 }
 .sidebar-item span:first-child { color: var(--text-muted); }
 .sidebar-item span:last-child { font-weight: 600; color: var(--dark); }
+.course-packages { margin-top: 1.25rem; }
+.course-packages h3 { color: var(--dark); margin-bottom: 0.75rem; font-size: 1.1rem; }
+.package-item {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr auto;
+  gap: 0.5rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.88rem;
+  align-items: center;
+}
+@media (max-width: 480px) {
+  .package-item { grid-template-columns: 1fr; gap: 0.2rem; }
+}
+.package-item strong { color: var(--primary-dark); }
 .modules-list { margin-top: 2rem; }
 .modules-list h3 { margin-bottom: 1rem; color: var(--dark); }
 .module-item {

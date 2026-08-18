@@ -1,80 +1,158 @@
-# SPEDICS Institute — Static Website
+# SPEDICS Website — How to Update
 
-Professional static website for **SPEDICS Institute of Skill Development**, inspired by [Global Teacher Training Academy](https://www.globalteachersacademy.com/) with a unique teal & gold design.
+This is a static website. **You do not need to edit HTML** for most changes. Edit JSON files and images, then push to GitHub. Vercel will auto-deploy.
 
-## Quick Start
-
-Open `index.html` in a browser, or serve locally:
+## Local preview
 
 ```powershell
 cd C:\HajaWorkingFolder\oldFiles\Spedics
 python -m http.server 8080
-# Visit http://localhost:8080
 ```
 
-> Use a local server so JSON data loads correctly (file:// may block fetch).
+Open http://localhost:8080
 
-## Folder Structure
+---
 
+## 1. Change phone, email, address
+
+Edit: `data/site.json`
+
+- `contact.phone`
+- `contact.whatsapp`
+- `contact.email`
+- `contact.address`
+
+---
+
+## 2. Change course fees / duration / classes per week
+
+**Easiest:** edit `data/fees.json`
+
+Examples:
+
+- Montessori packages → `courses.montessori-teacher-training.packages`
+- Spoken English fee → `courses.spoken-english.fee` (example: `"₹3,000"`)
+- Duration → `courses.spoken-english.duration` (example: `"3 months"`)
+- Classes per week → `courses.spoken-english.schedule` (example: `"3 classes per week"`)
+- Other courses default range → `default.fee`
+
+You can also edit the same fields inside `data/courses/<course-id>.json`.  
+`data/fees.json` overrides those values on the website.
+
+---
+
+## 3. Change course text / modules
+
+Edit: `data/courses/<course-id>.json`
+
+Example file: `data/courses/spoken-english.json`
+
+Change `title`, `description`, `modules`, `eligibility`, `mode`.
+
+---
+
+## 4. Replace course images
+
+1. Put a photo in `images/courses/`
+2. Name it same as the course id, e.g. `spoken-english.jpg`
+3. In `data/courses/spoken-english.json` set:
+
+```json
+"image": "images/courses/spoken-english.jpg"
 ```
-Spedics/
-├── index.html              # Main landing page
-├── course.html             # Dynamic course detail (?id=course-slug)
-├── css/styles.css          # Responsive styles & animations
-├── js/app.js               # JSON data loader & UI logic
-├── data/                   # All editable content (JSON)
-│   ├── site.json           # Contact, hero, stats
-│   ├── about.json          # Vision, mission, why choose
-│   ├── courses/            # One JSON per course
-│   ├── certificates/       # Certificate types & sample data
-│   ├── testimonials.json
-│   ├── gallery.json
-│   ├── faq.json
-│   └── ...
-├── images/
-│   ├── logo.svg            # Animated logo
-│   ├── courses/            # Course thumbnails (replace with photos)
-│   ├── gallery/            # Gallery images
-│   └── certificates/
-│       ├── course-certificate/
-│       │   └── certificate.svg
-│       └── certificate-of-achievement/
-│           └── certificate.svg
-└── ReferDocs/              # Client source documents
+
+Supported: `.jpg` `.jpeg` `.png` `.webp` `.svg`
+
+---
+
+## 5. Add or replace certificates (image or video)
+
+1. Create a folder: `data/certificates/my-new-certificate/`
+2. Put the file inside it, e.g. `certificate.jpg` or `video.mp4`
+3. Create `data/certificates/my-new-certificate/data.json`:
+
+```json
+{
+  "id": "my-new-certificate",
+  "title": "Certificate Title",
+  "description": "Short description",
+  "file": "certificate.jpg"
+}
 ```
 
-## Updating Content
+4. Add the folder name in `data/certificates/index.json`:
 
-1. **Site info** — edit `data/site.json` (phone, email, address)
-2. **Courses** — edit `data/courses/{course-id}.json`
-3. **Certificates** — edit `data/certificates/*.json` and replace images in matching `images/certificates/` folders
-4. **Gallery** — add images to `images/gallery/` and update `data/gallery.json`
-5. **Testimonials** — edit `data/testimonials.json`
+```json
+{
+  "items": [
+    "mmfrc-certification-of-recognition",
+    "spedics-institute-official-seal",
+    "my-new-certificate"
+  ]
+}
+```
 
-## Course IDs
+Supported media: images (jpg, png, webp, svg) and video (mp4, webm, mov).
+
+---
+
+## 6. Change gallery photos
+
+1. Add files in `images/gallery/`
+2. Edit `data/gallery.json` and add:
+
+```json
+{ "id": "g9", "title": "Classroom photo", "image": "images/gallery/my-photo.jpg", "category": "classroom" }
+```
+
+---
+
+## 7. Change testimonials
+
+Edit `data/testimonials.json`  
+Replace dummy names, quotes, and `avatar` image paths.
+
+---
+
+## 8. Change FAQ / About / careers
+
+| What | File |
+|------|------|
+| About, vision, mission | `data/about.json` |
+| FAQ | `data/faq.json` |
+| Careers | `data/careers.json` |
+| Admissions steps | `data/admissions.json` |
+| Affiliations | `data/affiliations.json` |
+
+---
+
+## 9. After you save changes
+
+```powershell
+cd C:\HajaWorkingFolder\oldFiles\Spedics
+git add -A
+git commit -m "Update website content"
+git push
+```
+
+Vercel publishes automatically from GitHub `main`.
+
+---
+
+## Course IDs (file names)
 
 | ID | Course |
 |----|--------|
-| montessori-teacher-training | Diploma in Montessori Teacher Training |
-| child-psychology-development | Diploma in Child Psychology & Child Development |
-| special-education | Diploma in Special Education |
-| phonics-early-literacy | Diploma in Phonics & Early Literacy |
-| school-administration-management | Diploma in School Administration & Management |
-| pre-primary-school-management | Diploma in Pre-Primary School Management |
-| nutrition | Diploma in Nutrition |
-| computer-skills-education | Basic Computer Skills |
+| montessori-teacher-training | Montessori (Certified / Diploma / PG Diploma) |
+| child-psychology-development | Child Psychology |
+| special-education | Special Education |
+| phonics-early-literacy | Phonics |
+| school-administration-management | School Administration |
+| pre-primary-school-management | Pre-Primary Management |
+| nutrition | Nutrition |
+| computer-skills-education | Computer Skills |
 | spoken-english | Spoken English |
 | spoken-hindi | Spoken Hindi |
 | vedic-mathematics | Vedic Mathematics |
-| telugu-reading-writing | Telugu Reading & Writing |
-| tamil-reading-writing | Tamil Reading & Writing |
-
-## Design
-
-- **Colors:** Teal (#0d7377), Gold (#e8a838), Navy (#1a2332)
-- **Fonts:** Fraunces (headings), Plus Jakarta Sans (body)
-- **Features:** Scroll animations, FAQ accordion, testimonial carousel, responsive nav, floating WhatsApp/call buttons
-
-## Client Reference
-
-Content sourced from `ReferDocs/SPEDICS_Complete_Website_Content_All_Courses.docx`. Placeholder images and dummy testimonials are included — replace with real assets when available.
+| telugu-reading-writing | Telugu |
+| tamil-reading-writing | Tamil |

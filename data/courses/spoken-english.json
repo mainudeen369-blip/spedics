@@ -5,10 +5,11 @@
   "badge": "Popular",
   "description": "Improve fluency, pronunciation and confidence in English for classroom communication, interviews and professional settings.",
   "image": "images/courses/spoken-english.svg",
-  "duration": "4 Months",
+  "duration": "3 months",
   "eligibility": "Basic reading ability in English",
   "mode": ["Online", "Offline", "Hybrid"],
-  "fee": "Contact for fee details",
+  "fee": "₹3,000",
+  "schedule": "3 classes per week",
   "modules": [
     "Basic Grammar",
     "Vocabulary Building",

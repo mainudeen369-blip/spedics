@@ -5,10 +5,11 @@
   "badge": "Language",
   "description": "Learn conversational Hindi with practical vocabulary, sentence formation and pronunciation for everyday communication.",
   "image": "images/courses/spoken-hindi.svg",
-  "duration": "4 Months",
+  "duration": "3 months",
   "eligibility": "Open to all learners",
   "mode": ["Online", "Offline", "Hybrid"],
-  "fee": "Contact for fee details",
+  "fee": "₹3,000",
+  "schedule": "3 classes per week",
   "modules": [
     "Hindi Basics",
     "Common Vocabulary",
