@@ -242,6 +242,17 @@ function initForm() {
   });
 }
 
+function initImageFallbacks() {
+  const fallbackSrc = 'images/placeholders/default.svg';
+  document.querySelectorAll('img').forEach((img) => {
+    img.addEventListener('error', () => {
+      if (img.dataset.fallbackApplied === '1') return;
+      img.dataset.fallbackApplied = '1';
+      img.src = fallbackSrc;
+    });
+  });
+}
+
 async function initHomePage() {
   try {
     const [site, about, coursesIndex, testimonials, gallery, careers, faq, modes, admissions, affiliations, courseCert, achievementCert] = await Promise.all([
@@ -364,7 +375,7 @@ async function initHomePage() {
     if (affList) {
       affList.innerHTML = affiliations.affiliations.map((a) => `
         <div class="affiliation-item reveal">
-          <div class="affiliation-badge">${a.affiliationNo.split('/')[1] || 'AFF'}</div>
+          <img class="affiliation-logo" src="${a.logo}" alt="${a.name} logo" loading="lazy">
           <div>
             <strong>${a.name}</strong>
             <p style="font-size:0.85rem;color:var(--text-muted);margin-top:0.25rem">
@@ -406,6 +417,7 @@ async function initHomePage() {
     initFAQ();
     initReveal();
     initCounters();
+    initImageFallbacks();
   } catch (err) {
     console.error('Failed to load site data:', err);
   }
@@ -471,6 +483,7 @@ async function initCoursePage() {
     setAttr('href-float-call', `tel:${site.contact.phone}`);
 
     initReveal();
+    initImageFallbacks();
   } catch (err) {
     console.error('Course not found:', err);
     document.getElementById('course-content').innerHTML =
@@ -493,6 +506,7 @@ function setAttr(id, value, attr = 'href') {
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
   initForm();
+  initImageFallbacks();
 
   if (document.body.dataset.page === 'home') initHomePage();
   else if (document.body.dataset.page === 'course') initCoursePage();
