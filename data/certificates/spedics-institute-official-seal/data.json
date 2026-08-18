@@ -3,7 +3,7 @@
   "title": "SPEDICS Official Institute Seal",
   "type": "institute-seal",
   "description": "Official seal of SPEDICS Institute of Skill Development, established in 2024, representing child development, teacher training, knowledge and leadership.",
-  "image": "images/certificates/spedics-seal/official-seal.jpeg",
+  "file": "official-seal.jpeg",
   "instituteName": "SPEDICS Institute of Skill Development",
   "established": "2024",
   "tagline": "Shaping Skills • Building Futures",

@@ -123,6 +123,52 @@ function renderWhyItem(item) {
     </div>`;
 }
 
+function isVideoFile(path) {
+  return /\.(mp4|webm|ogg|ogv|mov|m4v)$/i.test(path || '');
+}
+
+function isImageFile(path) {
+  return /\.(jpe?g|png|gif|webp|svg|avif|bmp)$/i.test(path || '');
+}
+
+function mediaSrc(folder, file) {
+  if (!file) return 'images/placeholders/default.svg';
+  if (/^(https?:)?\/\//i.test(file) || file.includes('/')) return file;
+  return `${DATA_BASE}/certificates/${folder}/${file}`;
+}
+
+function renderMedia(src, alt) {
+  if (isVideoFile(src)) {
+    return `<video class="cert-media" src="${src}" controls playsinline muted loop preload="metadata" aria-label="${alt}"></video>`;
+  }
+  if (isImageFile(src)) {
+    return `<img class="cert-media" src="${src}" alt="${alt}" loading="lazy">`;
+  }
+  return `<a class="cert-file" href="${src}" target="_blank" rel="noopener">Open file</a>`;
+}
+
+async function loadCertificates() {
+  const index = await fetchJSON('certificates/index.json');
+  const folders = index.items || [];
+  const certs = await Promise.all(folders.map(async (folder) => {
+    const data = await fetchJSON(`certificates/${folder}/data.json`);
+    const file = data.file || data.image;
+    return { ...data, folder, src: mediaSrc(folder, file) };
+  }));
+  return certs.filter(Boolean);
+}
+
+function renderCertificateCard(cert) {
+  return `
+    <article class="cert-card reveal">
+      ${renderMedia(cert.src, cert.title)}
+      <div class="cert-card-body">
+        <h3>${cert.title}</h3>
+        <p style="color:var(--text-muted);font-size:0.9rem;margin-top:0.5rem">${cert.description || ''}</p>
+      </div>
+    </article>`;
+}
+
 function renderStep(step) {
   return `
     <div class="step-card reveal">
@@ -261,7 +307,7 @@ function initImageFallbacks() {
 
 async function initHomePage() {
   try {
-    const [site, about, coursesIndex, testimonials, gallery, careers, faq, modes, admissions, affiliations, courseCert, achievementCert] = await Promise.all([
+    const [site, about, coursesIndex, testimonials, gallery, careers, faq, modes, admissions, affiliations] = await Promise.all([
       fetchJSON('site.json'),
       fetchJSON('about.json'),
       fetchJSON('courses/courses-index.json'),
@@ -271,9 +317,7 @@ async function initHomePage() {
       fetchJSON('faq.json'),
       fetchJSON('learning-modes.json'),
       fetchJSON('admissions.json'),
-      fetchJSON('affiliations.json'),
-      fetchJSON('certificates/mmfrc-certification-of-recognition.json'),
-      fetchJSON('certificates/spedics-institute-official-seal.json')
+      fetchJSON('affiliations.json')
     ]);
 
     document.title = `${site.name} | ${site.tagline}`;
@@ -371,13 +415,10 @@ async function initHomePage() {
       practicalList.innerHTML = modes.practicalLearning.items.map((i) => `<li>${i}</li>`).join('');
     }
 
-    // Certificates
-    setText('data-cert-course-title', courseCert.title);
-    setText('data-cert-course-desc', courseCert.description);
-    setAttr('src-cert-course', courseCert.image, 'src');
-    setText('data-cert-achieve-title', achievementCert.title);
-    setText('data-cert-achieve-desc', achievementCert.description);
-    setAttr('src-cert-achieve', achievementCert.image, 'src');
+    // Certificates — loaded dynamically from data/certificates/<folder>/
+    const certificates = await loadCertificates();
+    const certGrid = document.getElementById('certificates-grid');
+    if (certGrid) certGrid.innerHTML = certificates.map(renderCertificateCard).join('');
 
     const affList = document.getElementById('affiliation-list');
     if (affList) {

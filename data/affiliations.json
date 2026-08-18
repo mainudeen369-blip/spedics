@@ -7,7 +7,7 @@
       "affiliationNo": "2011/MMFRC/036",
       "period": "2026–2027",
       "govtRegNo": "199/2011",
-      "logo": "images/certificates/mmfrc/certification-of-recognition-2026-2027.jpeg"
+      "logo": "data/certificates/mmfrc-certification-of-recognition/certification-of-recognition-2026-2027.jpeg"
     },
     {
       "name": "Society for Rural & Urban Educational Development Organisation (SRUEDO)",
@@ -20,13 +20,13 @@
   "certificateTypes": [
     {
       "id": "mmfrc-certification-of-recognition",
-      "folder": "images/certificates/mmfrc",
-      "dataFile": "data/certificates/mmfrc-certification-of-recognition.json"
+      "folder": "data/certificates/mmfrc-certification-of-recognition",
+      "dataFile": "data/certificates/mmfrc-certification-of-recognition/data.json"
     },
     {
       "id": "spedics-institute-official-seal",
-      "folder": "images/certificates/spedics-seal",
-      "dataFile": "data/certificates/spedics-institute-official-seal.json"
+      "folder": "data/certificates/spedics-institute-official-seal",
+      "dataFile": "data/certificates/spedics-institute-official-seal/data.json"
     }
   ]
 }
