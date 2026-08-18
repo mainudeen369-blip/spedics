@@ -166,6 +166,35 @@ button, input, select, textarea { font: inherit; }
   50% { transform: translateY(-1.5px); }
 }
 
+/* Safe desktop-only logo sparkle (no layout impact) */
+@media (hover: hover) and (pointer: fine) and (min-width: 1025px) {
+  .logo-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+  .logo-wrap::after {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: -20%;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 70%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .logo-wrap:hover::after {
+    animation: logoSparkle 0.9s ease-out;
+  }
+}
+@keyframes logoSparkle {
+  0% { transform: translate(0, 0) scale(0.2); opacity: 0; }
+  35% { opacity: 0.95; }
+  100% { transform: translate(220px, -10px) scale(1.05); opacity: 0; }
+}
+
 .nav { display: flex; align-items: center; gap: 0.25rem; }
 .nav-link {
   padding: 0.5rem 0.85rem;
