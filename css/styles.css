@@ -204,6 +204,12 @@ button, input, select, textarea { font: inherit; }
   color: var(--dark-soft);
   border-radius: var(--radius-sm);
   transition: all var(--transition);
+  white-space: nowrap;
+}
+.nav-dropdown > .nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 .nav-link:hover, .nav-link.active { color: var(--primary); background: rgba(13,115,119,0.06); }
 
@@ -348,10 +354,37 @@ button, input, select, textarea { font: inherit; }
 }
 .hero-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 1rem;
   animation: fadeInUp 0.8s ease 0.3s forwards;
   opacity: 0;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 520px;
+}
+.hero-actions .btn {
+  min-width: 220px;
+  min-height: 56px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  border-width: 2px;
+}
+.hero-actions .btn-accent {
+  background: linear-gradient(135deg, #f59e0b 0%, #facc15 55%, #fde68a 100%);
+  color: #1f2937;
+  box-shadow: 0 14px 34px rgba(245, 158, 11, 0.36);
+}
+.hero-actions .btn-white {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  color: var(--primary-dark);
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+}
+.hero-actions .btn-white:hover,
+.hero-actions .btn-accent:hover {
+  transform: translateY(-3px) scale(1.01);
 }
 .hero-highlights {
   display: flex;
