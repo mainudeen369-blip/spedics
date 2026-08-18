@@ -763,7 +763,7 @@ button, input, select, textarea { font: inherit; }
   transition: transform var(--transition);
 }
 .cert-card:hover { transform: scale(1.02); }
-.cert-card img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+.cert-card img { width: 100%; aspect-ratio: 4/3; object-fit: contain; background: #fff; }
 .cert-card-body { padding: 1.5rem; }
 .affiliation-list { margin-top: 2rem; }
 .affiliation-item {

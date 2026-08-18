@@ -272,8 +272,8 @@ async function initHomePage() {
       fetchJSON('learning-modes.json'),
       fetchJSON('admissions.json'),
       fetchJSON('affiliations.json'),
-      fetchJSON('certificates/course-certificate.json'),
-      fetchJSON('certificates/certificate-of-achievement.json')
+      fetchJSON('certificates/mmfrc-certification-of-recognition.json'),
+      fetchJSON('certificates/spedics-institute-official-seal.json')
     ]);
 
     document.title = `${site.name} | ${site.tagline}`;
