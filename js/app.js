@@ -855,12 +855,10 @@ async function initHomePage() {
       practicalList.innerHTML = modes.practicalLearning.items.map((i) => `<li>${i}</li>`).join('');
     }
 
-    // Certificates — optional grid when folders exist in index
-    const certificates = await loadCertificates();
+    // Client request: remove the certificates card/content from the Recognition section on the homepage.
+    // Affiliations remain dynamic via `data/affiliations.json`.
     const certGrid = document.getElementById('certificates-grid');
-    if (certGrid && certificates.length) {
-      certGrid.innerHTML = certificates.map(renderCertificateCard).join('');
-    }
+    if (certGrid) certGrid.innerHTML = '';
 
     const affList = document.getElementById('affiliation-list');
     if (affList) {
