@@ -1,6 +1,20 @@
 {
   "title": "About SPEDICS",
   "intro": "SPEDICS provides professionally structured training designed to develop practical knowledge, confidence and career-ready skills.",
+  "welcomeNote": {
+    "title": "Welcome to SPEDICS",
+    "heading": "Empowering Educators. Enriching Childhood.",
+    "text": "SPEDICS Institute of Skill Development offers structured, practical and career-oriented teacher training and skill development programmes in Chennai. Whether you are a graduate, working teacher, homemaker or career changer — we help you build confidence and classroom-ready skills through online, offline and hybrid learning."
+  },
+  "whoWeAre": {
+    "title": "Who We Are",
+    "text": "We are a Chennai-based institute focused on education and child development training. Our programmes combine structured curriculum, hands-on practice, trainer guidance and recognised certification — designed so learners can apply what they learn in real preschools, schools and education settings."
+  },
+  "founderMessage": {
+    "title": "Message from the Founder",
+    "name": "SPEDICS Leadership",
+    "text": "Every child deserves a confident, skilled educator. At SPEDICS we believe training should be practical, accessible and rooted in real classroom experience. Our mission is to guide you from your first enquiry to a meaningful career in education — with flexible modes, transparent fees and ongoing support throughout your journey."
+  },
   "vision": {
     "title": "Vision",
     "text": "To empower educators and learners with practical skills to create better learning experiences and stronger futures."

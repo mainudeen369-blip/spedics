@@ -45,6 +45,7 @@ function applyFeeData(course, fees) {
     ...course,
     duration: extra.duration || course.duration || fallback.duration,
     fee: extra.fee || course.fee || fallback.fee,
+    feeAmount: extra.feeAmount ?? course.feeAmount,
     schedule: extra.schedule || course.schedule,
     packages: extra.packages || course.packages || fallback.packages
   };
@@ -416,6 +417,100 @@ function populateCourseSelect(courses, selectEl) {
     courses.filter(Boolean).map((c) => `<option value="${c.title}">${c.title}</option>`).join('');
 }
 
+function populateFeeCourseSelect(courses, selectEl) {
+  if (!selectEl) return;
+  selectEl.innerHTML = courses.filter(Boolean).map((c) =>
+    `<option value="${c.id}">${c.title}</option>`
+  ).join('');
+}
+
+function getCourseFeeOptions(courseId, fees) {
+  if (!fees) return [];
+  const extra = (fees.courses && fees.courses[courseId]) || {};
+  if (extra.packages?.length) return extra.packages;
+  if (extra.feeAmount != null) {
+    return [{
+      name: 'Standard',
+      duration: extra.duration || '',
+      fee: extra.feeAmount,
+      feeLabel: extra.fee
+    }];
+  }
+  return fees.default?.packages || [];
+}
+
+function formatFeeLabel(pkg, symbol) {
+  if (pkg.feeLabel) return pkg.feeLabel;
+  const sym = symbol || '₹';
+  return `${sym}${Number(pkg.fee).toLocaleString('en-IN')}`;
+}
+
+function initMarquee(messages) {
+  const track = document.getElementById('admission-marquee');
+  if (!track || !messages?.length) return;
+  const items = messages.map((m) => `<span class="marquee-item">${m}</span>`).join('');
+  track.innerHTML = `<div class="marquee-group">${items}</div><div class="marquee-group" aria-hidden="true">${items}</div>`;
+}
+
+function initFeeCalculator(courses, fees, site) {
+  const courseSelect = document.getElementById('calc-course');
+  const durationSelect = document.getElementById('calc-duration');
+  const modeSelect = document.getElementById('calc-mode');
+  const costEl = document.getElementById('calc-cost');
+  const totalEl = document.getElementById('calc-total');
+  const applyBtn = document.getElementById('calc-apply');
+  if (!courseSelect || !durationSelect || !costEl || !totalEl) return;
+
+  populateFeeCourseSelect(courses, courseSelect);
+  const symbol = fees.currencySymbol || '₹';
+
+  function refreshDurationOptions() {
+    const options = getCourseFeeOptions(courseSelect.value, fees);
+    durationSelect.innerHTML = options.map((pkg, i) => {
+      const label = pkg.name ? `${pkg.name} — ${pkg.duration}` : pkg.duration;
+      return `<option value="${i}">${label}</option>`;
+    }).join('');
+    updateCostDisplay();
+  }
+
+  function updateCostDisplay() {
+    const options = getCourseFeeOptions(courseSelect.value, fees);
+    const idx = parseInt(durationSelect.value, 10) || 0;
+    const pkg = options[idx];
+    if (!pkg) {
+      costEl.textContent = '—';
+      totalEl.textContent = '—';
+      return;
+    }
+    const label = formatFeeLabel(pkg, symbol);
+    costEl.textContent = label;
+    totalEl.textContent = label;
+  }
+
+  courseSelect.addEventListener('change', refreshDurationOptions);
+  durationSelect.addEventListener('change', updateCostDisplay);
+
+  applyBtn?.addEventListener('click', () => {
+    const courseTitle = courseSelect.options[courseSelect.selectedIndex]?.text || '';
+    const mode = modeSelect?.value || 'Online';
+    const durationLabel = durationSelect.options[durationSelect.selectedIndex]?.text || '';
+    const total = totalEl.textContent;
+    const msg = [
+      `*Course Enquiry – ${site.name}*`,
+      '',
+      `*Course:* ${courseTitle}`,
+      `*Mode:* ${mode}`,
+      `*Duration:* ${durationLabel}`,
+      `*Estimated fee:* ${total} (excluding exam fee)`,
+      '',
+      'Please guide me on admission and next steps.'
+    ].join('\n');
+    window.open(whatsappUrl(whatsappPhone(site), msg), '_blank', 'noopener');
+  });
+
+  refreshDurationOptions();
+}
+
 function initNav() {
   const toggle = document.querySelector('.nav-toggle');
   const nav = document.querySelector('.nav');
@@ -674,8 +769,16 @@ async function initHomePage() {
     setAttr('href-phone', `tel:${site.contact.phone}`);
     setAttr('href-email', `mailto:${site.contact.email}`);
     setupWhatsApp(site);
+    wireLink(
+      'href-faq-whatsapp',
+      whatsappUrl(whatsappPhone(site), 'Hello SPEDICS, I have a question about your courses. Please help.'),
+      { target: '_blank', rel: 'noopener' }
+    );
     initForm(site);
     setAttr('href-float-call', `tel:${site.contact.phone}`);
+
+    // Admission marquee
+    initMarquee(admissions.marquee);
 
     // Hero
     setText('data-hero-badge', site.hero.badge);
@@ -693,24 +796,32 @@ async function initHomePage() {
         </div>`).join('');
     }
 
-    // Stats bar
-    const statsBar = document.getElementById('stats-bar');
-    if (statsBar) {
-      statsBar.innerHTML = site.stats.map((s) => `
-        <div class="stat-item reveal">
-          <div class="stat-value" data-count>${s.value}</div>
-          <div class="stat-label">${s.label}</div>
-        </div>`).join('');
+    // Welcome & about blocks
+    if (about.welcomeNote) {
+      setText('data-welcome-label', about.welcomeNote.title || 'Welcome to SPEDICS');
+      setText('data-welcome-heading', about.welcomeNote.heading || site.tagline);
+      setText('data-welcome-text', about.welcomeNote.text || about.intro);
+    } else {
+      setText('data-welcome-text', about.intro);
+    }
+    if (about.whoWeAre) {
+      setText('data-who-title', about.whoWeAre.title || 'Who We Are');
+      setText('data-who-text', about.whoWeAre.text || about.intro);
+    } else {
+      setText('data-who-text', about.intro);
+    }
+    if (about.founderMessage) {
+      setText('data-founder-title', about.founderMessage.title || 'Message from the Founder');
+      setText('data-founder-text', about.founderMessage.text || '');
+      setText('data-founder-name', about.founderMessage.name ? `— ${about.founderMessage.name}` : '');
     }
 
-    // About
-    setText('data-about-intro', about.intro);
     setText('data-vision', about.vision.text);
     setText('data-mission', about.mission.text);
     const whyGrid = document.getElementById('why-grid');
     if (whyGrid) whyGrid.innerHTML = about.whyChoose.map(renderWhyItem).join('');
 
-    // Montessori
+    // Montessori & nature of training
     setText('data-montessori-intro', about.montessori.intro);
     const montList = document.getElementById('montessori-list');
     if (montList) montList.innerHTML = about.montessori.points.map((p) => `<li>${p}</li>`).join('');
@@ -771,6 +882,15 @@ async function initHomePage() {
         </div>`).join('');
     }
 
+    const affStrip = document.getElementById('affiliation-strip');
+    if (affStrip) {
+      affStrip.innerHTML = affiliations.affiliations.map((a) => `
+        <div class="affiliation-strip-item reveal">
+          <img src="${a.logo}" alt="${a.name}" loading="lazy">
+          <span>${a.name.replace(/\s*\([^)]*\)\s*/g, ' ').trim()}</span>
+        </div>`).join('');
+    }
+
     // Careers
     setText('data-careers-intro', careers.intro);
     const careersGrid = document.getElementById('careers-grid');
@@ -812,6 +932,7 @@ async function initHomePage() {
     setText('data-footer-copy', site.footer.copyright);
 
     populateCourseSelect(courses, document.getElementById('form-course'));
+    initFeeCalculator(courses, fees, site);
 
     initFAQ();
     initReveal();

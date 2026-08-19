@@ -43,15 +43,13 @@
       <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
       <nav class="nav">
         <a href="#home" class="nav-link active">Home</a>
-        <a href="#about" class="nav-link">About</a>
+        <a href="#welcome" class="nav-link">About</a>
         <div class="nav-dropdown">
           <a href="#courses" class="nav-link">Courses</a>
           <div class="nav-dropdown-menu" id="courses-dropdown"></div>
         </div>
+        <a href="#fees" class="nav-link">Fees</a>
         <a href="#certificates" class="nav-link">Certifications</a>
-        <a href="#careers" class="nav-link">Careers</a>
-        <a href="#gallery" class="nav-link">Gallery</a>
-        <a href="#guides" class="nav-link">Guides</a>
         <a href="#faq" class="nav-link">FAQ</a>
         <a href="#contact" class="nav-link">Contact</a>
       </nav>
@@ -62,8 +60,8 @@
     </div>
   </header>
 
-  <!-- Hero -->
   <main id="main-content">
+  <!-- 1. Static banner -->
   <section class="hero" id="home">
     <div class="hero-bg">
       <div class="hero-grid"></div>
@@ -95,119 +93,113 @@
     </div>
   </section>
 
-  <!-- Highlight cards -->
-  <section class="highlights">
-    <div class="container highlights-grid">
-      <div class="highlight-card reveal" data-num="01">
-        <h3>Structured Curriculum</h3>
-        <p>Professionally designed modules that build practical knowledge step by step, from foundations to classroom-ready skills.</p>
-        <a href="#about" class="highlight-link">Read More →</a>
-      </div>
-      <div class="highlight-card reveal reveal-delay-1" data-num="02">
-        <h3>Why Choose SPEDICS?</h3>
-        <p>Practical learning, trainer guidance, flexible online and offline modes — designed for real career outcomes.</p>
-        <a href="#about" class="highlight-link">Read More →</a>
-      </div>
-      <div class="highlight-card reveal reveal-delay-2" data-num="03">
-        <h3>Recognised Certification</h3>
-        <p>Affiliated with MMFRC and SRUEDO — receive credentials that support your teaching and education career.</p>
-        <a href="#certificates" class="highlight-link">Read More →</a>
+  <!-- 2. Admission marquee -->
+  <div class="admission-marquee" aria-label="Admission announcements">
+    <div class="admission-marquee-track" id="admission-marquee"></div>
+  </div>
+
+  <!-- 3–4. Welcome note -->
+  <section class="section section-band-white" id="welcome">
+    <div class="container">
+      <div class="welcome-block reveal">
+        <div class="welcome-brand">
+          <img src="data/certificates/spedics-institute-official-seal/official-seal.jpeg" alt="" class="welcome-seal" width="88" height="88">
+          <div>
+            <span class="section-label" id="data-welcome-label">Welcome to SPEDICS</span>
+            <h2 class="section-title welcome-title" id="data-welcome-heading">Empowering Educators. Enriching Childhood.</h2>
+          </div>
+        </div>
+        <p class="welcome-text" id="data-welcome-text">Loading...</p>
       </div>
     </div>
   </section>
 
-  <!-- Stats -->
-  <section class="stats-bar">
-    <div class="container stats-grid" id="stats-bar"></div>
-  </section>
-
-  <!-- About -->
+  <!-- 5. Who we are -->
   <section class="section section-band-teal" id="about">
     <div class="container">
-      <div class="section-header reveal">
-        <span class="section-label">Welcome to SPEDICS</span>
-        <h2 class="section-title">Empowering Educators. Enriching Childhood.</h2>
-        <p class="section-subtitle" id="data-about-intro">Loading...</p>
-      </div>
-      <div class="about-grid">
-        <div class="about-image reveal">
-          <div class="about-image-inner">
-            <h3>SPEDICS · We Educate</h3>
-            <p style="opacity:0.9;font-size:0.95rem">Practical training for a brighter future in education</p>
-          </div>
-        </div>
-        <div class="reveal reveal-delay-1">
-          <div class="vision-mission">
-            <div class="vm-card">
-              <h4>Vision</h4>
-              <p id="data-vision">Loading...</p>
-            </div>
-            <div class="vm-card">
-              <h4>Mission</h4>
-              <p id="data-mission">Loading...</p>
-            </div>
-          </div>
-          <div class="why-grid" id="why-grid"></div>
-        </div>
+      <div class="content-block reveal">
+        <span class="section-label">About Us</span>
+        <h2 class="section-title" id="data-who-title">Who We Are</h2>
+        <p class="content-lead" id="data-who-text">Loading...</p>
       </div>
     </div>
   </section>
 
-  <!-- Featured Courses -->
-  <section class="section section-band-white" id="courses">
+  <!-- 6. Why choose us -->
+  <section class="section section-band-mesh" id="why-choose">
     <div class="container">
       <div class="section-header reveal">
-        <span class="section-label">Our Programmes</span>
-        <h2 class="section-title">Featured Courses</h2>
-        <p class="section-subtitle">Choose from our extensive range of flexible programmes, created for aspiring and in-service educators.</p>
+        <span class="section-label">Our Strengths</span>
+        <h2 class="section-title">Why Choose SPEDICS?</h2>
+        <p class="section-subtitle">Practical training, flexible modes and recognised certification — built for real career outcomes.</p>
       </div>
-      <div class="courses-grid" id="featured-courses"></div>
-      <div class="section-header reveal" style="margin-top:4rem">
-        <h2 class="section-title" style="font-size:2rem">All Courses</h2>
-      </div>
-      <div class="courses-grid" id="all-courses"></div>
+      <div class="why-grid" id="why-grid"></div>
     </div>
   </section>
 
-  <!-- Montessori -->
-  <section class="section montessori-section" id="montessori">
-    <div class="container montessori-grid">
-      <div class="reveal">
-        <span class="section-label">Child-Centred Education</span>
-        <h2 class="section-title">Why Montessori?</h2>
-        <p class="section-subtitle" style="text-align:left;margin:0 0 1.5rem" id="data-montessori-intro">Loading...</p>
-        <ul class="montessori-list" id="montessori-list"></ul>
-      </div>
-      <div class="reveal reveal-delay-1">
-        <div class="about-image" style="aspect-ratio:1">
-          <div class="about-image-inner">
-            <div style="font-size:4rem;margin-bottom:1rem">🌱</div>
-            <h3>Hands-On Learning</h3>
-            <p style="opacity:0.9">Independence · Respect · Natural Development</p>
-          </div>
+  <!-- 7–8. Vision & Mission -->
+  <section class="section section-band-white" id="vision-mission">
+    <div class="container">
+      <div class="vision-mission vm-standalone">
+        <div class="vm-card reveal">
+          <h4>Vision</h4>
+          <p id="data-vision">Loading...</p>
+        </div>
+        <div class="vm-card reveal reveal-delay-1">
+          <h4>Mission</h4>
+          <p id="data-mission">Loading...</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Learning Modes -->
+  <!-- 9. Recognition / Affiliation -->
+  <section class="section cert-section section-band-gold" id="certificates">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Globally Recognised</span>
+        <h2 class="section-title">Recognition & Affiliation</h2>
+        <p class="section-subtitle">Credentials designed to support your teaching and education career.</p>
+      </div>
+      <div class="cert-grid" id="certificates-grid"></div>
+      <div class="affiliation-list" id="affiliation-list"></div>
+    </div>
+  </section>
+
+  <!-- 10–16. Modes of training (Online, Offline, Hybrid, Practical) -->
   <section class="section section-band-violet" id="modes">
     <div class="container">
       <div class="section-header reveal">
         <span class="section-label">Flexible Learning</span>
-        <h2 class="section-title">Learning Modes</h2>
+        <h2 class="section-title">Modes of Training</h2>
         <p class="section-subtitle">Study the way that works best for you — online, offline or hybrid.</p>
       </div>
       <div class="modes-grid" id="modes-grid"></div>
-      <div class="reveal" style="margin-top:3rem;text-align:center">
-        <h3 style="color:var(--dark);margin-bottom:1rem" id="data-practical-title">Practical Learning</h3>
-        <ul class="montessori-list" id="practical-list" style="max-width:600px;margin:0 auto;text-align:left"></ul>
+    </div>
+  </section>
+
+  <!-- 11. Nature of training -->
+  <section class="section section-band-white" id="nature-training">
+    <div class="container">
+      <div class="nature-grid">
+        <div class="reveal">
+          <span class="section-label">Hands-On Focus</span>
+          <h2 class="section-title" id="data-practical-title">Nature of Training</h2>
+          <p class="section-subtitle nature-intro">Our programmes emphasise practical, classroom-ready skills — not theory alone.</p>
+          <ul class="montessori-list" id="practical-list"></ul>
+        </div>
+        <div class="reveal reveal-delay-1">
+          <span class="section-label">Child-Centred Education</span>
+          <h2 class="section-title">Why Montessori?</h2>
+          <p class="section-subtitle nature-intro-left" id="data-montessori-intro">Loading...</p>
+          <ul class="montessori-list" id="montessori-list"></ul>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Who Can Join -->
-  <section class="section section-band-gold">
+  <!-- 12. Who can join -->
+  <section class="section section-band-teal" id="who-can-join">
     <div class="container">
       <div class="section-header reveal">
         <span class="section-label">Open to All</span>
@@ -218,21 +210,8 @@
     </div>
   </section>
 
-  <!-- Certificates -->
-  <section class="section cert-section section-band-white" id="certificates">
-    <div class="container">
-      <div class="section-header reveal">
-        <span class="section-label">Globally Recognised</span>
-        <h2 class="section-title">Certificate & Affiliation</h2>
-        <p class="section-subtitle">Credentials designed to support your teaching and education career.</p>
-      </div>
-      <div class="cert-grid" id="certificates-grid"></div>
-      <div class="affiliation-list" id="affiliation-list"></div>
-    </div>
-  </section>
-
-  <!-- Careers -->
-  <section class="section section-band-teal" id="careers">
+  <!-- 17. Career opportunities -->
+  <section class="section section-band-mesh" id="careers">
     <div class="container">
       <div class="section-header reveal">
         <span class="section-label">Your Future</span>
@@ -243,19 +222,93 @@
     </div>
   </section>
 
-  <!-- Admission -->
-  <section class="section section-band-white">
+  <!-- 18–19. Courses -->
+  <section class="section section-band-white" id="courses">
     <div class="container">
       <div class="section-header reveal">
-        <span class="section-label">Get Started</span>
-        <h2 class="section-title">Admission Process</h2>
+        <span class="section-label">Our Programmes</span>
+        <h2 class="section-title">Courses</h2>
+        <p class="section-subtitle">Choose from our extensive range of flexible programmes, created for aspiring and in-service educators.</p>
       </div>
-      <div class="steps-grid" id="steps-grid"></div>
+      <div class="courses-grid" id="featured-courses"></div>
+      <div class="section-header reveal" style="margin-top:4rem">
+        <h2 class="section-title" style="font-size:2rem">All Courses</h2>
+      </div>
+      <div class="courses-grid" id="all-courses"></div>
     </div>
   </section>
 
-  <!-- Testimonials -->
-  <section class="section testimonials-section">
+  <!-- 20. Fee calculator -->
+  <section class="section section-band-gold" id="fees">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Plan Your Investment</span>
+        <h2 class="section-title">Fee Calculator</h2>
+        <p class="section-subtitle">Select your mode and course — cost and duration update automatically.</p>
+      </div>
+      <div class="fee-calculator reveal" id="fee-calculator">
+        <div class="fee-calculator-grid">
+          <div class="form-group">
+            <label for="calc-mode">Select mode of training</label>
+            <select id="calc-mode" name="mode">
+              <option value="Online">Online</option>
+              <option value="Offline">Offline</option>
+              <option value="Hybrid">Hybrid</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="calc-course">Choose course</label>
+            <select id="calc-course" name="course"></select>
+          </div>
+          <div class="form-group">
+            <label for="calc-duration">Select duration</label>
+            <select id="calc-duration" name="duration"></select>
+          </div>
+          <div class="form-group">
+            <label>Course cost</label>
+            <div class="fee-display" id="calc-cost">—</div>
+          </div>
+        </div>
+        <div class="fee-total-row">
+          <div class="fee-total-label">
+            <strong>Total cost</strong>
+            <span class="fee-note">(excluding exam fee)</span>
+          </div>
+          <div class="fee-total-value" id="calc-total">—</div>
+        </div>
+        <button type="button" class="btn btn-primary" id="calc-apply" style="width:100%;margin-top:1.25rem">Apply Now via WhatsApp</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 21. FAQ + Submit Query + Founder message -->
+  <section class="section section-band-white" id="faq">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Got Questions?</span>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+      </div>
+      <div class="faq-founder-grid">
+        <div class="faq-col reveal">
+          <div class="faq-list" id="faq-list"></div>
+          <div class="faq-actions">
+            <a href="#apply" class="btn btn-outline">Submit Query</a>
+            <a href="#" id="href-faq-whatsapp" class="btn btn-whatsapp" target="_blank" rel="noopener">Ask on WhatsApp</a>
+          </div>
+        </div>
+        <aside class="founder-card reveal reveal-delay-1">
+          <span class="section-label">From Our Team</span>
+          <h3 id="data-founder-title">Message from the Founder</h3>
+          <p class="founder-text" id="data-founder-text">Loading...</p>
+          <p class="founder-name" id="data-founder-name"></p>
+          <a href="#apply" class="btn btn-primary" style="width:100%;margin-top:1rem">Apply Now</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- 22. Testimonials -->
+  <section class="section testimonials-section" id="testimonials">
     <div class="container">
       <div class="section-header reveal">
         <span class="section-label">Real Student Experiences</span>
@@ -266,7 +319,18 @@
     </div>
   </section>
 
-  <!-- Gallery -->
+  <!-- 23. Affiliation logos -->
+  <section class="section affiliation-strip-section" id="affiliation-logos">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-label">Our Partners</span>
+        <h2 class="section-title">Affiliation Logos</h2>
+      </div>
+      <div class="affiliation-strip" id="affiliation-strip"></div>
+    </div>
+  </section>
+
+  <!-- Gallery & Guides (supplementary) -->
   <section class="section section-band-mesh" id="gallery">
     <div class="container">
       <div class="section-header reveal">
@@ -278,7 +342,6 @@
     </div>
   </section>
 
-  <!-- Guides -->
   <section class="section section-band-violet" id="guides">
     <div class="container">
       <div class="section-header reveal">
@@ -290,18 +353,18 @@
     </div>
   </section>
 
-  <!-- FAQ -->
-  <section class="section section-band-gold" id="faq">
+  <!-- Admission steps (compact) -->
+  <section class="section section-band-white">
     <div class="container">
       <div class="section-header reveal">
-        <span class="section-label">Got Questions?</span>
-        <h2 class="section-title">Frequently Asked Questions</h2>
+        <span class="section-label">Get Started</span>
+        <h2 class="section-title">Admission Process</h2>
       </div>
-      <div class="faq-list" id="faq-list"></div>
+      <div class="steps-grid" id="steps-grid"></div>
     </div>
   </section>
 
-  <!-- Contact & Apply -->
+  <!-- 24. Contact & Apply -->
   <section class="section contact-section" id="contact">
     <div class="container contact-grid">
       <div class="contact-info reveal">
@@ -392,12 +455,12 @@
         <div>
           <h4>Quick Links</h4>
           <ul class="footer-links">
-            <li><a href="#about">About Us</a></li>
+            <li><a href="#welcome">About Us</a></li>
             <li><a href="#courses">Courses</a></li>
+            <li><a href="#fees">Fee Calculator</a></li>
             <li><a href="#certificates">Certifications</a></li>
             <li><a href="#gallery">Gallery</a></li>
             <li><a href="#guides">Guides</a></li>
-            <li><a href="guide.html?id=how-to-choose-teacher-training-institute-chennai">Choosing an Institute</a></li>
           </ul>
         </div>
         <div>
