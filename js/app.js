@@ -64,14 +64,22 @@ async function loadAllCourses(ids) {
 
 function badgeClass(badge) {
   const map = {
-    Premium: 'badge-premium',
-    Popular: 'badge-popular',
-    New: 'badge-new',
-    Essential: 'badge-essential',
-    Skill: 'badge-skill',
-    Language: 'badge-language'
+    'Montessori Teacher': 'badge-premium',
+    'Montessori Educator': 'badge-premium',
+    'Child Development Practitioner': 'badge-popular',
+    'Special Education Practitioner': 'badge-premium',
+    'Phonics Educator': 'badge-popular',
+    'School Administrator': 'badge-premium',
+    'Pre-Primary Coordinator': 'badge-popular',
+    'Nutrition Educator': 'badge-new',
+    'Computer Educator': 'badge-essential',
+    'Vedic Maths Educator': 'badge-skill',
+    'English Educator': 'badge-language',
+    'Hindi Educator': 'badge-language',
+    'Tamil Educator': 'badge-language',
+    'Telugu Educator': 'badge-language'
   };
-  return map[badge] || 'badge-popular';
+  return map[badge] || 'badge-role';
 }
 
 function applyFeeData(course, fees) {

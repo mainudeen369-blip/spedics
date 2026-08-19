@@ -783,15 +783,19 @@ button, input, select, textarea { font: inherit; }
 .course-card:hover .course-card-image img { transform: scale(1.08); }
 .course-badge {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
-  padding: 0.35rem 0.75rem;
+  top: 0.85rem;
+  left: 0.85rem;
+  padding: 0.4rem 0.75rem;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  max-width: calc(100% - 1.7rem);
+  white-space: normal;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
 }
+.badge-role { background: var(--primary); color: var(--white); }
 .badge-premium { background: var(--gradient-brand); color: var(--white); }
 .badge-popular { background: var(--primary); color: var(--white); }
 .badge-new { background: var(--coral); color: var(--white); }
