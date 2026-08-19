@@ -55,6 +55,7 @@
   },
   "displayFees": false,
   "feeContactMessage": "Contact us for fee details",
+  "whatsappEnquiryMessage": "I'm interested in joining this teacher training course. Please share the course details, fees, and admission process.",
   "url": "https://spedics.vercel.app",
   "image": "data/certificates/spedics-institute-official-seal/official-seal.jpeg",
   "logoSeal": "data/certificates/spedics-institute-official-seal/official-seal.jpeg",

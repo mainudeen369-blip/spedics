@@ -568,22 +568,7 @@ function initFeeCalculator(courses, fees, site) {
 
   applyBtn?.addEventListener('click', () => {
     const courseTitle = courseSelect.options[courseSelect.selectedIndex]?.text || '';
-    const mode = modeSelect?.value || 'Online';
-    const durationLabel = durationSelect.options[durationSelect.selectedIndex]?.text || '';
-    const total = feesVisible() ? totalEl.textContent : feeContactCopy();
-    const msg = [
-      `*Course Enquiry – ${site.name}*`,
-      '',
-      `*Course:* ${courseTitle}`,
-      `*Mode:* ${mode}`,
-      `*Duration:* ${durationLabel}`,
-      feesVisible()
-        ? `*Estimated fee:* ${total} (excluding exam fee)`
-        : `*Fee:* ${feeContactCopy()}`,
-      '',
-      'Please share the current fee and guide me on admission and next steps.'
-    ].join('\n');
-    window.open(whatsappUrl(whatsappPhone(site), msg), '_blank', 'noopener');
+    window.open(whatsappUrl(whatsappPhone(site), enquiryWhatsAppMessage(site, courseTitle)), '_blank', 'noopener');
   });
 
   refreshDurationOptions();
@@ -694,36 +679,23 @@ function whatsappUrl(phone, text) {
   return text ? `${base}?text=${encodeURIComponent(text)}` : base;
 }
 
+function enquiryWhatsAppMessage(site, courseTitle) {
+  const base = site?.whatsappEnquiryMessage
+    || "I'm interested in joining this teacher training course. Please share the course details, fees, and admission process.";
+  if (!courseTitle) return base;
+  return base.replace('this teacher training course', `*${courseTitle}*`);
+}
+
 function defaultWhatsAppMessage(site) {
-  const name = site?.shortName || 'SPEDICS';
-  return `Hello ${name}, I would like to know more about your teacher training courses. Please share course details, fees and admission process.`;
+  return enquiryWhatsAppMessage(site);
 }
 
 function courseApplyMessage(course, site) {
-  const showFees = feesVisible();
-  const packages = showFees
-    ? (course.packages || [])
-      .map((p) => `${p.name} (${p.duration}) — ${p.feeLabel || p.fee}`)
-      .join(', ')
-    : '';
-  return [
-    `Hello ${site.shortName || 'SPEDICS'},`,
-    '',
-    `I would like to enquire about *${course.title}*.`,
-    '',
-    `Duration: ${course.duration || '-'}`,
-    `Fee: ${showFees ? (course.fee || '-') : feeContactCopy()}`,
-    packages ? `Packages: ${packages}` : '',
-    `Mode: ${(course.mode || []).join(' / ') || '-'}`,
-    '',
-    'Please share fee details, admission steps, next batch dates and how to enrol.',
-    '',
-    'Sent from the SPEDICS website course page.'
-  ].filter(Boolean).join('\n');
+  return enquiryWhatsAppMessage(site, course?.title);
 }
 
 function courseCounsellorMessage(course, site) {
-  return `Hello ${site.shortName || 'SPEDICS'}, I have a question about *${course.title}*. Please share fee details, duration, schedule and admission process.`;
+  return enquiryWhatsAppMessage(site, course?.title);
 }
 
 function mailtoUrl(email, subject, body) {
@@ -755,8 +727,9 @@ function setupCourseApplyLinks(site, course) {
 
 function buildApplicationWhatsAppMessage(form, site) {
   const fd = new FormData(form);
+  const courseTitle = fd.get('course') || '';
   const lines = [
-    `*Course Enquiry – ${site.name}*`,
+    enquiryWhatsAppMessage(site, courseTitle),
     '',
     `*Full Name:* ${fd.get('fullName') || '-'}`,
     `*Mobile:* ${fd.get('mobile') || '-'}`,
@@ -764,7 +737,6 @@ function buildApplicationWhatsAppMessage(form, site) {
     `*Email:* ${fd.get('email') || '-'}`,
     `*Qualification:* ${fd.get('qualification') || '-'}`,
     `*City:* ${fd.get('city') || '-'}`,
-    `*Course Interested:* ${fd.get('course') || '-'}`,
     `*Preferred Mode:* ${fd.get('mode') || '-'}`
   ];
   const message = (fd.get('message') || '').trim();
@@ -853,7 +825,7 @@ async function initHomePage() {
     setupWhatsApp(site);
     wireLink(
       'href-faq-whatsapp',
-      whatsappUrl(whatsappPhone(site), 'Hello SPEDICS, I have a question about your courses. Please help.'),
+      whatsappUrl(whatsappPhone(site), enquiryWhatsAppMessage(site)),
       { target: '_blank', rel: 'noopener' }
     );
     initForm(site);
