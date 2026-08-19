@@ -2,16 +2,15 @@
   "title": "Admission Process",
   "marquee": [
     "Admissions Open for 2026–2027",
-    "Certified 3 months ₹10,000 · Diploma 6 months ₹15,000",
     "Online · Offline · Hybrid modes available",
-    "Apply via WhatsApp — quick counselling with our admissions team",
+    "Enquire via WhatsApp — quick counselling with our admissions team",
     "Montessori · Child Psychology · Special Education · Language & more"
   ],
   "steps": [
     { "step": 1, "title": "Choose Your Course", "text": "Browse our programmes and select the course that matches your goals." },
     { "step": 2, "title": "Check Eligibility", "text": "Review eligibility criteria on the course page or speak with our team." },
-    { "step": 3, "title": "Send Application on WhatsApp", "text": "Fill the form and tap Apply via WhatsApp — your details are sent directly to our admissions team." },
-    { "step": 4, "title": "Speak with Admissions", "text": "Our counsellor will guide you on mode, schedule and fee options." },
+    { "step": 3, "title": "Send Enquiry on WhatsApp", "text": "Fill the form and tap Enquire via WhatsApp — your details are sent directly to our admissions team." },
+    { "step": 4, "title": "Speak with Admissions", "text": "Our counsellor will guide you on mode, schedule and fee details." },
     { "step": 5, "title": "Complete Formalities", "text": "Submit documents and complete payment as advised." },
     { "step": 6, "title": "Begin Training", "text": "Start your learning journey with SPEDICS!" }
   ],

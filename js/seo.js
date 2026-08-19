@@ -91,11 +91,41 @@ function buildOrgSchema(site, desc) {
     openingHoursSpecification: buildOpeningHours(site),
     areaServed: buildAreasServed(site),
     sameAs,
-    priceRange: '₹₹'
+    ...(feesVisible(site) ? { priceRange: '₹₹' } : {})
   };
 }
 
-function buildCourseOffers(course) {
+function feesVisible(site) {
+  if (typeof window !== 'undefined' && window.SITE_SETTINGS && typeof window.SITE_SETTINGS.displayFees === 'boolean') {
+    return window.SITE_SETTINGS.displayFees;
+  }
+  return site?.displayFees === true;
+}
+
+function feeContactCopy(site) {
+  return (typeof window !== 'undefined' && window.SITE_SETTINGS?.feeContactMessage)
+    || site?.feeContactMessage
+    || 'Contact us for fee details';
+}
+
+function maskFeeForSeo(text, site) {
+  if (feesVisible(site) || text == null) return text;
+  const str = String(text);
+  if (/₹/.test(str) || (/\bfees?\b/i.test(str) && /\d[,.]?\d/.test(str))) {
+    return feeContactCopy(site);
+  }
+  return str;
+}
+
+function buildCourseOffers(course, site) {
+  if (!feesVisible(site)) {
+    return {
+      '@type': 'Offer',
+      description: feeContactCopy(site),
+      availability: 'https://schema.org/InStock',
+      url: `${SITE_URL}/course.html?id=${encodeURIComponent(course.id)}`
+    };
+  }
   if (course.packages?.length) {
     return course.packages.map((pkg) => {
       const price = typeof pkg.fee === 'number'
@@ -203,12 +233,17 @@ function initHomeSEO(site, faqItems) {
     }
   });
 
-  injectFAQSchema(faqItems, 'jsonld-faq-home');
+  injectFAQSchema((faqItems || []).map((item) => ({
+    ...item,
+    answer: feesVisible(site) && item.answerWithFees ? item.answerWithFees : maskFeeForSeo(item.answer, site)
+  })), 'jsonld-faq-home');
 }
 
 function initCourseSEO(course, site) {
   const title = `${course.title} | ${site.shortName}`;
-  const desc = `${course.description} Duration: ${course.duration}. Fee: ${course.fee}. SPEDICS, Ayapakkam, Chennai.`;
+  const desc = feesVisible(site)
+    ? `${course.description} Duration: ${course.duration}. Fee: ${course.fee}. SPEDICS, Ayapakkam, Chennai.`
+    : `${course.description} Duration: ${course.duration}. ${feeContactCopy(site)}. SPEDICS, Ayapakkam, Chennai.`;
   const url = `${SITE_URL}/course.html?id=${encodeURIComponent(course.id)}`;
 
   document.title = title;
@@ -239,7 +274,7 @@ function initCourseSEO(course, site) {
     name: course.title,
     description: course.description,
     provider: { '@id': `${SITE_URL}/#organization` },
-    offers: buildCourseOffers(course),
+    offers: buildCourseOffers(course, site),
     hasCourseInstance: {
       '@type': 'CourseInstance',
       courseMode: course.mode.map((m) => m.toLowerCase()).join(', '),
@@ -294,5 +329,8 @@ function initGuideSEO(guide, site) {
     }
   });
 
-  injectFAQSchema(guide.faqs, 'jsonld-faq-guide');
+  injectFAQSchema((guide.faqs || []).map((item) => ({
+    ...item,
+    answer: maskFeeForSeo(item.answer, site)
+  })), 'jsonld-faq-guide');
 }

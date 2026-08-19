@@ -5,6 +5,43 @@
 
 const DATA_BASE = 'data';
 
+let SITE_SETTINGS = {
+  displayFees: false,
+  feeContactMessage: 'Contact us for fee details'
+};
+
+function loadSiteSettings(site, fees) {
+  const displayFees = typeof site?.displayFees === 'boolean'
+    ? site.displayFees
+    : typeof fees?.displayFees === 'boolean'
+      ? fees.displayFees
+      : false;
+  SITE_SETTINGS = {
+    displayFees,
+    feeContactMessage: site?.feeContactMessage || fees?.contactMessage || 'Contact us for fee details'
+  };
+  window.SITE_SETTINGS = SITE_SETTINGS;
+  return SITE_SETTINGS;
+}
+
+function feesVisible() {
+  return !!SITE_SETTINGS.displayFees;
+}
+
+function feeContactCopy() {
+  return SITE_SETTINGS.feeContactMessage;
+}
+
+function maskFeeText(text) {
+  if (text == null) return text;
+  const str = String(text);
+  if (feesVisible()) return str;
+  if (/₹/.test(str) || (/\bfees?\b/i.test(str) && /\d[,.]?\d/.test(str))) {
+    return feeContactCopy();
+  }
+  return str;
+}
+
 async function fetchJSON(path) {
   const res = await fetch(`${DATA_BASE}/${path}`);
   if (!res.ok) throw new Error(`Failed to load ${path}`);
@@ -52,6 +89,9 @@ function applyFeeData(course, fees) {
 }
 
 function renderCourseCard(course) {
+  const meta = feesVisible() && course.fee
+    ? `${course.duration} · ${course.fee}`
+    : `${course.duration}${course.fee ? ' · ' + feeContactCopy() : ''}`;
   return `
     <article class="course-card reveal">
       <div class="course-card-image">
@@ -62,7 +102,7 @@ function renderCourseCard(course) {
         <h3>${course.title}</h3>
         <p>${course.description}</p>
         <div class="course-card-footer">
-          <span style="font-size:0.8rem;color:var(--text-muted)">${course.duration}${course.fee ? ' · ' + course.fee : ''}</span>
+          <span style="font-size:0.8rem;color:var(--text-muted)">${meta}</span>
           <a href="course.html?id=${course.id}" class="btn btn-primary btn-sm">Read More</a>
         </div>
       </div>
@@ -84,6 +124,7 @@ function renderTestimonial(item) {
 }
 
 function renderFAQItem(item, index) {
+  const answer = feesVisible() && item.answerWithFees ? item.answerWithFees : maskFeeText(item.answer);
   return `
     <div class="faq-item" data-faq="${index}">
       <button class="faq-question" aria-expanded="false">
@@ -91,7 +132,7 @@ function renderFAQItem(item, index) {
         <span class="faq-icon">+</span>
       </button>
       <div class="faq-answer">
-        <div class="faq-answer-inner">${item.answer}</div>
+        <div class="faq-answer-inner">${answer}</div>
       </div>
     </div>`;
 }
@@ -125,8 +166,8 @@ function renderGuideSection(section) {
           ${section.items.map((item) => `
             <div class="guide-check-item">
               <h3>${item.criterion}</h3>
-              <p><strong>What to check:</strong> ${item.detail}</p>
-              <p class="guide-spedics-note"><strong>At SPEDICS:</strong> ${item.spedics}</p>
+              <p><strong>What to check:</strong> ${maskFeeText(item.detail)}</p>
+              <p class="guide-spedics-note"><strong>At SPEDICS:</strong> ${maskFeeText(item.spedics)}</p>
             </div>`).join('')}
         </div>
       </section>`;
@@ -136,7 +177,7 @@ function renderGuideSection(section) {
     return `
       <section class="guide-block">
         <h2>${section.heading}</h2>
-        <ul class="guide-list">${section.items.map((item) => `<li>${item}</li>`).join('')}</ul>
+        <ul class="guide-list">${section.items.map((item) => `<li>${maskFeeText(item)}</li>`).join('')}</ul>
       </section>`;
   }
 
@@ -147,7 +188,7 @@ function renderGuideSection(section) {
         <div class="guide-table-wrap">
           <table class="guide-table">
             <thead><tr>${section.headers.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
-            <tbody>${section.rows.map((row) => `<tr>${row.map((cell) => `<td>${cell}</td>`).join('')}</tr>`).join('')}</tbody>
+            <tbody>${section.rows.map((row) => `<tr>${row.map((cell) => `<td>${maskFeeText(cell)}</td>`).join('')}</tr>`).join('')}</tbody>
           </table>
         </div>
       </section>`;
@@ -456,8 +497,14 @@ async function initSiteMarquee() {
   const track = document.getElementById('admission-marquee');
   if (!track) return;
   try {
-    const admissions = await fetchJSON('admissions.json');
-    initMarquee(admissions.marquee);
+    const [admissions, site, fees] = await Promise.all([
+      fetchJSON('admissions.json'),
+      fetchJSON('site.json').catch(() => null),
+      fetchJSON('fees.json').catch(() => null)
+    ]);
+    loadSiteSettings(site, fees);
+    const messages = (admissions.marquee || []).filter((m) => feesVisible() || !/₹/.test(String(m)));
+    initMarquee(messages);
   } catch (err) {
     console.warn('Could not load admission marquee:', err);
   }
@@ -488,6 +535,16 @@ function initFeeCalculator(courses, fees, site) {
     const options = getCourseFeeOptions(courseSelect.value, fees);
     const idx = parseInt(durationSelect.value, 10) || 0;
     const pkg = options[idx];
+    if (!feesVisible()) {
+      const copy = feeContactCopy();
+      costEl.textContent = copy;
+      totalEl.textContent = copy;
+      costEl.classList.add('fee-display--contact');
+      totalEl.classList.add('fee-display--contact');
+      return;
+    }
+    costEl.classList.remove('fee-display--contact');
+    totalEl.classList.remove('fee-display--contact');
     if (!pkg) {
       costEl.textContent = '—';
       totalEl.textContent = '—';
@@ -505,16 +562,18 @@ function initFeeCalculator(courses, fees, site) {
     const courseTitle = courseSelect.options[courseSelect.selectedIndex]?.text || '';
     const mode = modeSelect?.value || 'Online';
     const durationLabel = durationSelect.options[durationSelect.selectedIndex]?.text || '';
-    const total = totalEl.textContent;
+    const total = feesVisible() ? totalEl.textContent : feeContactCopy();
     const msg = [
       `*Course Enquiry – ${site.name}*`,
       '',
       `*Course:* ${courseTitle}`,
       `*Mode:* ${mode}`,
       `*Duration:* ${durationLabel}`,
-      `*Estimated fee:* ${total} (excluding exam fee)`,
+      feesVisible()
+        ? `*Estimated fee:* ${total} (excluding exam fee)`
+        : `*Fee:* ${feeContactCopy()}`,
       '',
-      'Please guide me on admission and next steps.'
+      'Please share the current fee and guide me on admission and next steps.'
     ].join('\n');
     window.open(whatsappUrl(whatsappPhone(site), msg), '_blank', 'noopener');
   });
@@ -633,27 +692,30 @@ function defaultWhatsAppMessage(site) {
 }
 
 function courseApplyMessage(course, site) {
-  const packages = (course.packages || [])
-    .map((p) => `${p.name} (${p.duration}) — ${p.feeLabel || p.fee}`)
-    .join(', ');
+  const showFees = feesVisible();
+  const packages = showFees
+    ? (course.packages || [])
+      .map((p) => `${p.name} (${p.duration}) — ${p.feeLabel || p.fee}`)
+      .join(', ')
+    : '';
   return [
     `Hello ${site.shortName || 'SPEDICS'},`,
     '',
-    `I would like to apply for *${course.title}*.`,
+    `I would like to enquire about *${course.title}*.`,
     '',
     `Duration: ${course.duration || '-'}`,
-    `Fee: ${course.fee || '-'}`,
+    `Fee: ${showFees ? (course.fee || '-') : feeContactCopy()}`,
     packages ? `Packages: ${packages}` : '',
     `Mode: ${(course.mode || []).join(' / ') || '-'}`,
     '',
-    'Please share admission steps, next batch dates and how to enrol.',
+    'Please share fee details, admission steps, next batch dates and how to enrol.',
     '',
     'Sent from the SPEDICS website course page.'
   ].filter(Boolean).join('\n');
 }
 
 function courseCounsellorMessage(course, site) {
-  return `Hello ${site.shortName || 'SPEDICS'}, I have a question about *${course.title}*. Please share fee, duration, schedule and admission details.`;
+  return `Hello ${site.shortName || 'SPEDICS'}, I have a question about *${course.title}*. Please share fee details, duration, schedule and admission process.`;
 }
 
 function mailtoUrl(email, subject, body) {
@@ -675,7 +737,7 @@ function setupCourseApplyLinks(site, course) {
   const email = site.contact?.email || 'Spedicsmont@gmail.com';
   const applyWa = whatsappUrl(phone, applyText);
   const counsellorWa = whatsappUrl(phone, counsellorText);
-  const applyMail = mailtoUrl(email, `Course Application – ${course.title}`, applyText.replace(/\*/g, ''));
+  const applyMail = mailtoUrl(email, `Course Enquiry – ${course.title}`, applyText.replace(/\*/g, ''));
 
   wireLink('href-course-apply-whatsapp', applyWa, { target: '_blank', rel: 'noopener' });
   wireLink('href-course-apply-email', applyMail);
@@ -686,7 +748,7 @@ function setupCourseApplyLinks(site, course) {
 function buildApplicationWhatsAppMessage(form, site) {
   const fd = new FormData(form);
   const lines = [
-    `*Course Application – ${site.name}*`,
+    `*Course Enquiry – ${site.name}*`,
     '',
     `*Full Name:* ${fd.get('fullName') || '-'}`,
     `*Mobile:* ${fd.get('mobile') || '-'}`,
@@ -699,7 +761,7 @@ function buildApplicationWhatsAppMessage(form, site) {
   ];
   const message = (fd.get('message') || '').trim();
   if (message) lines.push(`*Message:* ${message}`);
-  lines.push('', 'Sent from SPEDICS website application form.');
+  lines.push('', 'Sent from SPEDICS website enquiry form.');
   return lines.join('\n');
 }
 
@@ -762,6 +824,8 @@ async function initHomePage() {
       fetchJSON('fees.json')
     ]);
 
+    loadSiteSettings(site, fees);
+
     document.title = `${site.name} | ${site.tagline}`;
 
     initHomeSEO(site, faq.items);
@@ -793,15 +857,6 @@ async function initHomePage() {
     setText('data-hero-subtitle', site.hero.subtitle);
     const heroTags = document.getElementById('hero-highlights');
     if (heroTags) heroTags.innerHTML = site.hero.highlights.map((h) => `<span class="hero-tag">${h}</span>`).join('');
-
-    const heroStats = document.getElementById('hero-stats');
-    if (heroStats) {
-      heroStats.innerHTML = site.stats.map((s) => `
-        <div class="hero-stat">
-          <div class="hero-stat-value" data-count>${s.value}</div>
-          <div class="hero-stat-label">${s.label}</div>
-        </div>`).join('');
-    }
 
     // Welcome & about blocks
     if (about.welcomeNote) {
@@ -950,6 +1005,7 @@ async function initCoursePage() {
       fetchJSON('courses/courses-index.json'),
       fetchJSON('fees.json')
     ]);
+    loadSiteSettings(site, fees);
     const course = applyFeeData(courseRaw, fees);
 
     document.title = `${course.title} | ${site.shortName}`;
@@ -962,7 +1018,7 @@ async function initCoursePage() {
     setAttr('src-course-image', course.image, 'src');
     setText('data-course-duration', course.duration);
     setText('data-course-eligibility', course.eligibility);
-    setText('data-course-fee', course.fee);
+    setText('data-course-fee', feesVisible() ? (course.fee || '—') : feeContactCopy());
     setText('data-course-mode', course.mode.join(' / '));
     setText('data-course-badge', course.badge);
 
@@ -980,11 +1036,11 @@ async function initCoursePage() {
     if (packagesBox) {
       if (course.packages && course.packages.length) {
         packagesBox.style.display = '';
-        packagesBox.innerHTML = '<h3>Fee Packages</h3>' + course.packages.map((p) => `
+        packagesBox.innerHTML = '<h3>Course Packages</h3>' + course.packages.map((p) => `
           <div class="package-item">
             <strong>${p.name}</strong>
             <span>${p.duration}</span>
-            <span>${p.feeLabel || p.fee}</span>
+            ${feesVisible() ? `<span>${p.feeLabel || p.fee}</span>` : `<span>${feeContactCopy()}</span>`}
           </div>`).join('');
       } else {
         packagesBox.style.display = 'none';
@@ -1046,6 +1102,8 @@ async function initGuidePage() {
       fetchJSON('courses/courses-index.json'),
       fetchJSON('fees.json')
     ]);
+
+    loadSiteSettings(site, fees);
 
     initGuideSEO(guide, site);
 

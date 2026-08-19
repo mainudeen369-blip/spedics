@@ -436,6 +436,10 @@ button, input, select, textarea { font: inherit; }
   align-items: center;
   padding: 4rem 0;
 }
+.hero-content--solo {
+  grid-template-columns: 1fr;
+  max-width: 760px;
+}
 .hero-badge {
   display: inline-flex;
   align-items: center;
@@ -1750,6 +1754,12 @@ body.gallery-lightbox-open { overflow: hidden; }
   min-height: 48px;
   display: flex;
   align-items: center;
+}
+.fee-display--contact,
+.fee-total-value.fee-display--contact {
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.35;
 }
 .fee-total-row {
   display: flex;

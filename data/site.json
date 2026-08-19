@@ -53,6 +53,8 @@
     "youtube": "#",
     "whatsapp": "https://wa.me/917708743942"
   },
+  "displayFees": false,
+  "feeContactMessage": "Contact us for fee details",
   "url": "https://spedics.vercel.app",
   "image": "data/certificates/spedics-institute-official-seal/official-seal.jpeg",
   "logoSeal": "data/certificates/spedics-institute-official-seal/official-seal.jpeg",

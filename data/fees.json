@@ -1,6 +1,8 @@
 {
   "currency": "INR",
   "currencySymbol": "₹",
+  "displayFees": false,
+  "contactMessage": "Contact us for fee details",
   "note": "Client fees: Certified 3 months ₹10,000; Diploma 6 months ₹15,000. Language and phonics listed separately. Montessori also offers PG Diploma 12 months ₹35,000.",
   "default": {
     "duration": "3 / 6 months",
