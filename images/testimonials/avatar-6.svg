@@ -1,1 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#e0e7ff"/><text x="40" y="52" text-anchor="middle" font-size="32">=h<ë</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-label="Student profile placeholder">
+  <defs>
+    <linearGradient id="bg" x1="8" y1="6" x2="72" y2="74" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3b82f6"/>
+      <stop stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <circle cx="40" cy="40" r="40" fill="url(#bg)"/>
+  <g fill="#ffffff" opacity="0.94">
+    <circle cx="40" cy="30" r="11"/>
+    <path d="M40 18c-3.5 0-6.5 2.2-7.8 5.3 2.2-1.2 4.8-1.8 7.8-1.8s5.6 0.6 7.8 1.8C46.5 20.2 43.5 18 40 18z"/>
+    <path d="M40 44c-14 0-22.5 8-22.5 18v3.5c0 2.2 1.8 4 4 4h37c2.2 0 4-1.8 4-4V62c0-10-8.5-18-22.5-18z"/>
+  </g>
+</svg>
