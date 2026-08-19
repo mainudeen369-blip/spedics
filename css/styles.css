@@ -32,7 +32,7 @@
   --header-h: 96px;
   --marquee-h: 42px;
   --topbar-h: 44px;
-  --site-top-h: calc(var(--marquee-h) + var(--header-h));
+  --site-top-h: var(--header-h);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -199,7 +199,7 @@ button, input, select, textarea { font: inherit; }
 /* Header */
 .header {
   position: fixed;
-  top: var(--marquee-h);
+  top: 0;
   left: 0;
   right: 0;
   z-index: 1090;
@@ -1614,11 +1614,7 @@ body.gallery-lightbox-open { overflow: hidden; }
   color: var(--white);
   overflow: hidden;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1100;
+  position: relative;
   min-height: var(--marquee-h);
   display: flex;
   align-items: center;
