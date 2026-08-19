@@ -15,13 +15,27 @@
     {
       "id": "skills",
       "name": "Skill Development",
-      "courses": ["nutrition", "computer-skills-education", "spoken-english", "spoken-hindi", "vedic-mathematics"]
+      "courses": ["nutrition", "computer-skills-education", "vedic-mathematics"]
     },
     {
       "id": "languages",
-      "name": "Regional Languages",
-      "courses": ["telugu-reading-writing", "tamil-reading-writing"]
+      "name": "Languages",
+      "courses": ["spoken-english", "spoken-hindi", "tamil-reading-writing", "telugu-reading-writing"]
     }
   ],
-  "featured": ["montessori-teacher-training", "child-psychology-development", "special-education", "phonics-early-literacy", "school-administration-management", "spoken-english"]
+  "featured": [
+    "montessori-teacher-training",
+    "child-psychology-development",
+    "special-education",
+    "phonics-early-literacy",
+    "school-administration-management",
+    "pre-primary-school-management",
+    "nutrition",
+    "computer-skills-education",
+    "vedic-mathematics",
+    "spoken-english",
+    "spoken-hindi",
+    "tamil-reading-writing",
+    "telugu-reading-writing"
+  ]
 }
