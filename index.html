@@ -21,16 +21,12 @@
 <body data-page="home">
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- Top bar -->
-  <div class="topbar">
-    <div class="container topbar-inner">
-      <a href="tel:7708743942" class="topbar-item" id="href-phone" data-bind="href-phone">📞 <span id="data-phone" data-bind="data-phone">7708743942</span></a>
-      <a href="mailto:Spedicsmont@gmail.com" class="topbar-item" id="href-email" data-bind="href-email">✉️ <span id="data-email" data-bind="data-email">Spedicsmont@gmail.com</span></a>
-      <span class="topbar-item">📍 Chennai, Tamil Nadu</span>
-    </div>
+  <!-- Admission marquee (top line) -->
+  <div class="admission-marquee" aria-label="Admission announcements">
+    <div class="admission-marquee-track" id="admission-marquee"></div>
   </div>
 
-  <!-- Header -->
+  <!-- Header / logo (next line) -->
   <header class="header">
     <div class="container header-inner">
       <a href="#home" class="logo-wrap">
@@ -55,10 +51,17 @@
       </nav>
       <div class="header-cta">
         <a href="#contact" class="btn btn-outline btn-sm">Contact</a>
-        <a href="#apply" class="btn btn-primary btn-sm">Apply Now</a>
       </div>
     </div>
   </header>
+
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <a href="tel:7708743942" class="topbar-item" id="href-phone" data-bind="href-phone">📞 <span id="data-phone" data-bind="data-phone">7708743942</span></a>
+      <a href="mailto:Spedicsmont@gmail.com" class="topbar-item" id="href-email" data-bind="href-email">✉️ <span id="data-email" data-bind="data-email">Spedicsmont@gmail.com</span></a>
+      <span class="topbar-item">📍 Chennai, Tamil Nadu</span>
+    </div>
+  </div>
 
   <main id="main-content">
   <!-- 1. Static banner -->
@@ -92,11 +95,6 @@
       </div>
     </div>
   </section>
-
-  <!-- 2. Admission marquee -->
-  <div class="admission-marquee" aria-label="Admission announcements">
-    <div class="admission-marquee-track" id="admission-marquee"></div>
-  </div>
 
   <!-- 3–4. Welcome note -->
   <section class="section section-band-white" id="welcome">

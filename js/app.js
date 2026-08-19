@@ -452,6 +452,17 @@ function initMarquee(messages) {
   track.innerHTML = `<div class="marquee-group">${items}</div><div class="marquee-group" aria-hidden="true">${items}</div>`;
 }
 
+async function initSiteMarquee() {
+  const track = document.getElementById('admission-marquee');
+  if (!track) return;
+  try {
+    const admissions = await fetchJSON('admissions.json');
+    initMarquee(admissions.marquee);
+  } catch (err) {
+    console.warn('Could not load admission marquee:', err);
+  }
+}
+
 function initFeeCalculator(courses, fees, site) {
   const courseSelect = document.getElementById('calc-course');
   const durationSelect = document.getElementById('calc-duration');
@@ -667,7 +678,6 @@ function setupCourseApplyLinks(site, course) {
   const applyMail = mailtoUrl(email, `Course Application – ${course.title}`, applyText.replace(/\*/g, ''));
 
   wireLink('href-course-apply-whatsapp', applyWa, { target: '_blank', rel: 'noopener' });
-  wireLink('href-header-apply', applyWa, { target: '_blank', rel: 'noopener' });
   wireLink('href-course-apply-email', applyMail);
   wireLink('href-course-counsellor', counsellorWa, { target: '_blank', rel: 'noopener' });
   setupWhatsApp(site, counsellorText);
@@ -697,7 +707,7 @@ function setupWhatsApp(site, customMessage) {
   const phone = whatsappPhone(site);
   const text = customMessage || defaultWhatsAppMessage(site);
   const url = whatsappUrl(phone, text);
-  ['href-whatsapp', 'href-float-whatsapp', 'href-header-apply'].forEach((id) => {
+  ['href-whatsapp', 'href-float-whatsapp'].forEach((id) => {
     setAttr(id, url);
     const el = document.getElementById(id);
     if (el) {
@@ -776,9 +786,6 @@ async function initHomePage() {
     );
     initForm(site);
     setAttr('href-float-call', `tel:${site.contact.phone}`);
-
-    // Admission marquee
-    initMarquee(admissions.marquee);
 
     // Hero
     setText('data-hero-badge', site.hero.badge);
@@ -1132,6 +1139,7 @@ function setAttr(id, value, attr = 'href') {
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
   initImageFallbacks();
+  initSiteMarquee();
 
   if (document.body.dataset.page === 'home') initHomePage();
   else if (document.body.dataset.page === 'course') initCoursePage();
