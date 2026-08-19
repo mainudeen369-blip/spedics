@@ -932,13 +932,16 @@ button, input, select, textarea { font: inherit; }
 }
 .affiliation-logo {
   width: 72px;
-  height: 48px;
-  object-fit: contain;
+  height: 72px;
+  object-fit: cover;
   border-radius: 10px;
   background: #fff;
   padding: 4px;
   border: 1px solid rgba(13,115,119,0.08);
   flex-shrink: 0;
+}
+.affiliation-logo--contain {
+  object-fit: contain;
 }
 
 /* Careers */
@@ -1705,6 +1708,11 @@ body.gallery-lightbox-open { overflow: hidden; }
   align-items: start;
 }
 .nature-intro { text-align: center; margin: 0 auto 1.25rem; max-width: 560px; }
+.nature-list {
+  max-width: 640px;
+  margin: 1.5rem auto 0;
+  text-align: left;
+}
 .nature-intro-left { text-align: left; margin: 0 0 1.25rem; max-width: none; }
 
 /* Fee calculator */

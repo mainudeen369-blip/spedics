@@ -828,11 +828,6 @@ async function initHomePage() {
     const whyGrid = document.getElementById('why-grid');
     if (whyGrid) whyGrid.innerHTML = about.whyChoose.map(renderWhyItem).join('');
 
-    // Montessori & nature of training
-    setText('data-montessori-intro', about.montessori.intro);
-    const montList = document.getElementById('montessori-list');
-    if (montList) montList.innerHTML = about.montessori.points.map((p) => `<li>${p}</li>`).join('');
-
     // Who can join
     const joinTags = document.getElementById('join-tags');
     if (joinTags) joinTags.innerHTML = about.whoCanJoin.map((j) => `<span class="join-tag">${j}</span>`).join('');
@@ -845,17 +840,7 @@ async function initHomePage() {
       ).join('');
     }
 
-    // Featured courses
-    const featuredGrid = document.getElementById('featured-courses');
-    if (featuredGrid) {
-      featuredGrid.innerHTML = coursesIndex.featured
-        .map((id) => courseMap[id])
-        .filter(Boolean)
-        .map(renderCourseCard)
-        .join('');
-    }
-
-    // All courses
+    // Courses (single list — no duplicate featured + all)
     const allGrid = document.getElementById('all-courses');
     if (allGrid) {
       allGrid.innerHTML = courses.map(renderCourseCard).join('');
@@ -870,16 +855,18 @@ async function initHomePage() {
       practicalList.innerHTML = modes.practicalLearning.items.map((i) => `<li>${i}</li>`).join('');
     }
 
-    // Certificates — loaded dynamically from data/certificates/<folder>/
+    // Certificates — optional grid when folders exist in index
     const certificates = await loadCertificates();
     const certGrid = document.getElementById('certificates-grid');
-    if (certGrid) certGrid.innerHTML = certificates.map(renderCertificateCard).join('');
+    if (certGrid && certificates.length) {
+      certGrid.innerHTML = certificates.map(renderCertificateCard).join('');
+    }
 
     const affList = document.getElementById('affiliation-list');
     if (affList) {
       affList.innerHTML = affiliations.affiliations.map((a) => `
         <div class="affiliation-item reveal">
-          <img class="affiliation-logo" src="${a.logo}" alt="${a.name} logo" loading="lazy">
+          <img class="affiliation-logo${a.logo.includes('official-seal') ? ' affiliation-logo--contain' : ''}" src="${a.logo}" alt="${a.name} logo" loading="lazy">
           <div>
             <strong>${a.name}</strong>
             <p style="font-size:0.85rem;color:var(--text-muted);margin-top:0.25rem">
