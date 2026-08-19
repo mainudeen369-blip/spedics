@@ -1497,16 +1497,28 @@ body.gallery-lightbox-open { overflow: hidden; }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  box-shadow: var(--shadow-lg);
-  transition: transform var(--transition);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.22);
+  transition: transform var(--transition), box-shadow var(--transition);
   border: none;
   cursor: pointer;
   text-decoration: none;
+  color: #fff;
 }
-.float-btn:hover { transform: scale(1.1); }
-.float-whatsapp { background: #25d366; color: var(--white); }
-.float-call { background: var(--gradient-brand); color: var(--white); }
+.float-btn svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+  fill: currentColor;
+}
+.float-btn:hover { transform: scale(1.08); }
+.float-whatsapp {
+  background: #25d366;
+  box-shadow: 0 8px 22px rgba(37, 211, 102, 0.45);
+}
+.float-call {
+  background: #0284c7;
+  box-shadow: 0 8px 22px rgba(2, 132, 199, 0.4);
+}
 
 /* Animations on scroll */
 .reveal {
@@ -1988,7 +2000,8 @@ body.gallery-lightbox-open { overflow: hidden; }
   .logo-brand-tag { font-size: 0.5rem; max-width: 130px; }
   .logo { height: 52px; max-width: 220px; }
   .float-actions { bottom: 1rem; right: 1rem; }
-  .float-btn { width: 48px; height: 48px; font-size: 1.25rem; }
+  .float-btn { width: 52px; height: 52px; }
+  .float-btn svg { width: 24px; height: 24px; }
 }
 
 /* Mobile hero title — keep visible with subtle glow (shimmer broke opacity) */
