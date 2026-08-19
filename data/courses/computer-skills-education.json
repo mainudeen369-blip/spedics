@@ -7,7 +7,7 @@
   "image": "images/courses/computer-skills-education.png",
   "duration": "3 / 6 months",
   "eligibility": "Basic literacy; no prior computer experience required",
-  "mode": ["Online", "Offline", "Hybrid"],
+  "mode": ["Offline"],
   "fee": "₹10,000 – ₹15,000",
   "packages": [
     { "name": "Certified", "duration": "3 months", "fee": "₹10,000" },
