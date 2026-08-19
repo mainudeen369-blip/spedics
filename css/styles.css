@@ -1880,16 +1880,20 @@ body.gallery-lightbox-open { overflow: hidden; }
   .hero { min-height: unset; }
   .hero-card { transform: none; }
 
-  /* Header: prevent right CTA from being pushed off-screen */
-  .header-inner { gap: 0.5rem; }
+  /* Header: logo left, hamburger flush right */
+  .header-inner { gap: 0.5rem; justify-content: flex-start; }
   .logo-wrap { flex-shrink: 1; min-width: 0; }
   .logo-seal { width: 52px; height: 52px; }
   .logo-brand-tag { white-space: normal; max-width: 150px; line-height: 1.2; }
   .logo { height: 56px; max-width: 240px; }
-  .header-cta { flex-shrink: 1; }
-  .header-cta .btn-sm { padding: 0.7rem 1.05rem; font-size: 0.9rem; }
-  .nav { gap: 0.25rem; }
-  .nav-toggle { display: flex; }
+  .header-cta { display: none; }
+  .nav-toggle {
+    display: flex;
+    margin-left: auto;
+    flex-shrink: 0;
+    padding: 10px;
+    margin-right: -6px;
+  }
   .nav {
     position: fixed;
     top: var(--site-top-h);
@@ -1940,7 +1944,6 @@ body.gallery-lightbox-open { overflow: hidden; }
   .hero-shape { display: none; }
   .hero-text { width: 100%; }
   .hero-actions { margin-inline: auto; max-width: 100%; }
-  .header-cta .btn-outline { display: none; }
   .form-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; }
   .founder-card { position: static; }
@@ -1979,13 +1982,11 @@ body.gallery-lightbox-open { overflow: hidden; }
   .hero-actions .btn { width: 100%; }
   .hero-card { transform: none; }
 
-  /* Keep CTA visible on very small phones */
   .header-inner { gap: 0.4rem; }
   .logo-seal { width: 48px; height: 48px; }
   .logo-brand-name { font-size: 1.05rem; }
   .logo-brand-tag { font-size: 0.5rem; max-width: 130px; }
   .logo { height: 52px; max-width: 220px; }
-  .header-cta .btn-sm { padding: 0.65rem 1rem; font-size: 0.88rem; }
   .float-actions { bottom: 1rem; right: 1rem; }
   .float-btn { width: 48px; height: 48px; font-size: 1.25rem; }
 }
