@@ -16,7 +16,10 @@ export async function POST(req: Request) {
 
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
       return NextResponse.json(
-        { error: 'BLOB_READ_WRITE_TOKEN is not configured. Create a Blob store in Vercel and add the token.' },
+        {
+          error:
+            'Media upload is not configured yet (missing BLOB_READ_WRITE_TOKEN). In Vercel: Storage → Create Blob → copy token → Project Settings → Environment Variables → BLOB_READ_WRITE_TOKEN, then redeploy. Also add the same token to .env.local for local testing.'
+        },
         { status: 503 }
       );
     }

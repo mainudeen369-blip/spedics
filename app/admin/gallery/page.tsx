@@ -14,6 +14,8 @@ type GalleryItem = {
   is_published?: boolean;
 };
 
+type Notice = { kind: 'info' | 'success' | 'error'; text: string } | null;
+
 function isVideoUrl(url?: string) {
   if (!url) return false;
   return /\.(mp4|webm|mov)(\?|$)/i.test(url) || url.includes('video');
@@ -26,53 +28,134 @@ function mediaSrc(url?: string) {
   return url.startsWith('/') ? url : `/${url}`;
 }
 
+function MediaThumb({ url, large }: { url?: string; large?: boolean }) {
+  const src = mediaSrc(url);
+  if (!src) {
+    return (
+      <div
+        style={{
+          width: large ? '100%' : 96,
+          height: large ? 180 : 64,
+          maxWidth: large ? '100%' : 96,
+          borderRadius: 8,
+          background: '#e2e8f0',
+          display: 'grid',
+          placeItems: 'center',
+          color: '#94a3b8',
+          fontSize: 12
+        }}
+      >
+        No media
+      </div>
+    );
+  }
+  if (isVideoUrl(url)) {
+    return (
+      <video
+        src={src}
+        controls={large}
+        style={{
+          width: large ? '100%' : 96,
+          maxWidth: '100%',
+          height: large ? 180 : 64,
+          objectFit: 'cover',
+          borderRadius: 8,
+          background: '#e2e8f0'
+        }}
+      />
+    );
+  }
+  // eslint-disable-next-line @next/next/no-img-element
+  return (
+    <img
+      src={src}
+      alt=""
+      style={{
+        width: large ? '100%' : 96,
+        maxWidth: '100%',
+        height: large ? 180 : 64,
+        objectFit: 'cover',
+        borderRadius: 8,
+        background: '#e2e8f0'
+      }}
+    />
+  );
+}
+
+async function readError(res: Response) {
+  const text = await res.text();
+  try {
+    const data = JSON.parse(text) as { error?: string };
+    if (data?.error) return data.error;
+  } catch {
+    /* not JSON */
+  }
+  if (res.status === 503) return 'Upload service unavailable (503). Media storage token may be missing.';
+  return text.slice(0, 200) || `Request failed (${res.status})`;
+}
+
 export default function GalleryAdminPage() {
   const [meta, setMeta] = useState({ title: '', subtitle: '' });
   const [items, setItems] = useState<GalleryItem[]>([]);
   const [form, setForm] = useState<GalleryItem>({ id: '', title: '', description: '', image_url: '', category: '', sort_order: 0, is_published: true });
-  const [msg, setMsg] = useState('');
+  const [notice, setNotice] = useState<Notice>(null);
+  const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [savingItem, setSavingItem] = useState(false);
+  const [savingMeta, setSavingMeta] = useState(false);
 
   async function load() {
     const res = await fetch('/api/admin/gallery');
+    if (!res.ok) throw new Error(await readError(res));
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Failed');
     setMeta(data.meta);
     setItems(data.items || []);
   }
 
   useEffect(() => {
-    load().catch((e) => setMsg(e.message));
+    setLoading(true);
+    load()
+      .catch((e) => setNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Failed to load gallery' }))
+      .finally(() => setLoading(false));
   }, []);
 
   async function saveMeta() {
-    const res = await fetch('/api/admin/gallery', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ meta })
-    });
-    setMsg(res.ok ? 'Gallery title saved' : 'Save failed');
+    setSavingMeta(true);
+    setNotice({ kind: 'info', text: 'Saving section…' });
+    try {
+      const res = await fetch('/api/admin/gallery', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ meta })
+      });
+      if (!res.ok) throw new Error(await readError(res));
+      setNotice({ kind: 'success', text: 'Section saved successfully.' });
+    } catch (e) {
+      setNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Save failed' });
+    } finally {
+      setSavingMeta(false);
+    }
   }
 
   async function uploadFile(file: File) {
     setUploading(true);
-    setMsg('Uploading to Vercel Blob…');
+    setNotice({ kind: 'info', text: `Uploading “${file.name}”…` });
     try {
       const body = new FormData();
       body.append('file', file);
       body.append('folder', 'gallery');
       const res = await fetch('/api/admin/upload', { method: 'POST', body });
+      if (!res.ok) throw new Error(await readError(res));
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Upload failed');
       setForm((prev) => ({
         ...prev,
         image_url: data.url,
         file_name: data.fileName || file.name,
         id: prev.id || file.name.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 60)
       }));
-      setMsg(`Uploaded (${data.kind}). Click Save item to store in gallery.`);
+      setNotice({ kind: 'success', text: 'Upload successful. Click Save item to add it to the gallery.' });
     } catch (e) {
-      setMsg(e instanceof Error ? e.message : 'Upload failed');
+      setNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Upload failed' });
     } finally {
       setUploading(false);
     }
@@ -80,105 +163,133 @@ export default function GalleryAdminPage() {
 
   async function saveItem(e: React.FormEvent) {
     e.preventDefault();
-    const res = await fetch('/api/admin/gallery', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form)
-    });
-    if (!res.ok) {
-      const data = await res.json();
-      setMsg(data.error || 'Save failed');
+    if (!form.image_url?.trim()) {
+      setNotice({ kind: 'error', text: 'Upload a photo/video (or paste a media URL) before saving.' });
       return;
     }
-    setMsg('Item saved');
-    setForm({ id: '', title: '', description: '', image_url: '', category: '', sort_order: items.length, is_published: true });
-    await load();
+    setSavingItem(true);
+    setNotice({ kind: 'info', text: 'Saving item…' });
+    try {
+      const res = await fetch('/api/admin/gallery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
+      if (!res.ok) throw new Error(await readError(res));
+      setNotice({ kind: 'success', text: `“${form.title}” saved successfully.` });
+      setForm({ id: '', title: '', description: '', image_url: '', category: '', sort_order: items.length + 1, is_published: true });
+      await load();
+    } catch (e) {
+      setNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Save failed' });
+    } finally {
+      setSavingItem(false);
+    }
   }
 
   async function remove(id: string) {
     if (!confirm(`Delete ${id}?`)) return;
-    await fetch(`/api/admin/gallery?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
-    await load();
+    setNotice({ kind: 'info', text: 'Deleting…' });
+    try {
+      const res = await fetch(`/api/admin/gallery?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error(await readError(res));
+      setNotice({ kind: 'success', text: 'Item deleted.' });
+      await load();
+    } catch (e) {
+      setNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Delete failed' });
+    }
   }
+
+  const busy = uploading || savingItem || savingMeta;
 
   return (
     <AdminChrome>
       <h1 style={{ marginTop: 0 }}>Gallery</h1>
       <p style={{ color: '#64748b', marginTop: 0 }}>Upload photos or videos, then save each item with a title and description.</p>
-      {msg ? <p style={{ color: '#1d4ed8' }}>{msg}</p> : null}
+      {notice ? (
+        <p
+          role="status"
+          style={{
+            margin: '0 0 16px',
+            padding: '12px 14px',
+            borderRadius: 10,
+            background: notice.kind === 'error' ? '#fef2f2' : notice.kind === 'success' ? '#ecfdf5' : '#eff6ff',
+            color: notice.kind === 'error' ? '#b91c1c' : notice.kind === 'success' ? '#047857' : '#1d4ed8',
+            border: `1px solid ${notice.kind === 'error' ? '#fecaca' : notice.kind === 'success' ? '#a7f3d0' : '#bfdbfe'}`,
+            fontWeight: 600
+          }}
+        >
+          {notice.text}
+        </p>
+      ) : null}
 
       <section style={card}>
         <h2>Section text</h2>
         <label style={label}>Title</label>
-        <input style={input} value={meta.title} onChange={(e) => setMeta({ ...meta, title: e.target.value })} />
+        <input style={input} value={meta.title} onChange={(e) => setMeta({ ...meta, title: e.target.value })} disabled={busy} />
         <label style={label}>Subtitle</label>
-        <input style={input} value={meta.subtitle} onChange={(e) => setMeta({ ...meta, subtitle: e.target.value })} />
-        <button style={btn} type="button" onClick={saveMeta}>Save section</button>
+        <input style={input} value={meta.subtitle} onChange={(e) => setMeta({ ...meta, subtitle: e.target.value })} disabled={busy} />
+        <button style={btn} type="button" onClick={saveMeta} disabled={busy}>
+          {savingMeta ? 'Saving…' : 'Save section'}
+        </button>
       </section>
 
       <section style={card}>
         <h2>Add / update item</h2>
         <form onSubmit={saveItem}>
-          <label style={label}>Upload photo or video (Vercel Blob)</label>
+          <label style={label}>Upload photo or video</label>
           <input
             style={input}
             type="file"
             accept="image/*,video/mp4,video/webm,video/quicktime"
-            disabled={uploading}
+            disabled={busy}
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) void uploadFile(file);
+              e.target.value = '';
             }}
           />
           <label style={label}>ID (slug)</label>
-          <input style={input} required value={form.id} onChange={(e) => setForm({ ...form, id: e.target.value })} placeholder="nursery-place-value-lesson" />
+          <input style={input} required value={form.id} onChange={(e) => setForm({ ...form, id: e.target.value })} placeholder="nursery-place-value-lesson" disabled={busy} />
           <label style={label}>Title</label>
-          <input style={input} required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+          <input style={input} required value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} disabled={busy} />
           <label style={label}>Description</label>
-          <textarea style={{ ...input, minHeight: 80 }} value={form.description || ''} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+          <textarea style={{ ...input, minHeight: 80 }} value={form.description || ''} onChange={(e) => setForm({ ...form, description: e.target.value })} disabled={busy} />
           <label style={label}>Media URL (auto-filled after upload)</label>
-          <input style={input} value={form.image_url || ''} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="https://….public.blob.vercel-storage.com/…" />
+          <input style={input} value={form.image_url || ''} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="Upload a file, or paste a media URL" disabled={busy} />
           {form.image_url ? (
             <div style={{ marginTop: 10 }}>
-              {isVideoUrl(form.image_url) ? (
-                <video src={mediaSrc(form.image_url)} controls style={{ maxWidth: '100%', maxHeight: 180, borderRadius: 8 }} />
-              ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={mediaSrc(form.image_url)} alt="" style={{ maxWidth: '100%', maxHeight: 180, borderRadius: 8, objectFit: 'cover' }} />
-              )}
+              <MediaThumb url={form.image_url} large />
             </div>
           ) : null}
           <label style={label}>Category</label>
-          <input style={input} value={form.category || ''} onChange={(e) => setForm({ ...form, category: e.target.value })} />
+          <input style={input} value={form.category || ''} onChange={(e) => setForm({ ...form, category: e.target.value })} disabled={busy} />
           <label style={label}>Sort order</label>
-          <input style={input} type="number" value={form.sort_order || 0} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} />
+          <input style={input} type="number" value={form.sort_order || 0} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} disabled={busy} />
           <label style={{ ...label, display: 'flex', gap: 8, alignItems: 'center' }}>
-            <input type="checkbox" checked={form.is_published !== false} onChange={(e) => setForm({ ...form, is_published: e.target.checked })} />
+            <input type="checkbox" checked={form.is_published !== false} onChange={(e) => setForm({ ...form, is_published: e.target.checked })} disabled={busy} />
             Published
           </label>
-          <button style={btn} type="submit" disabled={uploading}>Save item</button>
+          <button style={btn} type="submit" disabled={busy}>
+            {savingItem ? 'Saving…' : 'Save item'}
+          </button>
         </form>
       </section>
 
       <section style={card}>
-        <h2>Existing ({items.length})</h2>
+        <h2>Existing ({loading ? '…' : items.length})</h2>
+        {loading ? <p style={{ color: '#64748b' }}>Loading…</p> : null}
         <div style={{ display: 'grid', gap: 12 }}>
           {items.map((item) => (
             <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '96px 1fr auto', gap: 12, alignItems: 'center', border: '1px solid #e2e8f0', borderRadius: 12, padding: 10 }}>
-              {isVideoUrl(item.image_url) ? (
-                <video src={mediaSrc(item.image_url)} style={{ width: 96, height: 64, objectFit: 'cover', borderRadius: 8, background: '#e2e8f0' }} />
-              ) : (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={mediaSrc(item.image_url)} alt="" style={{ width: 96, height: 64, objectFit: 'cover', borderRadius: 8, background: '#e2e8f0' }} />
-              )}
+              <MediaThumb url={item.image_url} />
               <div>
                 <strong>{item.title}</strong>
                 <div style={{ fontSize: 12, color: '#64748b' }}>{item.id} · {item.category} · #{item.sort_order}</div>
-                <div style={{ fontSize: 12, color: '#64748b', wordBreak: 'break-all' }}>{item.image_url}</div>
+                <div style={{ fontSize: 12, color: '#64748b', wordBreak: 'break-all' }}>{item.image_url || '(no media URL)'}</div>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <button type="button" style={btnSecondary} onClick={() => setForm(item)}>Edit</button>
-                <button type="button" style={{ ...btnSecondary, color: '#b91c1c' }} onClick={() => remove(item.id)}>Delete</button>
+                <button type="button" style={btnSecondary} onClick={() => setForm(item)} disabled={busy}>Edit</button>
+                <button type="button" style={{ ...btnSecondary, color: '#b91c1c' }} onClick={() => remove(item.id)} disabled={busy}>Delete</button>
               </div>
             </div>
           ))}
