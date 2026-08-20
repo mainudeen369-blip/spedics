@@ -59,6 +59,7 @@ npm run dev
 ## 6. Photos & videos (Vercel Blob)
 1. Vercel Dashboard → **Storage** → **Blob** → Create store
 2. Copy the **read-write** token into `.env.local` and Vercel env as `BLOB_READ_WRITE_TOKEN`
-3. Admin → Gallery → upload file (saved to Blob; Neon stores the URL only)
+3. Redeploy / restart `npm run dev`
+4. Admin → Gallery → upload file
 
-See also: `docs/MOVE_TO_CLIENT_ACCOUNT.md` (moving Neon/Vercel to the client later).
+**Without the token:** local `npm run dev` saves into `public/uploads/`; on Vercel, small images can use a temporary data-URL fallback. Videos/large files need Blob.

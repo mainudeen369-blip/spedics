@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AdminChrome } from '../_components/AdminChrome';
 
 type GalleryItem = {
@@ -18,10 +18,10 @@ type Notice = { kind: 'info' | 'success' | 'error'; text: string } | null;
 
 function isVideoUrl(url?: string) {
   if (!url) return false;
-  return /\.(mp4|webm|mov)(\?|$)/i.test(url) || url.includes('video');
+  return /\.(mp4|webm|mov)(\?|$)/i.test(url) || url.includes('video') || url.startsWith('data:video');
 }
 
-/** Local folder paths in DB need a leading /; Blob/https URLs stay as-is. */
+/** Local folder paths in DB need a leading /; Blob/https/data URLs stay as-is. */
 function mediaSrc(url?: string) {
   if (!url) return '';
   if (/^https?:\/\//i.test(url) || url.startsWith('data:') || url.startsWith('blob:')) return url;
@@ -90,7 +90,7 @@ async function readError(res: Response) {
   } catch {
     /* not JSON */
   }
-  if (res.status === 503) return 'Upload service unavailable (503). Media storage token may be missing.';
+  if (res.status === 503) return 'Upload service unavailable (503). Media storage may not be configured.';
   return text.slice(0, 200) || `Request failed (${res.status})`;
 }
 
@@ -103,6 +103,16 @@ export default function GalleryAdminPage() {
   const [uploading, setUploading] = useState(false);
   const [savingItem, setSavingItem] = useState(false);
   const [savingMeta, setSavingMeta] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [uploadReady, setUploadReady] = useState<{ blobConfigured: boolean; message: string } | null>(null);
+  const noticeRef = useRef<HTMLDivElement>(null);
+
+  function showNotice(next: Notice) {
+    setNotice(next);
+    requestAnimationFrame(() => {
+      noticeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  }
 
   async function load() {
     const res = await fetch('/api/admin/gallery');
@@ -114,14 +124,30 @@ export default function GalleryAdminPage() {
 
   useEffect(() => {
     setLoading(true);
-    load()
-      .catch((e) => setNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Failed to load gallery' }))
+    Promise.all([
+      load(),
+      fetch('/api/admin/upload')
+        .then(async (res) => {
+          if (!res.ok) return null;
+          return res.json();
+        })
+        .catch(() => null)
+    ])
+      .then(([, status]) => {
+        if (status) {
+          setUploadReady({
+            blobConfigured: Boolean(status.blobConfigured),
+            message: status.message || ''
+          });
+        }
+      })
+      .catch((e) => showNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Failed to load gallery' }))
       .finally(() => setLoading(false));
   }, []);
 
   async function saveMeta() {
     setSavingMeta(true);
-    setNotice({ kind: 'info', text: 'Saving section…' });
+    showNotice({ kind: 'info', text: 'Saving section…' });
     try {
       const res = await fetch('/api/admin/gallery', {
         method: 'PUT',
@@ -129,9 +155,9 @@ export default function GalleryAdminPage() {
         body: JSON.stringify({ meta })
       });
       if (!res.ok) throw new Error(await readError(res));
-      setNotice({ kind: 'success', text: 'Section saved successfully.' });
+      showNotice({ kind: 'success', text: 'Section saved successfully.' });
     } catch (e) {
-      setNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Save failed' });
+      showNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Save failed' });
     } finally {
       setSavingMeta(false);
     }
@@ -139,7 +165,7 @@ export default function GalleryAdminPage() {
 
   async function uploadFile(file: File) {
     setUploading(true);
-    setNotice({ kind: 'info', text: `Uploading “${file.name}”…` });
+    showNotice({ kind: 'info', text: `Uploading “${file.name}”… please wait` });
     try {
       const body = new FormData();
       body.append('file', file);
@@ -153,9 +179,10 @@ export default function GalleryAdminPage() {
         file_name: data.fileName || file.name,
         id: prev.id || file.name.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 60)
       }));
-      setNotice({ kind: 'success', text: 'Upload successful. Click Save item to add it to the gallery.' });
+      const warn = data.warning ? ` ${data.warning}` : '';
+      showNotice({ kind: 'success', text: `Upload successful.${warn} Click Save item to add it to the gallery.` });
     } catch (e) {
-      setNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Upload failed' });
+      showNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Upload failed' });
     } finally {
       setUploading(false);
     }
@@ -164,11 +191,11 @@ export default function GalleryAdminPage() {
   async function saveItem(e: React.FormEvent) {
     e.preventDefault();
     if (!form.image_url?.trim()) {
-      setNotice({ kind: 'error', text: 'Upload a photo/video (or paste a media URL) before saving.' });
+      showNotice({ kind: 'error', text: 'Upload a photo/video (or paste a media URL) before saving.' });
       return;
     }
     setSavingItem(true);
-    setNotice({ kind: 'info', text: 'Saving item…' });
+    showNotice({ kind: 'info', text: 'Saving item… please wait' });
     try {
       const res = await fetch('/api/admin/gallery', {
         method: 'POST',
@@ -176,11 +203,11 @@ export default function GalleryAdminPage() {
         body: JSON.stringify(form)
       });
       if (!res.ok) throw new Error(await readError(res));
-      setNotice({ kind: 'success', text: `“${form.title}” saved successfully.` });
+      showNotice({ kind: 'success', text: `“${form.title}” saved successfully.` });
       setForm({ id: '', title: '', description: '', image_url: '', category: '', sort_order: items.length + 1, is_published: true });
       await load();
     } catch (e) {
-      setNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Save failed' });
+      showNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Save failed' });
     } finally {
       setSavingItem(false);
     }
@@ -188,39 +215,113 @@ export default function GalleryAdminPage() {
 
   async function remove(id: string) {
     if (!confirm(`Delete ${id}?`)) return;
-    setNotice({ kind: 'info', text: 'Deleting…' });
+    setDeleting(true);
+    showNotice({ kind: 'info', text: 'Deleting… please wait' });
     try {
       const res = await fetch(`/api/admin/gallery?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
       if (!res.ok) throw new Error(await readError(res));
-      setNotice({ kind: 'success', text: 'Item deleted.' });
+      showNotice({ kind: 'success', text: 'Item deleted.' });
       await load();
     } catch (e) {
-      setNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Delete failed' });
+      showNotice({ kind: 'error', text: e instanceof Error ? e.message : 'Delete failed' });
+    } finally {
+      setDeleting(false);
     }
   }
 
-  const busy = uploading || savingItem || savingMeta;
+  const busy = uploading || savingItem || savingMeta || deleting;
+  const busyLabel = uploading
+    ? 'Uploading photo…'
+    : savingItem
+      ? 'Saving item…'
+      : savingMeta
+        ? 'Saving section…'
+        : deleting
+          ? 'Deleting…'
+          : '';
 
   return (
     <AdminChrome>
+      {busy ? (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15,23,42,0.45)',
+            zIndex: 9999,
+            display: 'grid',
+            placeItems: 'center'
+          }}
+          aria-live="assertive"
+          aria-busy="true"
+        >
+          <div
+            style={{
+              background: '#fff',
+              borderRadius: 16,
+              padding: '28px 36px',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.25)',
+              textAlign: 'center',
+              minWidth: 240
+            }}
+          >
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                margin: '0 auto 14px',
+                border: '4px solid #bfdbfe',
+                borderTopColor: '#1d4ed8',
+                borderRadius: '50%',
+                animation: 'spedics-spin 0.8s linear infinite'
+              }}
+            />
+            <div style={{ fontWeight: 700, color: '#0f172a' }}>{busyLabel}</div>
+            <div style={{ fontSize: 13, color: '#64748b', marginTop: 6 }}>Please wait</div>
+          </div>
+          <style>{`@keyframes spedics-spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
+      ) : null}
+
       <h1 style={{ marginTop: 0 }}>Gallery</h1>
       <p style={{ color: '#64748b', marginTop: 0 }}>Upload photos or videos, then save each item with a title and description.</p>
-      {notice ? (
-        <p
-          role="status"
-          style={{
-            margin: '0 0 16px',
-            padding: '12px 14px',
-            borderRadius: 10,
-            background: notice.kind === 'error' ? '#fef2f2' : notice.kind === 'success' ? '#ecfdf5' : '#eff6ff',
-            color: notice.kind === 'error' ? '#b91c1c' : notice.kind === 'success' ? '#047857' : '#1d4ed8',
-            border: `1px solid ${notice.kind === 'error' ? '#fecaca' : notice.kind === 'success' ? '#a7f3d0' : '#bfdbfe'}`,
-            fontWeight: 600
-          }}
-        >
-          {notice.text}
-        </p>
-      ) : null}
+
+      <div ref={noticeRef}>
+        {uploadReady && !uploadReady.blobConfigured ? (
+          <p
+            style={{
+              margin: '0 0 12px',
+              padding: '12px 14px',
+              borderRadius: 10,
+              background: '#fff7ed',
+              color: '#9a3412',
+              border: '1px solid #fed7aa',
+              fontWeight: 600,
+              fontSize: 14
+            }}
+          >
+            Photo storage token not set yet. Uploads still work temporarily (local folder / small images). For production, add BLOB_READ_WRITE_TOKEN in Vercel and .env.local.
+          </p>
+        ) : null}
+        {notice ? (
+          <p
+            role="status"
+            style={{
+              margin: '0 0 16px',
+              padding: '14px 16px',
+              borderRadius: 10,
+              background: notice.kind === 'error' ? '#fef2f2' : notice.kind === 'success' ? '#ecfdf5' : '#eff6ff',
+              color: notice.kind === 'error' ? '#b91c1c' : notice.kind === 'success' ? '#047857' : '#1d4ed8',
+              border: `1px solid ${notice.kind === 'error' ? '#fecaca' : notice.kind === 'success' ? '#a7f3d0' : '#bfdbfe'}`,
+              fontWeight: 700,
+              fontSize: 15
+            }}
+          >
+            {notice.kind === 'info' ? '⏳ ' : notice.kind === 'success' ? '✓ ' : '⚠ '}
+            {notice.text}
+          </p>
+        ) : null}
+      </div>
 
       <section style={card}>
         <h2>Section text</h2>
@@ -228,7 +329,7 @@ export default function GalleryAdminPage() {
         <input style={input} value={meta.title} onChange={(e) => setMeta({ ...meta, title: e.target.value })} disabled={busy} />
         <label style={label}>Subtitle</label>
         <input style={input} value={meta.subtitle} onChange={(e) => setMeta({ ...meta, subtitle: e.target.value })} disabled={busy} />
-        <button style={btn} type="button" onClick={saveMeta} disabled={busy}>
+        <button style={{ ...btn, opacity: busy ? 0.7 : 1 }} type="button" onClick={saveMeta} disabled={busy}>
           {savingMeta ? 'Saving…' : 'Save section'}
         </button>
       </section>
@@ -269,7 +370,7 @@ export default function GalleryAdminPage() {
             <input type="checkbox" checked={form.is_published !== false} onChange={(e) => setForm({ ...form, is_published: e.target.checked })} disabled={busy} />
             Published
           </label>
-          <button style={btn} type="submit" disabled={busy}>
+          <button style={{ ...btn, opacity: busy ? 0.7 : 1 }} type="submit" disabled={busy}>
             {savingItem ? 'Saving…' : 'Save item'}
           </button>
         </form>

@@ -11,3 +11,4 @@ generate-svgs.ps1
 content-extracted.txt
 
 .vercel
+public/uploads/
