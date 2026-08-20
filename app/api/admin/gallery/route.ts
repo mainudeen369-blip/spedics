@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { requireAdmin } from '@/lib/auth';
+import { MAX_GALLERY_ITEMS, RECOMMENDED_GALLERY_ITEMS, mediaLimitsPublic } from '@/lib/media-limits';
 
 export async function GET() {
   try {
@@ -11,7 +12,16 @@ export async function GET() {
       SELECT id, title, description, file_name, image_url, category, sort_order, is_published, updated_at
       FROM gallery_items ORDER BY sort_order ASC, title ASC
     `;
-    return NextResponse.json({ meta: meta[0] || { title: 'Our Gallery', subtitle: '' }, items });
+    return NextResponse.json({
+      meta: meta[0] || { title: 'Our Gallery', subtitle: '' },
+      items,
+      limits: mediaLimitsPublic,
+      counts: {
+        total: items.length,
+        max: MAX_GALLERY_ITEMS,
+        recommended: RECOMMENDED_GALLERY_ITEMS
+      }
+    });
   } catch (err) {
     if (err instanceof Error && err.message === 'UNAUTHORIZED') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -29,6 +39,21 @@ export async function POST(req: Request) {
     if (!id || !body.title) {
       return NextResponse.json({ error: 'id and title required' }, { status: 400 });
     }
+
+    const existing = await sql`SELECT id FROM gallery_items WHERE id = ${id} LIMIT 1`;
+    if (!existing[0]) {
+      const countRows = await sql`SELECT COUNT(*)::int AS n FROM gallery_items`;
+      const n = Number(countRows[0]?.n || 0);
+      if (n >= MAX_GALLERY_ITEMS) {
+        return NextResponse.json(
+          {
+            error: `Gallery limit reached (${MAX_GALLERY_ITEMS} items). Delete older items before adding more — too many media files slow the website.`
+          },
+          { status: 400 }
+        );
+      }
+    }
+
     await sql`
       INSERT INTO gallery_items (id, title, description, file_name, image_url, category, sort_order, is_published, updated_at)
       VALUES (
@@ -46,7 +71,7 @@ export async function POST(req: Request) {
         is_published = EXCLUDED.is_published,
         updated_at = NOW()
     `;
-    return NextResponse.json({ ok: true, id });
+    return NextResponse.json({ ok: true, id, limits: mediaLimitsPublic });
   } catch (err) {
     if (err instanceof Error && err.message === 'UNAUTHORIZED') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

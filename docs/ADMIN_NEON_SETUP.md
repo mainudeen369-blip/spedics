@@ -63,4 +63,11 @@ npm run dev
 4. Local: `npx vercel env pull .env.local` then restart `npm run dev`
 5. Admin → Gallery → upload → Save
 
-See also: `docs/MOVE_TO_CLIENT_ACCOUNT.md`.
+## 7. Media limits (keep the site fast)
+| Limit | Value |
+|-------|-------|
+| Image upload | **2 MB** max (JPEG/PNG/WebP/GIF) |
+| Video upload | **4 MB** max (MP4/WebM) — under Vercel’s ~4.5 MB server upload cap |
+| Gallery items | **40** max (best under **24**) |
+
+Admin Gallery shows these hints. Heavy files slow the public website.

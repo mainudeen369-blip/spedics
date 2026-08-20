@@ -2,6 +2,14 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { AdminChrome } from '../_components/AdminChrome';
+import {
+  MAX_GALLERY_ITEMS,
+  MAX_IMAGE_MB,
+  MAX_VIDEO_MB,
+  MEDIA_HINTS,
+  RECOMMENDED_GALLERY_ITEMS,
+  validateMediaFile
+} from '@/lib/media-limits';
 
 type GalleryItem = {
   id: string;
@@ -22,7 +30,6 @@ function isVideoUrl(url?: string) {
   return /\.(mp4|webm|mov)(\?|$)/i.test(check) || check.includes('video') || check.startsWith('data:video');
 }
 
-/** Local folder paths in DB need a leading /; Blob/https/data URLs stay as-is. */
 function mediaSrc(url?: string) {
   if (!url) return '';
   if (/^https?:\/\//i.test(url) || url.startsWith('data:') || url.startsWith('blob:')) return url;
@@ -165,6 +172,19 @@ export default function GalleryAdminPage() {
   }
 
   async function uploadFile(file: File) {
+    const check = validateMediaFile(file);
+    if (!check.ok) {
+      showNotice({ kind: 'error', text: check.error });
+      return;
+    }
+    if (items.length >= MAX_GALLERY_ITEMS && !items.some((i) => i.id === form.id)) {
+      showNotice({
+        kind: 'error',
+        text: `Gallery is full (${MAX_GALLERY_ITEMS} items). Delete some items first — too many media files slow the website.`
+      });
+      return;
+    }
+
     setUploading(true);
     showNotice({ kind: 'info', text: `Uploading “${file.name}”… please wait` });
     try {
@@ -232,7 +252,7 @@ export default function GalleryAdminPage() {
 
   const busy = uploading || savingItem || savingMeta || deleting;
   const busyLabel = uploading
-    ? 'Uploading photo…'
+    ? 'Uploading…'
     : savingItem
       ? 'Saving item…'
       : savingMeta
@@ -240,6 +260,7 @@ export default function GalleryAdminPage() {
         : deleting
           ? 'Deleting…'
           : '';
+  const nearLimit = items.length >= RECOMMENDED_GALLERY_ITEMS;
 
   return (
     <AdminChrome>
@@ -271,8 +292,8 @@ export default function GalleryAdminPage() {
                 width: 40,
                 height: 40,
                 margin: '0 auto 14px',
-                border: '4px solid #bfdbfe',
-                borderTopColor: '#1d4ed8',
+                border: '4px solid #99f6e4',
+                borderTopColor: '#0d9488',
                 borderRadius: '50%',
                 animation: 'spedics-spin 0.8s linear infinite'
               }}
@@ -286,6 +307,25 @@ export default function GalleryAdminPage() {
 
       <h1 style={{ marginTop: 0 }}>Gallery</h1>
       <p style={{ color: '#64748b', marginTop: 0 }}>Upload photos or videos, then save each item with a title and description.</p>
+
+      <div
+        style={{
+          margin: '0 0 16px',
+          padding: '14px 16px',
+          borderRadius: 12,
+          background: '#f0fdfa',
+          border: '1px solid #99f6e4',
+          color: '#115e59',
+          fontSize: 14,
+          lineHeight: 1.55
+        }}
+      >
+        <strong>{MEDIA_HINTS.title}.</strong> {MEDIA_HINTS.body}
+        <div style={{ marginTop: 8, fontWeight: 700 }}>
+          Now: {loading ? '…' : items.length} / {MAX_GALLERY_ITEMS} items
+          {nearLimit ? ' — consider deleting unused photos so the site stays fast.' : ''}
+        </div>
+      </div>
 
       <div ref={noticeRef}>
         {uploadReady && !uploadReady.blobConfigured ? (
@@ -301,7 +341,7 @@ export default function GalleryAdminPage() {
               fontSize: 14
             }}
           >
-            Photo storage token not set yet. Uploads still work temporarily (local folder / small images). For production, add BLOB_READ_WRITE_TOKEN in Vercel and .env.local.
+            Photo storage not fully configured yet. Prefer small compressed files (images ≤ {MAX_IMAGE_MB} MB).
           </p>
         ) : null}
         {notice ? (
@@ -312,8 +352,8 @@ export default function GalleryAdminPage() {
               padding: '14px 16px',
               borderRadius: 10,
               background: notice.kind === 'error' ? '#fef2f2' : notice.kind === 'success' ? '#ecfdf5' : '#eff6ff',
-              color: notice.kind === 'error' ? '#b91c1c' : notice.kind === 'success' ? '#047857' : '#1d4ed8',
-              border: `1px solid ${notice.kind === 'error' ? '#fecaca' : notice.kind === 'success' ? '#a7f3d0' : '#bfdbfe'}`,
+              color: notice.kind === 'error' ? '#b91c1c' : notice.kind === 'success' ? '#047857' : '#0f766e',
+              border: `1px solid ${notice.kind === 'error' ? '#fecaca' : notice.kind === 'success' ? '#a7f3d0' : '#99f6e4'}`,
               fontWeight: 700,
               fontSize: 15
             }}
@@ -338,11 +378,11 @@ export default function GalleryAdminPage() {
       <section style={card}>
         <h2>Add / update item</h2>
         <form onSubmit={saveItem}>
-          <label style={label}>Upload photo or video</label>
+          <label style={label}>Upload photo (≤ {MAX_IMAGE_MB} MB) or video (≤ {MAX_VIDEO_MB} MB)</label>
           <input
             style={input}
             type="file"
-            accept="image/*,video/mp4,video/webm,video/quicktime"
+            accept={MEDIA_HINTS.accept}
             disabled={busy}
             onChange={(e) => {
               const file = e.target.files?.[0];
@@ -350,6 +390,9 @@ export default function GalleryAdminPage() {
               e.target.value = '';
             }}
           />
+          <p style={{ margin: '6px 0 0', fontSize: 12, color: '#64748b' }}>
+            Tip: compress images before upload (WebP/JPEG). Large files make the public site slower.
+          </p>
           <label style={label}>ID (slug)</label>
           <input style={input} required value={form.id} onChange={(e) => setForm({ ...form, id: e.target.value })} placeholder="nursery-place-value-lesson" disabled={busy} />
           <label style={label}>Title</label>
@@ -378,7 +421,7 @@ export default function GalleryAdminPage() {
       </section>
 
       <section style={card}>
-        <h2>Existing ({loading ? '…' : items.length})</h2>
+        <h2>Existing ({loading ? '…' : `${items.length} / ${MAX_GALLERY_ITEMS}`})</h2>
         {loading ? <p style={{ color: '#64748b' }}>Loading…</p> : null}
         <div style={{ display: 'grid', gap: 12 }}>
           {items.map((item) => (
@@ -404,5 +447,5 @@ export default function GalleryAdminPage() {
 const card: React.CSSProperties = { background: '#fff', padding: 20, borderRadius: 14, marginBottom: 18, boxShadow: '0 8px 24px rgba(15,23,42,0.05)' };
 const label: React.CSSProperties = { display: 'block', fontSize: 13, fontWeight: 600, margin: '10px 0 6px' };
 const input: React.CSSProperties = { width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid #cbd5e1', boxSizing: 'border-box' };
-const btn: React.CSSProperties = { marginTop: 14, background: '#1d4ed8', color: '#fff', border: 0, borderRadius: 999, padding: '10px 18px', fontWeight: 700, cursor: 'pointer' };
+const btn: React.CSSProperties = { marginTop: 14, background: '#0d9488', color: '#fff', border: 0, borderRadius: 999, padding: '10px 18px', fontWeight: 700, cursor: 'pointer' };
 const btnSecondary: React.CSSProperties = { background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: 8, padding: '8px 12px', cursor: 'pointer' };

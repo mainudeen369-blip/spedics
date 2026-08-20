@@ -3,15 +3,16 @@ import { put } from '@vercel/blob';
 import { promises as fs } from 'fs';
 import path from 'path';
 import { requireAdmin } from '@/lib/auth';
+import {
+  MEDIA_HINTS,
+  mediaLimitsPublic,
+  validateMediaFile
+} from '@/lib/media-limits';
 
 export const runtime = 'nodejs';
 
-const MAX_BYTES = 50 * 1024 * 1024; // 50 MB
+// Re-export constant used below — keep fallback small
 const MAX_DATA_URL_BYTES = 900 * 1024;
-const ALLOWED = new Set([
-  'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml',
-  'video/mp4', 'video/webm', 'video/quicktime'
-]);
 
 function json(data: unknown, status = 200) {
   return NextResponse.json(data, { status });
@@ -26,7 +27,6 @@ function blobAuthOptions() {
   ).replace(/\r/g, '') || undefined;
   const oidcToken = (process.env.VERCEL_OIDC_TOKEN || '').replace(/\r/g, '') || undefined;
   const opts: { token?: string; storeId?: string; oidcToken?: string } = {};
-  // Prefer static RW token (works in all environments); OIDC only if no token
   if (token) opts.token = token;
   if (storeId) opts.storeId = storeId;
   if (!token && oidcToken) opts.oidcToken = oidcToken;
@@ -41,7 +41,6 @@ function isBlobConfigured() {
   );
 }
 
-/** Store is Private (spedics-blob) — use private access + public media proxy URL for the website. */
 const BLOB_ACCESS = 'private' as const;
 
 export async function GET() {
@@ -51,6 +50,7 @@ export async function GET() {
     return json({
       ok: true,
       blobConfigured,
+      limits: mediaLimitsPublic,
       mode: blobConfigured
         ? 'blob-private'
         : process.env.VERCEL
@@ -58,7 +58,8 @@ export async function GET() {
           : 'local-folder-fallback',
       message: blobConfigured
         ? 'Uploads go to Vercel Blob (private store). Website loads them via /api/public/media.'
-        : 'Blob store not linked. Using temporary fallback. Connect spedics-blob to this project (include Development) or add BLOB_READ_WRITE_TOKEN_STORE_ID.'
+        : 'Blob store not linked. Using temporary fallback.',
+      hint: MEDIA_HINTS.body
     });
   } catch (err) {
     if (err instanceof Error && err.message === 'UNAUTHORIZED') {
@@ -77,16 +78,15 @@ export async function POST(req: Request) {
     if (!(file instanceof File)) {
       return json({ error: 'file is required' }, 400);
     }
-    if (file.size > MAX_BYTES) {
-      return json({ error: 'File too large (max 50MB)' }, 400);
+
+    const check = validateMediaFile(file);
+    if (!check.ok) {
+      return json({ error: check.error }, 400);
     }
-    if (file.type && !ALLOWED.has(file.type)) {
-      return json({ error: `Unsupported type: ${file.type}` }, 400);
-    }
+    const kind = check.kind;
 
     const folder = String(form.get('folder') || 'gallery').replace(/[^a-z0-9-_]/gi, '');
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-    const kind = file.type.startsWith('video/') ? 'video' : 'image';
 
     if (isBlobConfigured()) {
       const pathname = `spedics/${folder}/${Date.now()}-${safeName}`;
@@ -95,7 +95,6 @@ export async function POST(req: Request) {
         contentType: file.type || undefined,
         ...blobAuthOptions()
       });
-      // Public website cannot open private blob URLs directly — use our proxy
       const publicUrl = `/api/public/media?pathname=${encodeURIComponent(blob.pathname)}`;
       return json({
         ok: true,
@@ -106,7 +105,8 @@ export async function POST(req: Request) {
         kind,
         fileName: file.name,
         size: file.size,
-        storage: 'blob-private'
+        storage: 'blob-private',
+        limits: mediaLimitsPublic
       });
     }
 
@@ -128,7 +128,8 @@ export async function POST(req: Request) {
         fileName: file.name,
         size: file.size,
         storage: 'local',
-        warning: 'Saved locally. Connect Blob store to Development for production-like uploads.'
+        warning: 'Saved locally. Connect Blob for production uploads.',
+        limits: mediaLimitsPublic
       });
     }
 
@@ -144,14 +145,15 @@ export async function POST(req: Request) {
         fileName: file.name,
         size: file.size,
         storage: 'data-url',
-        warning: 'Blob env missing on this deployment — temporary data URL used.'
+        warning: 'Blob env missing — temporary data URL used.',
+        limits: mediaLimitsPublic
       });
     }
 
     return json(
       {
         error:
-          'Blob store not ready on this environment. In Vercel Storage → spedics-blob → connect to project spedics and enable Production, Preview, and Development. Then Redeploy. Locally run: npx vercel env pull .env.local'
+          'Blob store not ready. Connect spedics-blob for Production, Preview, and Development, then redeploy.'
       },
       503
     );
@@ -164,7 +166,7 @@ export async function POST(req: Request) {
       return json(
         {
           error:
-            'Blob OIDC is not enabled for Development. In Vercel: Storage → spedics-blob → Projects → ⋯ (spedics) → Update Project Connection → enable Development + Preview + Production → Save. Then run: npx vercel env pull .env.local and restart npm run dev.'
+            'Blob OIDC is not enabled for Development. Update Project Connection to include Development, then run vercel env pull.'
         },
         503
       );
