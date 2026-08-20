@@ -81,10 +81,41 @@ async function fetchJSON(path) {
 async function loadSite() {
   try {
     const api = await fetchApi('site');
+    applyTheme(api.theme);
     return api.data || {};
   } catch {
     return fetchJSON('site.json');
   }
+}
+
+/** Apply admin theme colours to CSS variables site-wide. */
+function applyTheme(theme) {
+  if (!theme || typeof theme !== 'object') return;
+  const map = {
+    primary: '--primary',
+    primaryLight: '--primary-light',
+    primaryDark: '--primary-dark',
+    accent: '--accent',
+    accentLight: '--accent-light',
+    violet: '--violet',
+    violetLight: '--violet-light',
+    coral: '--coral',
+    dark: '--dark',
+    darkSoft: '--dark-soft',
+    text: '--text',
+    textMuted: '--text-muted',
+    bg: '--bg',
+    bgWarm: '--bg-warm',
+    bgSoft: '--bg-soft',
+    white: '--white',
+    gradientBrand: '--gradient-brand',
+    gradientHero: '--gradient-hero',
+    gradientDark: '--gradient-dark'
+  };
+  const root = document.documentElement;
+  Object.entries(map).forEach(([key, cssVar]) => {
+    if (theme[key]) root.style.setProperty(cssVar, theme[key]);
+  });
 }
 
 async function loadContentDoc(key, fallbackPath) {

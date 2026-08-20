@@ -83,7 +83,36 @@ export default function SiteAdminPage() {
 
       <section style={card}>
         <h2>Theme colours</h2>
-        <p style={{ color: '#64748b', fontSize: 14 }}>These map to CSS variables on the public site (via theme API / future CSS injection).</p>
+        <p style={{ color: '#64748b', fontSize: 14 }}>These update the live website colours after you save.</p>
+        <button
+          type="button"
+          style={{ ...btn, background: '#0d9488', marginBottom: 12 }}
+          onClick={() =>
+            setTheme({
+              primary: '#0d9488',
+              primaryLight: '#22d3ee',
+              primaryDark: '#0f766e',
+              accent: '#f59e0b',
+              accentLight: '#fbbf24',
+              violet: '#7c3aed',
+              violetLight: '#a78bfa',
+              coral: '#f97316',
+              dark: '#0f172a',
+              darkSoft: '#334155',
+              text: '#1e293b',
+              textMuted: '#64748b',
+              bg: '#f0fdfa',
+              bgWarm: '#fffbeb',
+              bgSoft: '#ecfeff',
+              white: '#ffffff',
+              gradientBrand: 'linear-gradient(135deg, #0891b2 0%, #0d9488 35%, #7c3aed 70%, #f59e0b 100%)',
+              gradientHero: 'linear-gradient(125deg, #0c4a6e 0%, #0891b2 28%, #0d9488 52%, #6366f1 78%, #d97706 100%)',
+              gradientDark: 'linear-gradient(135deg, #0f172a 0%, #134e4a 45%, #312e81 100%)'
+            })
+          }
+        >
+          Restore original teal theme
+        </button>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 12 }}>
           {THEME_KEYS.map(([key, labelText]) => (
             <div key={key}>
