@@ -97,7 +97,7 @@ export default function GalleryAdminPage() {
   return (
     <AdminChrome>
       <h1 style={{ marginTop: 0 }}>Gallery</h1>
-      <p style={{ color: '#64748b', marginTop: 0 }}>Photos and videos upload to <strong>Vercel Blob</strong>. Neon only stores the URL and text.</p>
+      <p style={{ color: '#64748b', marginTop: 0 }}>Upload photos or videos, then save each item with a title and description.</p>
       {msg ? <p style={{ color: '#1d4ed8' }}>{msg}</p> : null}
 
       <section style={card}>
