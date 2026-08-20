@@ -1,14 +1,44 @@
 /**
  * SPEDICS Institute - Data loader & app logic
- * All content loads dynamically from /data/*.json
+ * Prefers live Neon data via /api/public/content; falls back to /data/*.json
  */
 
 const DATA_BASE = 'data';
+const API_BASE = '/api/public/content';
 
 let SITE_SETTINGS = {
   displayFees: false,
   feeContactMessage: 'Contact us for fee details'
 };
+
+/** Absolute Blob/http URLs stay; local paths get a leading /. */
+function publicMediaUrl(url) {
+  if (!url) return '';
+  const s = String(url).trim();
+  if (!s) return '';
+  if (/^(https?:)?\/\//i.test(s) || s.startsWith('data:') || s.startsWith('blob:')) return s;
+  return s.startsWith('/') ? s : `/${s}`;
+}
+
+async function fetchApi(type, extra = {}) {
+  const params = new URLSearchParams({ type, ...extra });
+  const res = await fetch(`${API_BASE}?${params}`, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`API ${type} ${res.status}`);
+  const data = await res.json();
+  if (data.source === 'error' || data.source === 'unavailable') throw new Error(data.error || 'API unavailable');
+  return data;
+}
+
+function normalizeCourse(row) {
+  if (!row) return null;
+  return {
+    ...row,
+    shortTitle: row.shortTitle || row.short_title || row.title,
+    image: publicMediaUrl(row.image) || row.image,
+    isFeatured: row.isFeatured ?? row.is_featured,
+    mode: Array.isArray(row.mode) ? row.mode : (row.mode ? [row.mode] : [])
+  };
+}
 
 function loadSiteSettings(site, fees) {
   const displayFees = typeof site?.displayFees === 'boolean'
@@ -43,23 +73,115 @@ function maskFeeText(text) {
 }
 
 async function fetchJSON(path) {
-  const res = await fetch(`${DATA_BASE}/${path}`);
+  const res = await fetch(`${DATA_BASE}/${path}`, { cache: 'no-store' });
   if (!res.ok) throw new Error(`Failed to load ${path}`);
   return res.json();
 }
 
+async function loadSite() {
+  try {
+    const api = await fetchApi('site');
+    return api.data || {};
+  } catch {
+    return fetchJSON('site.json');
+  }
+}
+
+async function loadContentDoc(key, fallbackPath) {
+  try {
+    const api = await fetchApi('content', { key });
+    if (api.data && Object.keys(api.data).length) return api.data;
+  } catch {
+    /* fall through */
+  }
+  return fetchJSON(fallbackPath);
+}
+
+async function loadCoursesBundle() {
+  try {
+    const api = await fetchApi('courses');
+    const courses = (api.courses || []).map(normalizeCourse);
+    const categories = (api.categories || []).map((c) => ({
+      id: c.id,
+      title: c.name || c.title,
+      courses: c.courses || c.course_ids || []
+    }));
+    return {
+      courses,
+      coursesIndex: {
+        featured: courses.filter((c) => c.isFeatured).map((c) => c.id),
+        categories: categories.length
+          ? categories
+          : [{ id: 'all', title: 'All Courses', courses: courses.map((c) => c.id) }]
+      }
+    };
+  } catch {
+    const coursesIndex = await fetchJSON('courses/courses-index.json');
+    const allIds = [...new Set([
+      ...(coursesIndex.featured || []),
+      ...(coursesIndex.categories || []).flatMap((c) => c.courses)
+    ])];
+    const courses = (await Promise.all(allIds.map(async (id) => {
+      try {
+        return normalizeCourse(await fetchJSON(`courses/${id}.json`));
+      } catch {
+        return null;
+      }
+    }))).filter(Boolean);
+    return { courses, coursesIndex };
+  }
+}
+
 async function loadCourse(id) {
-  return fetchJSON(`courses/${id}.json`);
+  try {
+    const api = await fetchApi('course', { id });
+    if (api.course) return normalizeCourse(api.course);
+  } catch {
+    /* fall through */
+  }
+  return normalizeCourse(await fetchJSON(`courses/${id}.json`));
 }
 
 async function loadAllCourses(ids) {
-  return Promise.all(ids.map(async (id) => {
-    try {
-      return await loadCourse(id);
-    } catch {
-      return null;
-    }
-  }));
+  try {
+    const { courses } = await loadCoursesBundle();
+    const map = Object.fromEntries(courses.map((c) => [c.id, c]));
+    return ids.map((id) => map[id] || null);
+  } catch {
+    return Promise.all(ids.map(async (id) => {
+      try {
+        return await loadCourse(id);
+      } catch {
+        return null;
+      }
+    }));
+  }
+}
+
+async function loadFaq() {
+  try {
+    const api = await fetchApi('faq');
+    return { title: api.title, items: api.items || [] };
+  } catch {
+    return fetchJSON('faq.json');
+  }
+}
+
+async function loadTestimonials() {
+  try {
+    const api = await fetchApi('testimonials');
+    return { items: api.items || [] };
+  } catch {
+    return fetchJSON('testimonials.json');
+  }
+}
+
+async function loadAffiliations() {
+  try {
+    return await fetchApi('affiliations');
+  } catch {
+    return fetchJSON('affiliations.json');
+  }
 }
 
 function badgeClass(badge) {
@@ -103,7 +225,7 @@ function renderCourseCard(course) {
   return `
     <article class="course-card reveal">
       <div class="course-card-image">
-        <img src="${course.image}" alt="${course.title}" loading="lazy">
+        <img src="${publicMediaUrl(course.image) || course.image}" alt="${course.title}" loading="lazy">
         <span class="course-badge ${badgeClass(course.badge)}">${course.badge}</span>
       </div>
       <div class="course-card-body">
@@ -146,12 +268,23 @@ function renderFAQItem(item, index) {
 }
 
 async function loadGuides() {
-  const index = await fetchJSON('guides/index.json');
-  const items = await Promise.all((index.items || []).map((id) => fetchJSON(`guides/${id}.json`)));
-  return { title: index.title, subtitle: index.subtitle, items: items.filter(Boolean) };
+  try {
+    const api = await fetchApi('guides');
+    return { title: api.title, subtitle: api.subtitle, items: api.items || [] };
+  } catch {
+    const index = await fetchJSON('guides/index.json');
+    const items = await Promise.all((index.items || []).map((id) => fetchJSON(`guides/${id}.json`)));
+    return { title: index.title, subtitle: index.subtitle, items: items.filter(Boolean) };
+  }
 }
 
 async function loadGuide(id) {
+  try {
+    const api = await fetchApi('guide', { id });
+    if (api.guide) return api.guide;
+  } catch {
+    /* fall through */
+  }
   return fetchJSON(`guides/${id}.json`);
 }
 
@@ -224,14 +357,31 @@ function renderGuideFAQ(items) {
 }
 
 async function loadGallery() {
-  const index = await fetchJSON('gallery/index.json');
-  const folders = index.items || [];
-  const items = await Promise.all(folders.map(async (folder) => {
-    const data = await fetchJSON(`gallery/${folder}/data.json`);
-    const file = data.file || data.image;
-    return { ...data, folder, src: mediaSrc('gallery', folder, file), sectionTitle: index.title, sectionSubtitle: index.subtitle };
-  }));
-  return { title: index.title, subtitle: index.subtitle, items: items.filter(Boolean) };
+  try {
+    const api = await fetchApi('gallery');
+    const items = (api.items || [])
+      .map((item) => {
+        const src = publicMediaUrl(item.image_url || item.image || item.file || '');
+        if (!src) return null;
+        return {
+          ...item,
+          src,
+          sectionTitle: api.title,
+          sectionSubtitle: api.subtitle
+        };
+      })
+      .filter(Boolean);
+    return { title: api.title, subtitle: api.subtitle, items };
+  } catch {
+    const index = await fetchJSON('gallery/index.json');
+    const folders = index.items || [];
+    const items = await Promise.all(folders.map(async (folder) => {
+      const data = await fetchJSON(`gallery/${folder}/data.json`);
+      const file = data.file || data.image;
+      return { ...data, folder, src: mediaSrc('gallery', folder, file), sectionTitle: index.title, sectionSubtitle: index.subtitle };
+    }));
+    return { title: index.title, subtitle: index.subtitle, items: items.filter(Boolean) };
+  }
 }
 
 function renderCareerCard(role) {
@@ -277,8 +427,9 @@ function isImageFile(path) {
 
 function mediaSrc(collection, folder, file) {
   if (!file) return 'images/placeholders/default.svg';
-  if (/^(https?:)?\/\//i.test(file) || file.includes('/')) return file;
-  return `${DATA_BASE}/${collection}/${folder}/${file}`;
+  if (/^(https?:)?\/\//i.test(file) || file.startsWith('data:') || file.startsWith('blob:')) return file;
+  if (file.includes('/')) return publicMediaUrl(file);
+  return publicMediaUrl(`${DATA_BASE}/${collection}/${folder}/${file}`);
 }
 
 function renderMedia(src, alt, className = 'cert-media') {
@@ -511,9 +662,9 @@ async function initSiteMarquee() {
   if (!track) return;
   try {
     const [admissions, site, fees] = await Promise.all([
-      fetchJSON('admissions.json'),
-      fetchJSON('site.json').catch(() => null),
-      fetchJSON('fees.json').catch(() => null)
+      loadContentDoc('admissions', 'admissions.json'),
+      loadSite().catch(() => null),
+      loadContentDoc('fees', 'fees.json').catch(() => null)
     ]);
     loadSiteSettings(site, fees);
     const messages = (admissions.marquee || []).filter((m) => feesVisible() || !/₹/.test(String(m)));
@@ -796,17 +947,28 @@ function initImageFallbacks() {
 
 async function initHomePage() {
   try {
-    const [site, about, coursesIndex, testimonials, careers, faq, modes, admissions, affiliations, fees] = await Promise.all([
-      fetchJSON('site.json'),
-      fetchJSON('about.json'),
-      fetchJSON('courses/courses-index.json'),
-      fetchJSON('testimonials.json'),
-      fetchJSON('careers.json'),
-      fetchJSON('faq.json'),
-      fetchJSON('learning-modes.json'),
-      fetchJSON('admissions.json'),
-      fetchJSON('affiliations.json'),
-      fetchJSON('fees.json')
+    const [
+      site,
+      about,
+      coursesBundle,
+      testimonials,
+      careers,
+      faq,
+      modes,
+      admissions,
+      affiliations,
+      fees
+    ] = await Promise.all([
+      loadSite(),
+      loadContentDoc('about', 'about.json'),
+      loadCoursesBundle(),
+      loadTestimonials(),
+      loadContentDoc('careers', 'careers.json'),
+      loadFaq(),
+      loadContentDoc('learning-modes', 'learning-modes.json'),
+      loadContentDoc('admissions', 'admissions.json'),
+      loadAffiliations(),
+      loadContentDoc('fees', 'fees.json')
     ]);
 
     loadSiteSettings(site, fees);
@@ -815,12 +977,8 @@ async function initHomePage() {
 
     initHomeSEO(site, faq.items);
 
-    const allCourseIds = [...new Set([
-      ...coursesIndex.featured,
-      ...coursesIndex.categories.flatMap((c) => c.courses)
-    ])];
-    const courses = (await loadAllCourses(allCourseIds)).filter(Boolean).map((c) => applyFeeData(c, fees));
-    const courseMap = Object.fromEntries(courses.map((c) => [c.id, c]));
+    const courses = (coursesBundle.courses || []).map((c) => applyFeeData(c, fees));
+    const coursesIndex = coursesBundle.coursesIndex;
 
     // Topbar & contact
     setText('data-phone', site.contact.phone);
@@ -896,15 +1054,14 @@ async function initHomePage() {
     }
 
     // Client request: remove the certificates card/content from the Recognition section on the homepage.
-    // Affiliations remain dynamic via `data/affiliations.json`.
     const certGrid = document.getElementById('certificates-grid');
     if (certGrid) certGrid.innerHTML = '';
 
     const affList = document.getElementById('affiliation-list');
     if (affList) {
-      affList.innerHTML = affiliations.affiliations.map((a) => `
+      affList.innerHTML = (affiliations.affiliations || []).map((a) => `
         <div class="affiliation-item reveal">
-          <img class="affiliation-logo${a.logo.includes('official-seal') ? ' affiliation-logo--contain' : ''}" src="${a.logo}" alt="${a.name} logo" loading="lazy">
+          <img class="affiliation-logo${(a.logo || '').includes('official-seal') ? ' affiliation-logo--contain' : ''}" src="${publicMediaUrl(a.logo)}" alt="${a.name} logo" loading="lazy">
           <div>
             <strong>${a.name}</strong>
             <p style="font-size:0.85rem;color:var(--text-muted);margin-top:0.25rem">
@@ -916,9 +1073,9 @@ async function initHomePage() {
 
     const affStrip = document.getElementById('affiliation-strip');
     if (affStrip) {
-      affStrip.innerHTML = affiliations.affiliations.map((a) => `
+      affStrip.innerHTML = (affiliations.affiliations || []).map((a) => `
         <div class="affiliation-strip-item reveal">
-          <img src="${a.logo}" alt="${a.name}" loading="lazy">
+          <img src="${publicMediaUrl(a.logo)}" alt="${a.name}" loading="lazy">
           <span>${a.name.replace(/\s*\([^)]*\)\s*/g, ' ').trim()}</span>
         </div>`).join('');
     }
@@ -930,9 +1087,9 @@ async function initHomePage() {
 
     // Testimonials
     const testTrack = document.getElementById('testimonials-track');
-    if (testTrack) testTrack.innerHTML = testimonials.items.map(renderTestimonial).join('');
+    if (testTrack) testTrack.innerHTML = (testimonials.items || []).map(renderTestimonial).join('');
 
-    // Gallery — loaded dynamically from data/gallery/<folder>/
+    // Gallery — live from admin / Neon
     const gallery = await loadGallery();
     setText('gallery-title', gallery.title);
     setText('gallery-subtitle', gallery.subtitle);
@@ -942,7 +1099,7 @@ async function initHomePage() {
       initGalleryLightbox(gallery.items);
     }
 
-    // Guides — AI-search / GEO content pages
+    // Guides
     const guides = await loadGuides();
     setText('guides-title', guides.title);
     setText('guides-subtitle', guides.subtitle);
@@ -984,14 +1141,16 @@ async function initCoursePage() {
   }
 
   try {
-    const [courseRaw, site, coursesIndex, fees] = await Promise.all([
+    const [courseRaw, site, coursesBundle, fees] = await Promise.all([
       loadCourse(id),
-      fetchJSON('site.json'),
-      fetchJSON('courses/courses-index.json'),
-      fetchJSON('fees.json')
+      loadSite(),
+      loadCoursesBundle(),
+      loadContentDoc('fees', 'fees.json')
     ]);
     loadSiteSettings(site, fees);
     const course = applyFeeData(courseRaw, fees);
+    const coursesIndex = coursesBundle.coursesIndex;
+    const allCourses = (coursesBundle.courses || []).map((c) => applyFeeData(c, fees));
 
     document.title = `${course.title} | ${site.shortName}`;
 
@@ -1040,15 +1199,13 @@ async function initCoursePage() {
 
     const modulesList = document.getElementById('modules-list');
     if (modulesList) {
-      modulesList.innerHTML = course.modules.map((m, i) => `
+      modulesList.innerHTML = (course.modules || []).map((m, i) => `
         <div class="module-item">
           <span class="module-num">${String(i + 1).padStart(2, '0')}</span>
           <span>${m}</span>
         </div>`).join('');
     }
 
-    const allIds = coursesIndex.categories.flatMap((c) => c.courses);
-    const allCourses = (await loadAllCourses(allIds)).filter(Boolean).map((c) => applyFeeData(c, fees));
     const dropdown = document.getElementById('courses-dropdown');
     if (dropdown) {
       dropdown.innerHTML = allCourses.map((c) =>
@@ -1081,11 +1238,11 @@ async function initGuidePage() {
   }
 
   try {
-    const [guide, site, coursesIndex, fees] = await Promise.all([
+    const [guide, site, coursesBundle, fees] = await Promise.all([
       loadGuide(id),
-      fetchJSON('site.json'),
-      fetchJSON('courses/courses-index.json'),
-      fetchJSON('fees.json')
+      loadSite(),
+      loadCoursesBundle(),
+      loadContentDoc('fees', 'fees.json')
     ]);
 
     loadSiteSettings(site, fees);
@@ -1104,8 +1261,7 @@ async function initGuidePage() {
       ].join('');
     }
 
-    const allIds = coursesIndex.categories.flatMap((c) => c.courses);
-    const allCourses = (await loadAllCourses(allIds)).filter(Boolean).map((c) => applyFeeData(c, fees));
+    const allCourses = (coursesBundle.courses || []).map((c) => applyFeeData(c, fees));
     const courseMap = Object.fromEntries(allCourses.map((c) => [c.id, c]));
 
     const relatedCoursesBox = document.getElementById('guide-related-courses');
