@@ -1,0 +1,30 @@
+{
+  "name": "spedics",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "seed:generate": "node scripts/generate-seed.mjs",
+    "db:schema": "node scripts/run-sql.mjs db/schema.sql",
+    "db:seed": "node scripts/run-sql.mjs db/seed.sql",
+    "db:setup": "npm run db:schema && npm run db:seed"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "bcryptjs": "^2.4.3",
+    "jose": "^5.9.6",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "pg": "^8.23.0",
+    "typescript": "^5.7.2"
+  }
+}
