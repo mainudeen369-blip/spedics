@@ -18,15 +18,18 @@ function json(data: unknown, status = 200) {
 }
 
 function blobAuthOptions() {
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
-  const storeId =
+  const token = (process.env.BLOB_READ_WRITE_TOKEN || '').replace(/\r/g, '') || undefined;
+  const storeId = (
     process.env.BLOB_STORE_ID ||
-    process.env.BLOB_READ_WRITE_TOKEN_STORE_ID;
-  const oidcToken = process.env.VERCEL_OIDC_TOKEN;
+    process.env.BLOB_READ_WRITE_TOKEN_STORE_ID ||
+    ''
+  ).replace(/\r/g, '') || undefined;
+  const oidcToken = (process.env.VERCEL_OIDC_TOKEN || '').replace(/\r/g, '') || undefined;
   const opts: { token?: string; storeId?: string; oidcToken?: string } = {};
+  // Prefer static RW token (works in all environments); OIDC only if no token
   if (token) opts.token = token;
   if (storeId) opts.storeId = storeId;
-  if (oidcToken && !token) opts.oidcToken = oidcToken;
+  if (!token && oidcToken) opts.oidcToken = oidcToken;
   return opts;
 }
 
