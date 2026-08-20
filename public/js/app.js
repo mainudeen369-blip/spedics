@@ -359,18 +359,16 @@ function renderGuideFAQ(items) {
 async function loadGallery() {
   try {
     const api = await fetchApi('gallery');
-    const items = (api.items || [])
-      .map((item) => {
-        const src = publicMediaUrl(item.image_url || item.image || item.file || '');
-        if (!src) return null;
-        return {
-          ...item,
-          src,
-          sectionTitle: api.title,
-          sectionSubtitle: api.subtitle
-        };
-      })
-      .filter(Boolean);
+    const items = (api.items || []).map((item) => {
+      const raw = item.image_url || item.image || item.file || '';
+      const src = publicMediaUrl(raw) || 'images/placeholders/default.svg';
+      return {
+        ...item,
+        src,
+        sectionTitle: api.title,
+        sectionSubtitle: api.subtitle
+      };
+    });
     return { title: api.title, subtitle: api.subtitle, items };
   } catch {
     const index = await fetchJSON('gallery/index.json');
