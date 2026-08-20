@@ -19,6 +19,13 @@ function isVideoUrl(url?: string) {
   return /\.(mp4|webm|mov)(\?|$)/i.test(url) || url.includes('video');
 }
 
+/** Local folder paths in DB need a leading /; Blob/https URLs stay as-is. */
+function mediaSrc(url?: string) {
+  if (!url) return '';
+  if (/^https?:\/\//i.test(url) || url.startsWith('data:') || url.startsWith('blob:')) return url;
+  return url.startsWith('/') ? url : `/${url}`;
+}
+
 export default function GalleryAdminPage() {
   const [meta, setMeta] = useState({ title: '', subtitle: '' });
   const [items, setItems] = useState<GalleryItem[]>([]);
@@ -134,10 +141,10 @@ export default function GalleryAdminPage() {
           {form.image_url ? (
             <div style={{ marginTop: 10 }}>
               {isVideoUrl(form.image_url) ? (
-                <video src={form.image_url} controls style={{ maxWidth: '100%', maxHeight: 180, borderRadius: 8 }} />
+                <video src={mediaSrc(form.image_url)} controls style={{ maxWidth: '100%', maxHeight: 180, borderRadius: 8 }} />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={form.image_url} alt="" style={{ maxWidth: '100%', maxHeight: 180, borderRadius: 8, objectFit: 'cover' }} />
+                <img src={mediaSrc(form.image_url)} alt="" style={{ maxWidth: '100%', maxHeight: 180, borderRadius: 8, objectFit: 'cover' }} />
               )}
             </div>
           ) : null}
@@ -159,10 +166,10 @@ export default function GalleryAdminPage() {
           {items.map((item) => (
             <div key={item.id} style={{ display: 'grid', gridTemplateColumns: '96px 1fr auto', gap: 12, alignItems: 'center', border: '1px solid #e2e8f0', borderRadius: 12, padding: 10 }}>
               {isVideoUrl(item.image_url) ? (
-                <video src={item.image_url} style={{ width: 96, height: 64, objectFit: 'cover', borderRadius: 8, background: '#e2e8f0' }} />
+                <video src={mediaSrc(item.image_url)} style={{ width: 96, height: 64, objectFit: 'cover', borderRadius: 8, background: '#e2e8f0' }} />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={item.image_url || ''} alt="" style={{ width: 96, height: 64, objectFit: 'cover', borderRadius: 8, background: '#e2e8f0' }} />
+                <img src={mediaSrc(item.image_url)} alt="" style={{ width: 96, height: 64, objectFit: 'cover', borderRadius: 8, background: '#e2e8f0' }} />
               )}
               <div>
                 <strong>{item.title}</strong>
