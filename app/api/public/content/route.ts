@@ -66,7 +66,7 @@ export async function GET(req: Request) {
 
     if (type === 'testimonials') {
       const items = await sql`
-        SELECT id, name, role, text, rating, avatar
+        SELECT id, name, location, course, quote, avatar
         FROM testimonials WHERE is_published = TRUE ORDER BY sort_order ASC
       `;
       return json({ source: 'db', items });

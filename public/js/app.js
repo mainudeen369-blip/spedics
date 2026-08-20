@@ -244,7 +244,7 @@ function renderTestimonial(item) {
     <div class="testimonial-card">
       <p class="testimonial-quote">${item.quote}</p>
       <div class="testimonial-author">
-        <div class="testimonial-avatar"><img src="${item.avatar}" alt="${item.name}"></div>
+        <div class="testimonial-avatar"><img src="${publicMediaUrl(item.avatar) || item.avatar}" alt="${item.name}"></div>
         <div>
           <div class="testimonial-name">${item.name}</div>
           <div class="testimonial-meta">${item.location} · ${item.course}</div>
