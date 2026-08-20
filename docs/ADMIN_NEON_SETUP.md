@@ -57,9 +57,10 @@ npm run dev
 - Push to `main`
 
 ## 6. Photos & videos (Vercel Blob)
-1. Vercel Dashboard → **Storage** → **Blob** → Create store
-2. Copy the **read-write** token into `.env.local` and Vercel env as `BLOB_READ_WRITE_TOKEN`
-3. Redeploy / restart `npm run dev`
-4. Admin → Gallery → upload file
+1. Create a Blob store in Vercel (**Public** is simplest for a public gallery; **Private** also works — this project serves private files via `/api/public/media`).
+2. Connect the store to project **spedics** (Production + Preview + Development).
+3. Env used: `BLOB_STORE_ID` / `BLOB_READ_WRITE_TOKEN_STORE_ID` (and optional `BLOB_READ_WRITE_TOKEN`). On Vercel, OIDC auth is used automatically.
+4. Local: `npx vercel env pull .env.local` then restart `npm run dev`
+5. Admin → Gallery → upload → Save
 
-**Without the token:** local `npm run dev` saves into `public/uploads/`; on Vercel, small images can use a temporary data-URL fallback. Videos/large files need Blob.
+See also: `docs/MOVE_TO_CLIENT_ACCOUNT.md`.

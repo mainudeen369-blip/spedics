@@ -18,7 +18,8 @@ type Notice = { kind: 'info' | 'success' | 'error'; text: string } | null;
 
 function isVideoUrl(url?: string) {
   if (!url) return false;
-  return /\.(mp4|webm|mov)(\?|$)/i.test(url) || url.includes('video') || url.startsWith('data:video');
+  const check = url.includes('pathname=') ? decodeURIComponent(url) : url;
+  return /\.(mp4|webm|mov)(\?|$)/i.test(check) || check.includes('video') || check.startsWith('data:video');
 }
 
 /** Local folder paths in DB need a leading /; Blob/https/data URLs stay as-is. */
