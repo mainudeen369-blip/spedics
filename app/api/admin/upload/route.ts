@@ -156,6 +156,16 @@ export async function POST(req: Request) {
     if (err instanceof Error && err.message === 'UNAUTHORIZED') {
       return json({ error: 'Unauthorized' }, 401);
     }
-    return json({ error: String(err) }, 500);
+    const msg = String(err);
+    if (msg.includes('OIDC is enabled') && msg.includes('development')) {
+      return json(
+        {
+          error:
+            'Blob OIDC is not enabled for Development. In Vercel: Storage → spedics-blob → Projects → ⋯ (spedics) → Update Project Connection → enable Development + Preview + Production → Save. Then run: npx vercel env pull .env.local and restart npm run dev.'
+        },
+        503
+      );
+    }
+    return json({ error: msg }, 500);
   }
 }
