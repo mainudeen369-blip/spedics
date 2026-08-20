@@ -56,6 +56,9 @@ npm run dev
 - Add the same env vars in Vercel project settings
 - Push to `main`
 
-## Notes
-- Until Neon is connected, the public site still works from `public/data/*.json`.
-- After seeding, admin changes live in Postgres; public API: `/api/public/content?type=gallery` etc.
+## 6. Photos & videos (Vercel Blob)
+1. Vercel Dashboard → **Storage** → **Blob** → Create store
+2. Copy the **read-write** token into `.env.local` and Vercel env as `BLOB_READ_WRITE_TOKEN`
+3. Admin → Gallery → upload file (saved to Blob; Neon stores the URL only)
+
+See also: `docs/MOVE_TO_CLIENT_ACCOUNT.md` (moving Neon/Vercel to the client later).
