@@ -32,7 +32,7 @@
         {
           "criterion": "Affiliation and certificate details",
           "detail": "Verify the affiliating organisation and whether the certificate number is traceable.",
-          "spedics": "SPEDICS certificates are issued with MMFRC affiliation (No. 2011/MMFRC/036)."
+          "spedics": "Certificates are issued with MMFRC (MARIA MONTESSORI FOUNDATION RESEARCH CENTRE) affiliation (No. 2011/MMFRC/036)."
         }
       ]
     },
@@ -79,7 +79,7 @@
     },
     {
       "question": "Is SPEDICS Montessori training affiliated?",
-      "answer": "Yes. SPEDICS is affiliated with MMFRC. Certification of Recognition details are available on the website."
+      "answer": "Yes. We are affiliated with MMFRC (MARIA MONTESSORI FOUNDATION RESEARCH CENTRE). Certification of Recognition details are available on the website."
     }
   ]
 }

@@ -155,6 +155,11 @@ async function loadGuide(id) {
   return fetchJSON(`guides/${id}.json`);
 }
 
+function formatGuideSpedicsNote(text) {
+  if (!text) return text;
+  return maskFeeText(text).replace(/^SPEDICS\s+/i, '');
+}
+
 function renderGuideCard(guide) {
   return `
     <article class="guide-card reveal">
@@ -175,7 +180,7 @@ function renderGuideSection(section) {
             <div class="guide-check-item">
               <h3>${item.criterion}</h3>
               <p><strong>What to check:</strong> ${maskFeeText(item.detail)}</p>
-              <p class="guide-spedics-note"><strong>At SPEDICS:</strong> ${maskFeeText(item.spedics)}</p>
+              <p class="guide-spedics-note"><strong>At SPEDICS:</strong> ${formatGuideSpedicsNote(item.spedics)}</p>
             </div>`).join('')}
         </div>
       </section>`;
@@ -714,7 +719,7 @@ function setupCourseApplyLinks(site, course) {
   const phone = whatsappPhone(site);
   const applyText = courseApplyMessage(course, site);
   const counsellorText = courseCounsellorMessage(course, site);
-  const email = site.contact?.email || 'Spedicsmont@gmail.com';
+  const email = site.contact?.email || 'spedicsmont@gmail.com';
   const applyWa = whatsappUrl(phone, applyText);
   const counsellorWa = whatsappUrl(phone, counsellorText);
   const applyMail = mailtoUrl(email, `Course Enquiry – ${course.title}`, applyText.replace(/\*/g, ''));

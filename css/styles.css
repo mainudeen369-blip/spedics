@@ -1251,6 +1251,13 @@ body.gallery-lightbox-open { overflow: hidden; }
   border-radius: 8px;
   margin-bottom: 0 !important;
 }
+.guide-mode-highlight {
+  color: var(--primary-dark);
+  font-weight: 800;
+  background: rgba(8, 145, 178, 0.14);
+  padding: 0.08em 0.35em;
+  border-radius: 4px;
+}
 .guide-list {
   padding-left: 1.25rem;
   color: var(--text-muted);

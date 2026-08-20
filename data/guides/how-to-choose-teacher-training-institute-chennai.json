@@ -12,12 +12,12 @@
         {
           "criterion": "Affiliation and certificate recognition",
           "detail": "Check whether certificates are issued with a recognised affiliation number and whether the institute can show proof of affiliation.",
-          "spedics": "SPEDICS is affiliated with MMFRC (Montessori & Modern Future Resource Centre). Our MMFRC Certification of Recognition is published on the website."
+          "spedics": "We are affiliated with MMFRC (MARIA MONTESSORI FOUNDATION RESEARCH CENTRE). Our MMFRC Certification of Recognition is published on the website."
         },
         {
           "criterion": "Practical, classroom-focused training",
           "detail": "Teacher training should include demonstrations, lesson planning practice and real classroom strategies — not only theory handouts.",
-          "spedics": "SPEDICS emphasises practical learning with classroom demonstrations, Montessori materials, phonics workshops and guided teaching practice."
+          "spedics": "We emphasise practical learning with classroom demonstrations, Montessori materials, phonics workshops and guided teaching practice."
         },
         {
           "criterion": "Course duration and fee transparency",
@@ -27,7 +27,7 @@
         {
           "criterion": "Online, offline and hybrid options",
           "detail": "Working teachers and homemakers often need flexible modes. Confirm whether live classes, recordings and in-person sessions are available.",
-          "spedics": "SPEDICS offers online, offline and hybrid modes across programmes."
+          "spedics": "We offer <strong class=\"guide-mode-highlight\">online</strong>, offline and hybrid modes across programmes."
         },
         {
           "criterion": "Eligibility and counselling",
@@ -37,7 +37,7 @@
         {
           "criterion": "Location and accessibility",
           "detail": "If you prefer offline classes, consider travel time, parking and whether the centre is reachable from your area.",
-          "spedics": "SPEDICS is located at 4021, 6th Main Road, Ayapakkam, Chennai – 600077 — convenient for north Chennai areas including Ambattur, Avadi, Padi and Mogappair."
+          "spedics": "We are located at 4021, 6th Main Road, Ayapakkam, Chennai – 600077 — convenient for north Chennai areas including Ambattur, Avadi, Padi and Mogappair."
         },
         {
           "criterion": "Trainer guidance and assessments",
@@ -47,7 +47,7 @@
       ]
     },
     {
-      "heading": "Who is teacher training in Chennai suitable for?",
+      "heading": "Who can enrol?",
       "type": "list",
       "items": [
         "Graduates and 10+2 pass students entering education careers",
