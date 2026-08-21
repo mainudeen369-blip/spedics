@@ -159,9 +159,29 @@ async function main() {
   if (r.status === 200 && r.data?.data) pass('Content GET admissions');
   else fail('Content GET admissions', `${r.status} ${JSON.stringify(r.data)}`);
 
-  r = await req('PUT', '/api/admin/content', { key: 'admissions', data: r.data.data });
-  if (r.status === 200 && r.data?.ok) pass('Content PUT admissions');
-  else fail('Content PUT admissions', `${r.status} ${JSON.stringify(r.data)}`);
+  const admissionsBefore = r.data.data;
+  const patched = {
+    ...admissionsBefore,
+    title: admissionsBefore.title || 'Admission Process',
+    courseFee: admissionsBefore.courseFee || ''
+  };
+  r = await req('PUT', '/api/admin/content', { key: 'admissions', data: patched });
+  if (r.status === 200 && r.data?.ok) pass('Content PUT admissions (form-shaped)');
+  else fail('Content PUT admissions (form-shaped)', `${r.status} ${JSON.stringify(r.data)}`);
+
+  // 13b) Reset scoped content from public/data
+  r = await req('POST', '/api/admin/reset', { scope: 'content:admissions' });
+  if (r.status === 200 && r.data?.ok) pass('Reset content:admissions');
+  else fail('Reset content:admissions', `${r.status} ${JSON.stringify(r.data)}`);
+
+  r = await req('GET', '/api/admin/content?key=admissions');
+  if (r.status === 200 && r.data?.data?.title) pass('Admissions after reset', r.data.data.title);
+  else fail('Admissions after reset', `${r.status} ${JSON.stringify(r.data)}`);
+
+  // 13c) Reset FAQ round-trip (restore folder defaults)
+  r = await req('POST', '/api/admin/reset', { scope: 'faq' });
+  if (r.status === 200 && r.data?.ok) pass('Reset faq', `count=${r.data?.result?.count}`);
+  else fail('Reset faq', `${r.status} ${JSON.stringify(r.data)}`);
 
   // 14) Public API
   r = await req('GET', '/api/public/content?type=gallery');

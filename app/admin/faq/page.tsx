@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { AdminChrome } from '../_components/AdminChrome';
+import { AdminResetButton } from '../_components/AdminResetButton';
 
 type Faq = { id?: string; question: string; answer: string; answer_with_fees?: string };
 
@@ -32,7 +33,10 @@ export default function FaqAdminPage() {
 
   return (
     <AdminChrome>
-      <h1 style={{ marginTop: 0 }}>FAQ</h1>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <h1 style={{ marginTop: 0 }}>FAQ</h1>
+        <AdminResetButton scope="faq" label="Reset FAQ to default" onDone={() => load().catch((e) => setMsg(e.message))} />
+      </div>
       {msg ? <p style={{ color: '#1d4ed8' }}>{msg}</p> : null}
       <button style={btn} type="button" onClick={() => setItems([...items, { question: '', answer: '' }])}>Add question</button>
       <button style={{ ...btn, marginLeft: 8, background: '#0f172a' }} type="button" onClick={saveAll}>Save all</button>

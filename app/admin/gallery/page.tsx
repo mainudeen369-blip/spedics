@@ -10,6 +10,7 @@ import {
   RECOMMENDED_GALLERY_ITEMS,
   validateMediaFile
 } from '@/lib/media-limits';
+import { AdminResetButton } from '../_components/AdminResetButton';
 
 type GalleryItem = {
   id: string;
@@ -305,8 +306,18 @@ export default function GalleryAdminPage() {
         </div>
       ) : null}
 
-      <h1 style={{ marginTop: 0 }}>Gallery</h1>
-      <p style={{ color: '#64748b', marginTop: 0 }}>Upload photos or videos, then save each item with a title and description.</p>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <div>
+          <h1 style={{ marginTop: 0, marginBottom: 6 }}>Gallery</h1>
+          <p style={{ color: '#64748b', marginTop: 0 }}>Upload photos or videos, then save each item with a title and description.</p>
+        </div>
+        <AdminResetButton
+          scope="gallery"
+          label="Reset gallery to default"
+          confirmText="Reset gallery from public/data/gallery folders? Custom Blob uploads will be replaced by seed folder images."
+          onDone={() => load()}
+        />
+      </div>
 
       <div
         style={{

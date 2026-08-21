@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { AdminChrome } from '../_components/AdminChrome';
+import { AdminResetButton } from '../_components/AdminResetButton';
+import { DEFAULT_TEAL_THEME } from '@/lib/default-theme';
 
 const THEME_KEYS = [
   ['primary', 'Primary'],
@@ -44,7 +46,21 @@ export default function SiteAdminPage() {
 
   return (
     <AdminChrome>
-      <h1 style={{ marginTop: 0 }}>Site & Colours</h1>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <h1 style={{ marginTop: 0 }}>Site & Colours</h1>
+        <AdminResetButton
+          scope="site"
+          label="Reset site to default"
+          confirmText="Reset site contact/brand text and teal theme from public/data/site.json?"
+          onDone={async () => {
+            const r = await fetch('/api/admin/site');
+            const d = await r.json();
+            setData(d.data || {});
+            setTheme(d.theme || {});
+            setMsg('Reloaded after reset');
+          }}
+        />
+      </div>
       {msg ? <p style={{ color: '#1d4ed8' }}>{msg}</p> : null}
 
       <section style={card}>
@@ -87,29 +103,7 @@ export default function SiteAdminPage() {
         <button
           type="button"
           style={{ ...btn, background: '#0d9488', marginBottom: 12 }}
-          onClick={() =>
-            setTheme({
-              primary: '#0d9488',
-              primaryLight: '#22d3ee',
-              primaryDark: '#0f766e',
-              accent: '#f59e0b',
-              accentLight: '#fbbf24',
-              violet: '#7c3aed',
-              violetLight: '#a78bfa',
-              coral: '#f97316',
-              dark: '#0f172a',
-              darkSoft: '#334155',
-              text: '#1e293b',
-              textMuted: '#64748b',
-              bg: '#f0fdfa',
-              bgWarm: '#fffbeb',
-              bgSoft: '#ecfeff',
-              white: '#ffffff',
-              gradientBrand: 'linear-gradient(135deg, #0891b2 0%, #0d9488 35%, #7c3aed 70%, #f59e0b 100%)',
-              gradientHero: 'linear-gradient(125deg, #0c4a6e 0%, #0891b2 28%, #0d9488 52%, #6366f1 78%, #d97706 100%)',
-              gradientDark: 'linear-gradient(135deg, #0f172a 0%, #134e4a 45%, #312e81 100%)'
-            })
-          }
+          onClick={() => setTheme({ ...DEFAULT_TEAL_THEME })}
         >
           Restore original teal theme
         </button>

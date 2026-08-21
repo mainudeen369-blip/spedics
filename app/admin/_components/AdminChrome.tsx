@@ -10,7 +10,7 @@ const NAV = [
   { href: '/admin/courses', label: 'Courses' },
   { href: '/admin/faq', label: 'FAQ' },
   { href: '/admin/site', label: 'Site & Colours' },
-  { href: '/admin/content', label: 'Content JSON' }
+  { href: '/admin/content', label: 'Content' }
 ];
 
 export function AdminChrome({ children }: { children: React.ReactNode }) {

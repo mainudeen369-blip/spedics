@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { AdminChrome } from '../_components/AdminChrome';
+import { AdminResetButton } from '../_components/AdminResetButton';
 
 type Course = {
   id: string;
@@ -57,7 +58,17 @@ export default function CoursesAdminPage() {
 
   return (
     <AdminChrome>
-      <h1 style={{ marginTop: 0 }}>Courses</h1>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <h1 style={{ marginTop: 0 }}>Courses</h1>
+        <AdminResetButton
+          scope="courses"
+          label="Reset courses to default"
+          onDone={async () => {
+            setSelected(null);
+            await load().catch((e) => setMsg(e.message));
+          }}
+        />
+      </div>
       {msg ? <p style={{ color: '#1d4ed8' }}>{msg}</p> : null}
       <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: 16 }}>
         <div style={card}>
