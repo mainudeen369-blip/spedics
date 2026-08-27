@@ -12,7 +12,8 @@ const CONTENT_FILES: Array<[string, string]> = [
   ['learning-modes', 'learning-modes.json'],
   ['careers', 'careers.json'],
   ['affiliations-meta', 'affiliations.json'],
-  ['certificates-index', 'certificates/index.json']
+  ['certificates-index', 'certificates/index.json'],
+  ['homepage-sections', 'homepage-sections.json']
 ];
 
 export type ResetScope =
@@ -24,6 +25,7 @@ export type ResetScope =
   | 'testimonials'
   | 'affiliations'
   | 'guides'
+  | 'homepage-sections'
   | 'all'
   | `content:${string}`;
 
@@ -270,6 +272,10 @@ export async function resetAffiliations(sql: Sql) {
   return { count: (aff.affiliations || []).length };
 }
 
+export async function resetHomepageSections(sql: Sql) {
+  return resetContentDoc(sql, 'homepage-sections');
+}
+
 export async function applyReset(sql: Sql, scope: ResetScope) {
   if (scope === 'site') return { scope, result: await resetSite(sql) };
   if (scope === 'faq') return { scope, result: await resetFaq(sql) };
@@ -279,6 +285,7 @@ export async function applyReset(sql: Sql, scope: ResetScope) {
   if (scope === 'testimonials') return { scope, result: await resetTestimonials(sql) };
   if (scope === 'affiliations') return { scope, result: await resetAffiliations(sql) };
   if (scope === 'guides') return { scope, result: await resetGuides(sql) };
+  if (scope === 'homepage-sections') return { scope, result: await resetHomepageSections(sql) };
   if (scope.startsWith('content:')) {
     const key = scope.slice('content:'.length);
     return { scope, result: await resetContentDoc(sql, key) };
@@ -307,5 +314,6 @@ export const RESET_SCOPES = [
   'testimonials',
   'affiliations',
   'guides',
+  'homepage-sections',
   'all'
 ] as const;

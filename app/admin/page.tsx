@@ -13,6 +13,7 @@ export default function AdminDashboard() {
       </p>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 16, marginTop: 24 }}>
         {[
+          ['Section order', '/admin/sections', 'Drag homepage sections (Welcome, Vision, Courses…)'],
           ['Gallery', '/admin/gallery', 'Add / edit / remove gallery photos'],
           ['Courses', '/admin/courses', 'Titles, badges, fees, modes'],
           ['FAQ', '/admin/faq', 'Questions and answers'],
@@ -56,6 +57,7 @@ export default function AdminDashboard() {
             [
               ['site', 'Site & theme'],
               ['content', 'All content docs'],
+              ['homepage-sections', 'Section order'],
               ['courses', 'Courses'],
               ['faq', 'FAQ'],
               ['gallery', 'Gallery'],

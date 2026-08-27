@@ -1721,6 +1721,15 @@ body.gallery-lightbox-open { overflow: hidden; }
   max-width: 900px;
   margin: 0 auto;
 }
+
+/* When Vision & Mission sits under Welcome, tighten the gap between the two white bands */
+#welcome:has(+ #vision-mission) {
+  padding-bottom: clamp(1.25rem, 3vw, 2.25rem);
+}
+#welcome + #vision-mission {
+  padding-top: clamp(0.75rem, 2vw, 1.5rem);
+}
+
 #why-choose .why-grid { margin-top: 0; }
 
 /* Nature of training */

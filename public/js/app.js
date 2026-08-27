@@ -128,6 +128,61 @@ async function loadContentDoc(key, fallbackPath) {
   return fetchJSON(fallbackPath);
 }
 
+/** Default homepage section order (ids match index.html). Vision & Mission sits under Welcome. */
+const DEFAULT_HOMEPAGE_SECTION_ORDER = [
+  'home',
+  'welcome',
+  'vision-mission',
+  'about',
+  'why-choose',
+  'certificates',
+  'modes',
+  'nature-training',
+  'who-can-join',
+  'careers',
+  'courses',
+  'fees',
+  'faq',
+  'testimonials',
+  'affiliation-logos',
+  'gallery',
+  'guides',
+  'admission-process',
+  'contact'
+];
+
+function normalizeHomepageSectionOrder(order) {
+  const known = new Set(DEFAULT_HOMEPAGE_SECTION_ORDER);
+  const seen = new Set();
+  const next = [];
+  if (Array.isArray(order)) {
+    order.forEach((id) => {
+      if (typeof id !== 'string' || !known.has(id) || seen.has(id)) return;
+      next.push(id);
+      seen.add(id);
+    });
+  }
+  DEFAULT_HOMEPAGE_SECTION_ORDER.forEach((id) => {
+    if (!seen.has(id)) next.push(id);
+  });
+  return next;
+}
+
+/** Reorder <main> sections without changing markup/styles — keeps mobile layout intact. */
+function applyHomepageSectionOrder(order) {
+  const main = document.getElementById('main-content');
+  if (!main) return;
+  const ids = normalizeHomepageSectionOrder(order);
+  const frag = document.createDocumentFragment();
+  ids.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el && el.parentElement === main) frag.appendChild(el);
+  });
+  // Keep any unexpected main children after known sections
+  Array.from(main.children).forEach((child) => frag.appendChild(child));
+  main.appendChild(frag);
+}
+
 async function loadCoursesBundle() {
   try {
     const api = await fetchApi('courses');
@@ -986,7 +1041,8 @@ async function initHomePage() {
       modes,
       admissions,
       affiliations,
-      fees
+      fees,
+      homepageSections
     ] = await Promise.all([
       loadSite(),
       loadContentDoc('about', 'about.json'),
@@ -997,9 +1053,13 @@ async function initHomePage() {
       loadContentDoc('learning-modes', 'learning-modes.json'),
       loadContentDoc('admissions', 'admissions.json'),
       loadAffiliations(),
-      loadContentDoc('fees', 'fees.json')
+      loadContentDoc('fees', 'fees.json'),
+      loadContentDoc('homepage-sections', 'homepage-sections.json').catch(() => ({
+        order: DEFAULT_HOMEPAGE_SECTION_ORDER
+      }))
     ]);
 
+    applyHomepageSectionOrder(homepageSections?.order);
     loadSiteSettings(site, fees);
 
     document.title = `${site.name} | ${site.tagline}`;

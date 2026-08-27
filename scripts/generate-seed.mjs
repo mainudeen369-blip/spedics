@@ -75,7 +75,8 @@ const contentKeys = [
   ['learning-modes', 'learning-modes.json'],
   ['careers', 'careers.json'],
   ['affiliations-meta', 'affiliations.json'],
-  ['certificates-index', 'certificates/index.json']
+  ['certificates-index', 'certificates/index.json'],
+  ['homepage-sections', 'homepage-sections.json']
 ];
 lines.push('-- content_docs');
 for (const [key, file] of contentKeys) {
