@@ -25,91 +25,91 @@ INSERT INTO content_docs (key, data) VALUES ('homepage-sections', $json${"order"
 INSERT INTO courses (id, title, short_title, badge, description, image, duration, eligibility, mode, fee, packages, modules, schedule, sort_order, is_featured, is_published)
 VALUES (
   'montessori-teacher-training', 'Diploma in Montessori Teacher Training', 'Montessori Teacher Training', 'Montessori Teacher',
-  'A structured programme designed to develop practical knowledge and skills in Montessori education, preparing educators for child-centred classrooms worldwide.', 'images/courses/montessori-teacher-training.png', '3 / 6 / 12 months', '10+2 or equivalent; passion for early childhood education',
+  'A structured programme designed to develop practical knowledge and skills in Montessori education, preparing educators for child-centred classrooms worldwide.', 'images/courses/montessori-teacher-training.jpg', '3 / 6 / 12 months', '10+2 or equivalent; passion for early childhood education',
   $json$["Online","Offline","Hybrid"]$json$::jsonb, '₹10,000 – ₹35,000', $json$[{"name":"Certified","duration":"3 months","fee":"₹10,000"},{"name":"Diploma","duration":"6 months","fee":"₹15,000"},{"name":"PG Diploma","duration":"12 months","fee":"₹35,000"}]$json$::jsonb, $json$["Montessori Philosophy & History","Child Development","Practical Life","Sensorial Education","Montessori Language","Montessori Mathematics","Cultural Activities","Creative Activities","Classroom Management","Lesson Planning","Observation & Documentation","Teaching Practice"]$json$::jsonb,
   NULL, 0, true, TRUE
 );
 INSERT INTO courses (id, title, short_title, badge, description, image, duration, eligibility, mode, fee, packages, modules, schedule, sort_order, is_featured, is_published)
 VALUES (
   'child-psychology-development', 'Diploma in Child Psychology & Child Development', 'Child Psychology & Development', 'Child Development Practitioner',
-  'Equip yourself with a holistic understanding of child development from birth through adolescence, with practical strategies for educators and caregivers.', 'images/courses/child-psychology-development.png', '3 / 6 months', '10+2 or equivalent',
+  'Equip yourself with a holistic understanding of child development from birth through adolescence, with practical strategies for educators and caregivers.', 'images/courses/child-psychology-development.jpg', '3 / 6 months', '10+2 or equivalent',
   $json$["Online","Offline","Hybrid"]$json$::jsonb, '₹10,000 – ₹15,000', $json$[{"name":"Certified","duration":"3 months","fee":"₹10,000"},{"name":"Diploma","duration":"6 months","fee":"₹15,000"}]$json$::jsonb, $json$["Introduction to Child Psychology","Stages of Child Development","Physical Development","Cognitive Development","Language Development","Social & Emotional Development","Personality Development","Learning & Motivation","Behaviour Management","Developmental Milestones","Observation & Assessment","Parent Guidance & Communication"]$json$::jsonb,
   NULL, 1, true, TRUE
 );
 INSERT INTO courses (id, title, short_title, badge, description, image, duration, eligibility, mode, fee, packages, modules, schedule, sort_order, is_featured, is_published)
 VALUES (
   'special-education', 'Diploma in Special Education', 'Special Education', 'Special Education Practitioner',
-  'Learn inclusive strategies to support children with diverse learning needs through structured modules on disabilities, IEPs and classroom adaptations.', 'images/courses/special-education.png', '3 / 6 months', 'Graduate or teacher training background preferred',
+  'Learn inclusive strategies to support children with diverse learning needs through structured modules on disabilities, IEPs and classroom adaptations.', 'images/courses/special-education.jpg', '3 / 6 months', 'Graduate or teacher training background preferred',
   $json$["Online","Offline","Hybrid"]$json$::jsonb, '₹10,000 – ₹15,000', $json$[{"name":"Certified","duration":"3 months","fee":"₹10,000"},{"name":"Diploma","duration":"6 months","fee":"₹15,000"}]$json$::jsonb, $json$["Introduction to Special Education","Inclusive Education","Intellectual Disability","Autism Spectrum Disorder","ADHD","Specific Learning Disabilities","Cerebral Palsy","Hearing Impairment","Visual Impairment","Communication & Language Support","IEP – Individualised Education Plan","Behaviour Management","Classroom Adaptations","Assistive Strategies","Parent & Teacher Collaboration"]$json$::jsonb,
   NULL, 2, true, TRUE
 );
 INSERT INTO courses (id, title, short_title, badge, description, image, duration, eligibility, mode, fee, packages, modules, schedule, sort_order, is_featured, is_published)
 VALUES (
   'phonics-early-literacy', 'Diploma in Phonics & Early Literacy', 'Phonics & Early Literacy', 'Phonics Educator',
-  'Master phonics-based literacy instruction with practical techniques for blending, segmenting and building confident young readers.', 'images/courses/phonics-early-literacy.png', '2 months', '10+2 or equivalent',
+  'Master phonics-based literacy instruction with practical techniques for blending, segmenting and building confident young readers.', 'images/courses/phonics-early-literacy.jpg', '2 months', '10+2 or equivalent',
   $json$["Online","Offline","Hybrid"]$json$::jsonb, '₹5,000', $json$[]$json$::jsonb, $json$["Foundations of Phonics","Phonemic Awareness","Letter-Sound Correspondence","Blending","Segmenting","CVC Words","Digraphs","Trigraphs","Long & Short Vowels","Sight Words","Spelling Patterns","Reading Fluency","Vocabulary Development","Phonics Activities & Games","Lesson Planning & Assessment"]$json$::jsonb,
   '2 classes per week', 3, true, TRUE
 );
 INSERT INTO courses (id, title, short_title, badge, description, image, duration, eligibility, mode, fee, packages, modules, schedule, sort_order, is_featured, is_published)
 VALUES (
   'school-administration-management', 'Diploma in School Administration & Management', 'School Administration', 'School Administrator',
-  'Develop leadership and administrative skills to manage educational institutions effectively across academic, staff and operational functions.', 'images/courses/school-administration-management.png', '3 / 6 months', 'Graduate; experience in education preferred',
+  'Develop leadership and administrative skills to manage educational institutions effectively across academic, staff and operational functions.', 'images/courses/school-administration-management.jpg', '3 / 6 months', 'Graduate; experience in education preferred',
   $json$["Online","Offline","Hybrid"]$json$::jsonb, '₹10,000 – ₹15,000', $json$[{"name":"Certified","duration":"3 months","fee":"₹10,000"},{"name":"Diploma","duration":"6 months","fee":"₹15,000"}]$json$::jsonb, $json$["Introduction to School Administration","Educational Leadership","School Organisation","Academic Administration","Curriculum Planning","Staff Coordination","Teacher Roles & Responsibilities","Student Records","Parent Communication","School Policies","Time Management","Event Management","School Safety & Hygiene","Resource Management","Quality Improvement","School Operations"]$json$::jsonb,
   NULL, 4, true, TRUE
 );
 INSERT INTO courses (id, title, short_title, badge, description, image, duration, eligibility, mode, fee, packages, modules, schedule, sort_order, is_featured, is_published)
 VALUES (
   'pre-primary-school-management', 'Diploma in Pre-Primary School Management', 'Pre-Primary Management', 'Pre-Primary Coordinator',
-  'Learn to plan, set up and manage preschool environments with curriculum organisation, admissions and parent engagement strategies.', 'images/courses/pre-primary-school-management.png', '3 / 6 months', '10+2 or Graduate',
+  'Learn to plan, set up and manage preschool environments with curriculum organisation, admissions and parent engagement strategies.', 'images/courses/pre-primary-school-management.jpg', '3 / 6 months', '10+2 or Graduate',
   $json$["Online","Offline","Hybrid"]$json$::jsonb, '₹10,000 – ₹15,000', $json$[{"name":"Certified","duration":"3 months","fee":"₹10,000"},{"name":"Diploma","duration":"6 months","fee":"₹15,000"}]$json$::jsonb, $json$["Early Childhood Education","Preschool Planning","School Setup & Infrastructure","Curriculum Organisation","Timetable Planning","Classroom Management","Teacher Responsibilities","Child Safety","Parent Engagement","Activity Planning","Staff Coordination","Student Records","Admissions","School Events","Preschool Administration"]$json$::jsonb,
   NULL, 5, true, TRUE
 );
 INSERT INTO courses (id, title, short_title, badge, description, image, duration, eligibility, mode, fee, packages, modules, schedule, sort_order, is_featured, is_published)
 VALUES (
   'nutrition', 'Diploma in Nutrition', 'Nutrition', 'Nutrition Educator',
-  'Understand balanced nutrition for children, adolescents and families with practical meal planning and food safety essentials.', 'images/courses/nutrition.png', '3 / 6 months', '10+2 or equivalent',
+  'Understand balanced nutrition for children, adolescents and families with practical meal planning and food safety essentials.', 'images/courses/nutrition.jpg', '3 / 6 months', '10+2 or equivalent',
   $json$["Online","Offline","Hybrid"]$json$::jsonb, '₹10,000 – ₹15,000', $json$[{"name":"Certified","duration":"3 months","fee":"₹10,000"},{"name":"Diploma","duration":"6 months","fee":"₹15,000"}]$json$::jsonb, $json$["Introduction to Nutrition","Macronutrients","Micronutrients","Balanced Diet","Child Nutrition","Adolescent Nutrition","Maternal & Family Nutrition","Food Safety & Hygiene","Healthy Meal Planning","Lifestyle & Nutrition","Common Nutrition Problems","Nutrition Education","Food Labels","Practical Meal Planning","Nutrition Awareness"]$json$::jsonb,
   NULL, 6, true, TRUE
 );
 INSERT INTO courses (id, title, short_title, badge, description, image, duration, eligibility, mode, fee, packages, modules, schedule, sort_order, is_featured, is_published)
 VALUES (
   'computer-skills-education', 'Basic Computer Skills for Education Professionals', 'Computer Skills', 'Computer Educator',
-  'Build digital literacy with Word, Excel, PowerPoint and online tools essential for modern educators and administrators.', 'images/courses/computer-skills-education.png', '3 / 6 months', 'Basic literacy; no prior computer experience required',
+  'Build digital literacy with Word, Excel, PowerPoint and online tools essential for modern educators and administrators.', 'images/courses/computer-skills-education.jpg', '3 / 6 months', 'Basic literacy; no prior computer experience required',
   $json$["Offline"]$json$::jsonb, '₹10,000 – ₹15,000', $json$[{"name":"Certified","duration":"3 months","fee":"₹10,000"},{"name":"Diploma","duration":"6 months","fee":"₹15,000"}]$json$::jsonb, $json$["Computer Fundamentals","Operating System Basics","File & Folder Management","Typing Skills","Microsoft Word","PowerPoint","Excel","Internet & Email","Online Meeting Tools","Digital Learning Resources","Basic Data Management","Printing & Documents","Cyber Safety"]$json$::jsonb,
   NULL, 7, true, TRUE
 );
 INSERT INTO courses (id, title, short_title, badge, description, image, duration, eligibility, mode, fee, packages, modules, schedule, sort_order, is_featured, is_published)
 VALUES (
   'vedic-mathematics', 'Vedic Mathematics', 'Vedic Mathematics', 'Vedic Maths Educator',
-  'Discover ancient calculation techniques for faster mental math, improving speed and accuracy for educators and learners.', 'images/courses/vedic-mathematics.png', '3 / 6 months', 'Basic arithmetic knowledge',
+  'Discover ancient calculation techniques for faster mental math, improving speed and accuracy for educators and learners.', 'images/courses/vedic-mathematics.jpg', '3 / 6 months', 'Basic arithmetic knowledge',
   $json$["Online","Offline","Hybrid"]$json$::jsonb, 'To be updated', $json$[]$json$::jsonb, $json$["Number Concepts","Vedic Techniques","Addition & Subtraction","Multiplication","Division","Squares & Cubes","Fractions & Decimals","Mental Calculation","Speed & Accuracy"]$json$::jsonb,
   NULL, 8, true, TRUE
 );
 INSERT INTO courses (id, title, short_title, badge, description, image, duration, eligibility, mode, fee, packages, modules, schedule, sort_order, is_featured, is_published)
 VALUES (
   'spoken-english', 'Spoken English', 'Spoken English', 'English Educator',
-  'Improve fluency, pronunciation and confidence in English for classroom communication, interviews and professional settings.', 'images/courses/spoken-english.png', '3 months', 'Basic reading ability in English',
+  'Improve fluency, pronunciation and confidence in English for classroom communication, interviews and professional settings.', 'images/courses/spoken-english.jpg', '3 months', 'Basic reading ability in English',
   $json$["Online","Offline","Hybrid"]$json$::jsonb, '₹3,000', $json$[]$json$::jsonb, $json$["Basic Grammar","Vocabulary Building","Everyday Conversation","Pronunciation","Listening Skills","Speaking Practice","Public Speaking","Interview & Workplace English"]$json$::jsonb,
   '3 classes per week', 9, true, TRUE
 );
 INSERT INTO courses (id, title, short_title, badge, description, image, duration, eligibility, mode, fee, packages, modules, schedule, sort_order, is_featured, is_published)
 VALUES (
   'spoken-hindi', 'Spoken Hindi', 'Spoken Hindi', 'Hindi Educator',
-  'Learn conversational Hindi with practical vocabulary, sentence formation and pronunciation for everyday communication.', 'images/courses/spoken-hindi.png', '3 months', 'Open to all learners',
+  'Learn conversational Hindi with practical vocabulary, sentence formation and pronunciation for everyday communication.', 'images/courses/spoken-hindi.jpg', '3 months', 'Open to all learners',
   $json$["Online","Offline","Hybrid"]$json$::jsonb, '₹3,000', $json$[]$json$::jsonb, $json$["Hindi Basics","Common Vocabulary","Sentence Formation","Everyday Conversation","Pronunciation","Listening Practice","Speaking Practice","Practical Situations"]$json$::jsonb,
   '3 classes per week', 10, true, TRUE
 );
 INSERT INTO courses (id, title, short_title, badge, description, image, duration, eligibility, mode, fee, packages, modules, schedule, sort_order, is_featured, is_published)
 VALUES (
   'tamil-reading-writing', 'Tamil Reading & Writing', 'Tamil', 'Tamil Educator',
-  'Master Tamil script from uyir and mei ezhuthukkal to reading, writing and building everyday vocabulary.', 'images/courses/tamil-reading-writing.png', '3 months', 'Open to all learners',
+  'Master Tamil script from uyir and mei ezhuthukkal to reading, writing and building everyday vocabulary.', 'images/courses/tamil-reading-writing.jpg', '3 months', 'Open to all learners',
   $json$["Online","Offline","Hybrid"]$json$::jsonb, '₹3,000', $json$[]$json$::jsonb, $json$["Tamil Uyir Ezhuthukkal","Mei Ezhuthukkal","Uyirmei Ezhuthukkal","Word Formation","Reading Practice","Writing Practice","Vocabulary","Simple Sentences"]$json$::jsonb,
   NULL, 11, true, TRUE
 );
 INSERT INTO courses (id, title, short_title, badge, description, image, duration, eligibility, mode, fee, packages, modules, schedule, sort_order, is_featured, is_published)
 VALUES (
   'telugu-reading-writing', 'Telugu Reading & Writing', 'Telugu', 'Telugu Educator',
-  'Learn Telugu alphabet, guninthalu, word formation and simple sentences through structured reading and writing practice.', 'images/courses/telugu-reading-writing.png', '3 months', 'Open to all learners',
+  'Learn Telugu alphabet, guninthalu, word formation and simple sentences through structured reading and writing practice.', 'images/courses/telugu-reading-writing.jpg', '3 months', 'Open to all learners',
   $json$["Online","Offline","Hybrid"]$json$::jsonb, '₹3,000', $json$[]$json$::jsonb, $json$["Telugu Alphabet","Vowels & Consonants","Guninthalu","Word Formation","Reading Practice","Writing Practice","Vocabulary","Simple Sentences"]$json$::jsonb,
   NULL, 12, true, TRUE
 );

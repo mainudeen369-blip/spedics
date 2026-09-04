@@ -31,10 +31,15 @@ async function fetchApi(type, extra = {}) {
 
 function normalizeCourse(row) {
   if (!row) return null;
+  let image = row.image || '';
+  // Prefer photorealistic JPG assets when legacy cartoon PNG paths remain in DB
+  if (typeof image === 'string' && /images\/courses\/.+\.png$/i.test(image)) {
+    image = image.replace(/\.png$/i, '.jpg');
+  }
   return {
     ...row,
     shortTitle: row.shortTitle || row.short_title || row.title,
-    image: publicMediaUrl(row.image) || row.image,
+    image: publicMediaUrl(image) || image,
     isFeatured: row.isFeatured ?? row.is_featured,
     mode: Array.isArray(row.mode) ? row.mode : (row.mode ? [row.mode] : [])
   };
@@ -1089,6 +1094,15 @@ async function initHomePage() {
     setText('data-hero-subtitle', site.hero.subtitle);
     const heroTags = document.getElementById('hero-highlights');
     if (heroTags) heroTags.innerHTML = site.hero.highlights.map((h) => `<span class="hero-tag">${h}</span>`).join('');
+    const heroBg =
+      publicMediaUrl(site.hero.backgroundImage) ||
+      site.hero.backgroundImage ||
+      'images/hero-bg.jpg';
+    if (heroBg) {
+      document.documentElement.style.setProperty('--hero-bg-image', `url("${heroBg}")`);
+      const heroPhoto = document.getElementById('hero-bg-photo');
+      if (heroPhoto) heroPhoto.style.backgroundImage = `url("${heroBg}")`;
+    }
 
     // Welcome & about blocks
     if (about.welcomeNote) {

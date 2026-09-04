@@ -6,7 +6,8 @@
     "badge": "Professional Skill Development & Teacher Training",
     "title": "SPEDICS Institute of Skill Development",
     "subtitle": "Structured, practical and career-oriented training programmes in education, child development and skill development.",
-    "highlights": ["Online & Offline Training Available", "13+ Professional Programmes", "Affiliated & Recognised Certificates"]
+    "highlights": ["Online & Offline Training Available", "13+ Professional Programmes", "Affiliated & Recognised Certificates"],
+    "backgroundImage": "images/hero-bg.jpg"
   },
   "contact": {
     "address": "4021, 6th Main Road, Ayapakkam, Chennai – 600077",

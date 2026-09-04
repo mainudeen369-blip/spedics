@@ -15,9 +15,9 @@ export default function AdminDashboard() {
         {[
           ['Section order', '/admin/sections', 'Drag homepage sections (Welcome, Vision, Courses…)'],
           ['Gallery', '/admin/gallery', 'Add / edit / remove gallery photos'],
-          ['Courses', '/admin/courses', 'Titles, badges, fees, modes'],
+          ['Courses', '/admin/courses', 'Add / hide / show courses & upload card images'],
           ['FAQ', '/admin/faq', 'Questions and answers'],
-          ['Site & Colours', '/admin/site', 'Contact, WhatsApp text, theme colours'],
+          ['Site & Colours', '/admin/site', 'Contact, theme colours with live preview'],
           ['Content', '/admin/content', 'About, admissions, fees and more (forms)']
         ].map(([title, href, desc]) => (
           <Link
