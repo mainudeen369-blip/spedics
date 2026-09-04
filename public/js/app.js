@@ -41,8 +41,65 @@ function normalizeCourse(row) {
     shortTitle: row.shortTitle || row.short_title || row.title,
     image: publicMediaUrl(image) || image,
     isFeatured: row.isFeatured ?? row.is_featured,
+    menuGroup: row.menuGroup || row.menu_group || '',
     mode: Array.isArray(row.mode) ? row.mode : (row.mode ? [row.mode] : [])
   };
+}
+
+/** Prefer diploma vs certificate for the Courses nav menu. */
+const CERTIFICATE_COURSE_IDS = new Set([
+  'nutrition',
+  'phonics-early-literacy',
+  'spoken-english',
+  'spoken-hindi',
+  'tamil-reading-writing',
+  'telugu-reading-writing',
+  'vedic-mathematics',
+  'computer-skills-education'
+]);
+
+function courseMenuGroup(course) {
+  const explicit = String(course.menuGroup || course.menu_group || '').toLowerCase().trim();
+  if (explicit === 'diploma' || explicit === 'certificate') return explicit;
+
+  const name = `${course.shortTitle || ''} ${course.title || ''}`.toLowerCase();
+  if (/\bcertificate\b/.test(name)) return 'certificate';
+  if (/\bdiploma\b/.test(name)) return 'diploma';
+
+  const pkgs = Array.isArray(course.packages) ? course.packages : [];
+  const hasDiplomaPkg = pkgs.some((p) => /diploma/i.test(String(p?.name || '')));
+  if (hasDiplomaPkg) return 'diploma';
+
+  if (CERTIFICATE_COURSE_IDS.has(course.id)) return 'certificate';
+  return 'diploma';
+}
+
+function renderCoursesDropdown(courses) {
+  const list = (courses || []).filter(Boolean);
+  const diploma = list.filter((c) => courseMenuGroup(c) === 'diploma');
+  const certificate = list.filter((c) => courseMenuGroup(c) === 'certificate');
+
+  const link = (c) =>
+    `<a href="course.html?id=${c.id}" class="nav-dropdown-item">${c.shortTitle || c.title}</a>`;
+
+  const section = (label, items) => {
+    if (!items.length) return '';
+    return `
+      <div class="nav-dropdown-group">
+        <div class="nav-dropdown-heading">${label}</div>
+        ${items.map(link).join('')}
+      </div>`;
+  };
+
+  return (
+    section('Diploma Courses', diploma) +
+    section('Certificate Courses', certificate)
+  );
+}
+
+function fillCoursesDropdown(courses) {
+  const dropdown = document.getElementById('courses-dropdown');
+  if (dropdown) dropdown.innerHTML = renderCoursesDropdown(courses);
 }
 
 function loadSiteSettings(site, fees) {
@@ -1135,13 +1192,8 @@ async function initHomePage() {
     const joinTags = document.getElementById('join-tags');
     if (joinTags) joinTags.innerHTML = about.whoCanJoin.map((j) => `<span class="join-tag">${j}</span>`).join('');
 
-    // Courses dropdown
-    const dropdown = document.getElementById('courses-dropdown');
-    if (dropdown) {
-      dropdown.innerHTML = courses.map((c) =>
-        `<a href="course.html?id=${c.id}" class="nav-dropdown-item">${c.shortTitle || c.title}</a>`
-      ).join('');
-    }
+    // Courses dropdown (Diploma / Certificate groups)
+    fillCoursesDropdown(courses);
 
     // Courses (single list — no duplicate featured + all)
     const allGrid = document.getElementById('all-courses');
@@ -1315,12 +1367,7 @@ async function initCoursePage() {
         </div>`).join('');
     }
 
-    const dropdown = document.getElementById('courses-dropdown');
-    if (dropdown) {
-      dropdown.innerHTML = allCourses.map((c) =>
-        `<a href="course.html?id=${c.id}" class="nav-dropdown-item">${c.shortTitle || c.title}</a>`
-      ).join('');
-    }
+    fillCoursesDropdown(allCourses);
     populateCourseSelect(allCourses, document.getElementById('form-course'));
     const formCourse = document.getElementById('form-course');
     if (formCourse) formCourse.value = course.title;
@@ -1396,12 +1443,7 @@ async function initGuidePage() {
         .join('');
     }
 
-    const dropdown = document.getElementById('courses-dropdown');
-    if (dropdown) {
-      dropdown.innerHTML = allCourses.map((c) =>
-        `<a href="course.html?id=${c.id}" class="nav-dropdown-item">${c.shortTitle || c.title}</a>`
-      ).join('');
-    }
+    fillCoursesDropdown(allCourses);
 
     setText('data-phone', site.contact.phone);
     setupWhatsApp(site);

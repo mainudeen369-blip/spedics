@@ -344,7 +344,7 @@ button, input, select, textarea { font: inherit; }
   position: absolute;
   top: 100%;
   left: 0;
-  min-width: 280px;
+  min-width: 300px;
   background: var(--white);
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
@@ -370,6 +370,19 @@ button, input, select, textarea { font: inherit; }
   color: var(--text);
 }
 .nav-dropdown-item:hover { background: var(--bg); color: var(--primary); }
+.nav-dropdown-group + .nav-dropdown-group {
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid #e2e8f0;
+}
+.nav-dropdown-heading {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--primary-dark);
+  padding: 0.35rem 0.85rem 0.45rem;
+}
 
 .nav-toggle {
   display: none;
@@ -2100,6 +2113,14 @@ body.gallery-lightbox-open { overflow: hidden; }
     padding-left: 1.25rem;
     border-left: 3px solid rgba(13, 148, 136, 0.15);
     margin-left: 0.5rem;
+  }
+  .nav-dropdown-heading {
+    padding-left: 0.85rem;
+    margin-left: 0.15rem;
+    color: var(--primary-dark);
+  }
+  .nav-dropdown-group + .nav-dropdown-group {
+    border-top-color: rgba(13, 148, 136, 0.18);
   }
   .hero-shape { display: none; }
   .hero-text { width: 100%; }
