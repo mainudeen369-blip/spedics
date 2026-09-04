@@ -46,31 +46,42 @@ function normalizeCourse(row) {
   };
 }
 
-/** Prefer diploma vs certificate for the Courses nav menu. */
-const CERTIFICATE_COURSE_IDS = new Set([
-  'nutrition',
-  'phonics-early-literacy',
+/** Prefer diploma / certificate / language for the Courses nav menu. */
+const LANGUAGE_COURSE_IDS = new Set([
   'spoken-english',
   'spoken-hindi',
   'tamil-reading-writing',
-  'telugu-reading-writing',
+  'telugu-reading-writing'
+]);
+
+const CERTIFICATE_COURSE_IDS = new Set([
+  'nutrition',
+  'phonics-early-literacy',
   'vedic-mathematics',
   'computer-skills-education'
 ]);
 
 function courseMenuGroup(course) {
   const explicit = String(course.menuGroup || course.menu_group || '').toLowerCase().trim();
-  if (explicit === 'diploma' || explicit === 'certificate') return explicit;
+  if (explicit === 'diploma' || explicit === 'certificate' || explicit === 'language') return explicit;
+
+  if (LANGUAGE_COURSE_IDS.has(course.id)) return 'language';
 
   const name = `${course.shortTitle || ''} ${course.title || ''}`.toLowerCase();
+  if (/\b(spoken|tamil|telugu|hindi|english)\b/.test(name) && LANGUAGE_COURSE_IDS.has(course.id)) {
+    return 'language';
+  }
+  if (/spoken\s+(english|hindi)|tamil|telugu/.test(name)) return 'language';
+
   if (/\bcertificate\b/.test(name)) return 'certificate';
   if (/\bdiploma\b/.test(name)) return 'diploma';
+
+  if (CERTIFICATE_COURSE_IDS.has(course.id)) return 'certificate';
 
   const pkgs = Array.isArray(course.packages) ? course.packages : [];
   const hasDiplomaPkg = pkgs.some((p) => /diploma/i.test(String(p?.name || '')));
   if (hasDiplomaPkg) return 'diploma';
 
-  if (CERTIFICATE_COURSE_IDS.has(course.id)) return 'certificate';
   return 'diploma';
 }
 
@@ -78,6 +89,7 @@ function renderCoursesDropdown(courses) {
   const list = (courses || []).filter(Boolean);
   const diploma = list.filter((c) => courseMenuGroup(c) === 'diploma');
   const certificate = list.filter((c) => courseMenuGroup(c) === 'certificate');
+  const language = list.filter((c) => courseMenuGroup(c) === 'language');
 
   const link = (c) =>
     `<a href="course.html?id=${c.id}" class="nav-dropdown-item">${c.shortTitle || c.title}</a>`;
@@ -91,9 +103,11 @@ function renderCoursesDropdown(courses) {
       </div>`;
   };
 
+  // Client order: Diploma → Certificate → Language and Communication skill
   return (
     section('Diploma Courses', diploma) +
-    section('Certificate Courses', certificate)
+    section('Certificate Courses', certificate) +
+    section('Language and Communication skill', language)
   );
 }
 
