@@ -5,9 +5,13 @@
   "badge": "Vedic Maths Educator",
   "description": "Discover ancient calculation techniques for faster mental math, improving speed and accuracy for educators and learners.",
   "image": "images/courses/vedic-mathematics.jpg",
-  "duration": "3 / 6 months",
+  "duration": "TBA",
   "eligibility": "Basic arithmetic knowledge",
-  "mode": ["Online", "Offline", "Hybrid"],
+  "mode": [
+    "Online",
+    "Offline",
+    "Hybrid"
+  ],
   "fee": "To be updated",
   "packages": [],
   "modules": [

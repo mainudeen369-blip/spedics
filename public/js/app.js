@@ -301,11 +301,13 @@ function applyFeeData(course, fees) {
   const extra = (fees.courses && fees.courses[course.id]) || {};
   return {
     ...course,
-    duration: extra.duration || course.duration || fallback.duration,
-    fee: extra.fee || course.fee || fallback.fee,
+    duration: course.duration || extra.duration || fallback.duration,
+    fee: course.fee || extra.fee || fallback.fee,
     feeAmount: extra.feeAmount ?? course.feeAmount,
-    schedule: extra.schedule || course.schedule,
-    packages: extra.packages || course.packages || fallback.packages
+    schedule: course.schedule || extra.schedule,
+    packages: (Array.isArray(course.packages) && course.packages.length)
+      ? course.packages
+      : (extra.packages || fallback.packages || course.packages)
   };
 }
 
