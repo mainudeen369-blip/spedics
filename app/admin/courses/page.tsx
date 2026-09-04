@@ -59,6 +59,8 @@ function slugify(text: string) {
 export default function CoursesAdminPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [selected, setSelected] = useState<Course | null>(null);
+  /** Saved DB id when an existing course was opened — used to rename slug safely. */
+  const [originalId, setOriginalId] = useState<string | null>(null);
   const [msg, setMsg] = useState('');
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -81,9 +83,23 @@ export default function CoursesAdminPage() {
     return true;
   });
 
-  async function saveCourse(course: Course) {
+  const isExisting = Boolean(originalId);
+  const slugChanged = Boolean(originalId && selected && slugify(selected.id) !== originalId);
+
+  function selectCourse(c: Course) {
+    setOriginalId(c.id);
+    setSelected({
+      ...c,
+      mode: Array.isArray(c.mode) ? c.mode : []
+    });
+  }
+
+  async function saveCourse(course: Course, renameFrom?: string | null) {
+    const id = slugify(course.id);
     const payload = {
       ...course,
+      id,
+      previousId: renameFrom && renameFrom !== id ? renameFrom : undefined,
       mode: Array.isArray(course.mode)
         ? course.mode
         : String(course.mode || '')
@@ -96,24 +112,43 @@ export default function CoursesAdminPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      throw new Error(data.error || 'Save failed');
-    }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Save failed');
+    return data as { ok?: boolean; renamed?: boolean; id?: string; from?: string };
   }
 
   async function save() {
     if (!selected) return;
-    if (!selected.id.trim() || !selected.title.trim()) {
-      setMsg('Course ID and title are required');
+    const nextId = slugify(selected.id || selected.title);
+    if (!nextId || !selected.title.trim()) {
+      setMsg('Course name (title) and URL slug are required');
       return;
+    }
+    if (slugChanged && originalId) {
+      const ok = confirm(
+        `Rename course URL slug from “${originalId}” to “${nextId}”?\n\n` +
+          `Website links will use the new slug (course.html?id=${nextId}). ` +
+          `Category listings will be updated automatically.`
+      );
+      if (!ok) return;
     }
     setSaving(true);
     try {
-      await saveCourse(selected);
-      setMsg(selected.id && courses.some((c) => c.id === selected.id) ? 'Course saved' : 'Course added');
+      const result = await saveCourse({ ...selected, id: nextId }, originalId);
+      if (result.renamed) {
+        setMsg(`Renamed “${result.from}” → “${result.id}” and saved`);
+        setOriginalId(result.id || nextId);
+        setSelected({ ...selected, id: result.id || nextId });
+      } else if (isExisting) {
+        setMsg('Course saved (name & details updated)');
+        setOriginalId(nextId);
+        setSelected({ ...selected, id: nextId });
+      } else {
+        setMsg('Course added');
+        setOriginalId(nextId);
+        setSelected({ ...selected, id: nextId });
+      }
       await load();
-      setSelected({ ...selected });
     } catch (e) {
       setMsg(e instanceof Error ? e.message : 'Save failed');
     } finally {
@@ -124,10 +159,13 @@ export default function CoursesAdminPage() {
   async function togglePublished(course: Course, next: boolean) {
     try {
       const updated = { ...course, is_published: next };
-      await saveCourse(updated);
+      await saveCourse(updated, course.id);
       setMsg(next ? `“${course.short_title || course.title}” is now visible on the website` : `“${course.short_title || course.title}” is hidden from the website`);
       await load();
-      if (selected?.id === course.id) setSelected(updated);
+      if (originalId === course.id || selected?.id === course.id) {
+        setSelected(updated);
+        setOriginalId(course.id);
+      }
     } catch (e) {
       setMsg(e instanceof Error ? e.message : 'Update failed');
     }
@@ -170,11 +208,15 @@ export default function CoursesAdminPage() {
       return;
     }
     setMsg('Course deleted');
-    if (selected?.id === id) setSelected(null);
+    if (originalId === id || selected?.id === id) {
+      setSelected(null);
+      setOriginalId(null);
+    }
     await load();
   }
 
   function startNew() {
+    setOriginalId(null);
     setSelected({
       ...EMPTY,
       sort_order: courses.length + 1,
@@ -182,6 +224,12 @@ export default function CoursesAdminPage() {
       title: ''
     });
     setMsg('Fill in the new course details, upload an image, then Save.');
+  }
+
+  function syncSlugFromTitle() {
+    if (!selected?.title) return;
+    setSelected({ ...selected, id: slugify(selected.title) });
+    setMsg('URL slug updated from title — click Save course to apply (including rename if this course already exists).');
   }
 
   return (
@@ -202,6 +250,7 @@ export default function CoursesAdminPage() {
             label="Reset courses to default"
             onDone={async () => {
               setSelected(null);
+              setOriginalId(null);
               await load().catch((e) => setMsg(e.message));
             }}
           />
@@ -266,19 +315,14 @@ export default function CoursesAdminPage() {
                   marginBottom: 8,
                   padding: 8,
                   borderRadius: 12,
-                  border: selected?.id === c.id ? '2px solid #0d9488' : '1px solid #e2e8f0',
+                  border: selected?.id === c.id || originalId === c.id ? '2px solid #0d9488' : '1px solid #e2e8f0',
                   background: published ? '#fff' : '#f8fafc',
                   opacity: published ? 1 : 0.75
                 }}
               >
                 <button
                   type="button"
-                  onClick={() =>
-                    setSelected({
-                      ...c,
-                      mode: Array.isArray(c.mode) ? c.mode : []
-                    })
-                  }
+                  onClick={() => selectCourse(c)}
                   style={{
                     display: 'block',
                     width: '100%',
@@ -322,39 +366,52 @@ export default function CoursesAdminPage() {
             <p style={{ color: '#64748b' }}>Select a course, or click “Add course”.</p>
           ) : (
             <>
-              <label style={label}>Course ID (slug)</label>
-              <input
-                style={input}
-                value={selected.id}
-                disabled={courses.some((c) => c.id === selected.id)}
-                onChange={(e) => setSelected({ ...selected, id: slugify(e.target.value) })}
-                placeholder="e.g. montessori-teacher-training"
-              />
-              {!courses.some((c) => c.id === selected.id) ? (
-                <p style={{ margin: '4px 0 0', fontSize: 12, color: '#64748b' }}>
-                  ID is fixed after first save. Tip: leave blank and it will be created from the title when you type.
-                </p>
-              ) : null}
-
-              <label style={label}>Title</label>
+              <label style={label}>Course name (title on website)</label>
               <input
                 style={input}
                 value={selected.title}
                 onChange={(e) => {
                   const title = e.target.value;
                   const next = { ...selected, title };
-                  if (!courses.some((c) => c.id === selected.id) && !selected.id) {
+                  // Only auto-fill slug for brand-new courses that still have an empty id
+                  if (!isExisting && !selected.id) {
                     next.id = slugify(title);
                   }
                   setSelected(next);
                 }}
+                placeholder="e.g. Diploma in School Administration & Management"
               />
-              <label style={label}>Short title</label>
+              <p style={{ margin: '4px 0 0', fontSize: 12, color: '#64748b' }}>
+                Editable anytime after client approval. Change the title, then Save course.
+              </p>
+
+              <label style={label}>Short title (list / cards)</label>
               <input
                 style={input}
                 value={selected.short_title || ''}
                 onChange={(e) => setSelected({ ...selected, short_title: e.target.value })}
+                placeholder="Shorter name shown in admin list and cards"
               />
+
+              <label style={label}>URL slug (course page id)</label>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                <input
+                  style={{ ...input, flex: 1, minWidth: 180 }}
+                  value={selected.id}
+                  onChange={(e) => setSelected({ ...selected, id: slugify(e.target.value) })}
+                  placeholder="e.g. school-administration-management"
+                />
+                <button type="button" style={btnSecondary} onClick={syncSlugFromTitle}>
+                  Match slug to title
+                </button>
+              </div>
+              <p style={{ margin: '4px 0 0', fontSize: 12, color: slugChanged ? '#b45309' : '#64748b' }}>
+                {isExisting
+                  ? slugChanged
+                    ? `Will rename URL from “${originalId}” → “${slugify(selected.id)}” when you save.`
+                    : `Used in links: course.html?id=${selected.id || '…'}. Editable — rename when the client approves a new name.`
+                  : 'Created from the title if left blank. You can edit it before the first save.'}
+              </p>
               <label style={label}>Badge / role label</label>
               <input
                 style={input}
@@ -473,9 +530,9 @@ export default function CoursesAdminPage() {
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 16 }}>
                 <button style={{ ...btn, opacity: saving || uploading ? 0.7 : 1 }} type="button" onClick={save} disabled={saving || uploading}>
-                  {saving ? 'Saving…' : uploading ? 'Uploading…' : 'Save course'}
+                  {saving ? 'Saving…' : uploading ? 'Uploading…' : slugChanged ? 'Save & rename' : 'Save course'}
                 </button>
-                {courses.some((c) => c.id === selected.id) ? (
+                {isExisting && selected ? (
                   <button
                     type="button"
                     style={{ ...btn, background: selected.is_published !== false ? '#b91c1c' : '#047857' }}
@@ -484,8 +541,8 @@ export default function CoursesAdminPage() {
                     {selected.is_published !== false ? 'Hide from website' : 'Show on website'}
                   </button>
                 ) : null}
-                {courses.some((c) => c.id === selected.id) ? (
-                  <button type="button" style={btnDanger} onClick={() => removeCourse(selected.id)}>
+                {isExisting && originalId ? (
+                  <button type="button" style={btnDanger} onClick={() => removeCourse(originalId)}>
                     Delete
                   </button>
                 ) : null}
@@ -532,6 +589,16 @@ const btnDanger: React.CSSProperties = {
   background: '#fff',
   color: '#b91c1c',
   border: '1px solid #fecaca'
+};
+const btnSecondary: React.CSSProperties = {
+  background: '#f8fafc',
+  color: '#0f766e',
+  border: '1px solid #99f6e4',
+  borderRadius: 999,
+  padding: '10px 14px',
+  fontWeight: 700,
+  cursor: 'pointer',
+  whiteSpace: 'nowrap'
 };
 const chip: React.CSSProperties = {
   borderRadius: 999,
