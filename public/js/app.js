@@ -1285,9 +1285,13 @@ async function initCoursePage() {
         packagesBox.style.display = '';
         packagesBox.innerHTML = '<h3>Course Packages</h3>' + course.packages.map((p) => `
           <div class="package-item">
-            <strong>${p.name}</strong>
-            <span>${p.duration}</span>
-            ${feesVisible() ? `<span>${p.feeLabel || p.fee}</span>` : `<span>${feeContactCopy()}</span>`}
+            <div class="package-item-main">
+              <strong>${p.name}</strong>
+              <span class="package-duration">${p.duration || ''}</span>
+            </div>
+            ${feesVisible()
+              ? `<span class="package-fee">${p.feeLabel || p.fee || ''}</span>`
+              : `<span class="package-fee">${feeContactCopy()}</span>`}
           </div>`).join('');
       } else {
         packagesBox.style.display = 'none';
