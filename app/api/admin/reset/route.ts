@@ -3,9 +3,23 @@ import { getDb } from '@/lib/db';
 import { requireAdmin } from '@/lib/auth';
 import { applyReset, RESET_SCOPES, type ResetScope } from '@/lib/seed-from-files';
 
+/** Keep in sync with AdminResetButton — blocks API even if UI is bypassed. */
+const ADMIN_RESET_ENABLED = false;
+
 export async function POST(req: Request) {
   try {
     await requireAdmin();
+
+    if (!ADMIN_RESET_ENABLED) {
+      return NextResponse.json(
+        {
+          error:
+            'Reset is temporarily disabled to protect live website data. Contact the developer if a controlled restore is needed.'
+        },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json().catch(() => ({}));
     const scope = String(body.scope || '') as ResetScope;
     if (!scope) {

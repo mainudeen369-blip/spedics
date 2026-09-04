@@ -1,7 +1,6 @@
 'use client';
 
 import { AdminChrome } from './_components/AdminChrome';
-import { AdminResetButton } from './_components/AdminResetButton';
 import Link from 'next/link';
 
 export default function AdminDashboard() {
@@ -41,40 +40,17 @@ export default function AdminDashboard() {
       <section
         style={{
           marginTop: 32,
-          background: '#fffbeb',
-          border: '1px solid #fcd34d',
+          background: '#f8fafc',
+          border: '1px solid #cbd5e1',
           borderRadius: 14,
           padding: 18
         }}
       >
         <h2 style={{ marginTop: 0, fontSize: 18 }}>Reset to folder defaults</h2>
-        <p style={{ color: '#92400e', fontSize: 14, marginTop: 0 }}>
-          Restores Neon data from <code>public/data</code> (the original website files). Admin login is not changed.
-          Prefer resetting one section at a time. Gallery reset restores seed folder images (not Blob uploads).
+        <p style={{ color: '#64748b', fontSize: 14, marginTop: 0, marginBottom: 0 }}>
+          <strong style={{ color: '#b91c1c' }}>Temporarily disabled</strong> so live website data cannot be
+          overwritten by mistake. Contact the developer if a controlled restore is needed.
         </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-          {(
-            [
-              ['site', 'Site & theme'],
-              ['content', 'All content docs'],
-              ['homepage-sections', 'Section order'],
-              ['courses', 'Courses'],
-              ['faq', 'FAQ'],
-              ['gallery', 'Gallery'],
-              ['testimonials', 'Testimonials'],
-              ['guides', 'Guides'],
-              ['affiliations', 'Affiliations']
-            ] as const
-          ).map(([scope, label]) => (
-            <AdminResetButton key={scope} scope={scope} label={label} />
-          ))}
-          <AdminResetButton
-            scope="all"
-            label="Reset everything"
-            confirmText="Reset ALL website content (site, courses, FAQ, gallery, content, testimonials, guides) from public/data defaults? Admin login is kept. This cannot be undone from the admin UI."
-            style={{ borderColor: '#b91c1c', color: '#b91c1c' }}
-          />
-        </div>
       </section>
     </AdminChrome>
   );
