@@ -9,6 +9,7 @@ const NAV = [
   { href: '/admin/sections', label: 'Section order' },
   { href: '/admin/gallery', label: 'Gallery' },
   { href: '/admin/courses', label: 'Courses' },
+  { href: '/admin/affiliations', label: 'Affiliations' },
   { href: '/admin/faq', label: 'FAQ' },
   { href: '/admin/site', label: 'Site & Colours' },
   { href: '/admin/content', label: 'Content' }
@@ -45,7 +46,10 @@ export function AdminChrome({ children }: { children: React.ReactNode }) {
         <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 24 }}>{email}</div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           {NAV.map((item) => {
-            const active = pathname === item.href;
+            const active =
+              item.href === '/admin'
+                ? pathname === '/admin'
+                : pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link
                 key={item.href}

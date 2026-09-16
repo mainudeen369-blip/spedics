@@ -15,6 +15,7 @@ export default function AdminDashboard() {
           ['Section order', '/admin/sections', 'Drag homepage sections (Welcome, Vision, Courses…)'],
           ['Gallery', '/admin/gallery', 'Add / edit / remove gallery photos'],
           ['Courses', '/admin/courses', 'Add / hide / show courses & upload card images'],
+          ['Affiliations', '/admin/affiliations', 'Partners, logos and banners for Recognition & Affiliation'],
           ['FAQ', '/admin/faq', 'Questions and answers'],
           ['Site & Colours', '/admin/site', 'Contact, theme colours with live preview'],
           ['Content', '/admin/content', 'About, admissions, fees and more (forms)']

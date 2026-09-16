@@ -3,15 +3,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AdminChrome } from '../_components/AdminChrome';
 import { AdminResetButton } from '../_components/AdminResetButton';
-import { MAX_IMAGE_MB, validateMediaFile } from '@/lib/media-limits';
 
 const KEYS = [
   { id: 'about', label: 'About' },
   { id: 'admissions', label: 'Admissions' },
   { id: 'fees', label: 'Fees' },
   { id: 'learning-modes', label: 'Learning modes' },
-  { id: 'careers', label: 'Careers' },
-  { id: 'affiliations-meta', label: 'Affiliations' }
+  { id: 'careers', label: 'Careers' }
 ] as const;
 
 type Doc = Record<string, any>;
@@ -21,7 +19,6 @@ export default function ContentAdminPage() {
   const [data, setData] = useState<Doc>({});
   const [msg, setMsg] = useState('');
   const [busy, setBusy] = useState(false);
-  const [affUploadBusy, setAffUploadBusy] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async (k: string) => {
@@ -108,21 +105,12 @@ export default function ContentAdminPage() {
           {key === 'fees' && <FeesForm data={data} setData={setData} />}
           {key === 'learning-modes' && <LearningModesForm data={data} setData={setData} />}
           {key === 'careers' && <CareersForm data={data} setData={setData} />}
-          {key === 'affiliations-meta' && (
-            <AffiliationsForm
-              data={data}
-              setData={setData}
-              setMsg={setMsg}
-              uploadBusy={affUploadBusy}
-              onUploadBusy={setAffUploadBusy}
-            />
-          )}
         </div>
       )}
 
       <div style={{ marginTop: 20, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-        <button style={btn} type="button" disabled={busy || loading || affUploadBusy} onClick={save}>
-          {affUploadBusy ? 'Uploading…' : busy ? 'Saving…' : 'Save section'}
+        <button style={btn} type="button" disabled={busy || loading} onClick={save}>
+          {busy ? 'Saving…' : 'Save section'}
         </button>
       </div>
     </AdminChrome>
@@ -673,248 +661,6 @@ function CareersForm({ data, setData }: { data: Doc; setData: (d: Doc) => void }
         </button>
       </section>
     </>
-  );
-}
-
-function adminPreviewSrc(url: string) {
-  const s = String(url || '').trim();
-  if (!s) return '';
-  if (/^(https?:)?\/\//i.test(s) || s.startsWith('data:') || s.startsWith('/')) return s;
-  return `/${s}`;
-}
-
-function AffiliationsForm({
-  data,
-  setData,
-  setMsg,
-  uploadBusy,
-  onUploadBusy
-}: {
-  data: Doc;
-  setData: (d: Doc) => void;
-  setMsg: (m: string) => void;
-  uploadBusy: boolean;
-  onUploadBusy: (busy: boolean) => void;
-}) {
-  const list: Array<Record<string, string>> = Array.isArray(data.affiliations) ? data.affiliations : [];
-
-  async function uploadAffiliationImage(idx: number, field: 'logo' | 'banner', file: File) {
-    const check = validateMediaFile(file);
-    if (!check.ok) {
-      setMsg(check.error);
-      return;
-    }
-    if (check.kind !== 'image') {
-      setMsg('Please upload an image (JPEG/PNG/WebP/GIF).');
-      return;
-    }
-    onUploadBusy(true);
-    setMsg(`Uploading “${file.name}”…`);
-    try {
-      const body = new FormData();
-      body.append('file', file);
-      body.append('folder', 'affiliations');
-      const res = await fetch('/api/admin/upload', { method: 'POST', body });
-      const payload = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(payload.error || 'Upload failed');
-      const next = [...list];
-      next[idx] = { ...next[idx], [field]: payload.url || '' };
-      setData({ ...data, affiliations: next });
-      setMsg(
-        `${field === 'logo' ? 'Logo' : 'Banner'} uploaded. Click Save section to publish on the live site.${
-          payload.warning ? ` ${payload.warning}` : ''
-        }`
-      );
-    } catch (e) {
-      setMsg(e instanceof Error ? e.message : 'Upload failed');
-    } finally {
-      onUploadBusy(false);
-    }
-  }
-
-  return (
-    <>
-      <section style={card}>
-        <Field label="Title" value={data.title || ''} onChange={(v) => setData({ ...data, title: v })} />
-        <Field
-          label="Subtitle"
-          value={data.subtitle || ''}
-          onChange={(v) => setData({ ...data, subtitle: v })}
-        />
-        <Field label="Note" value={data.note || ''} onChange={(v) => setData({ ...data, note: v })} multiline />
-      </section>
-      <section style={card}>
-        <h2 style={h2}>Affiliations</h2>
-        <p style={{ margin: '0 0 12px', fontSize: 13, color: '#64748b', lineHeight: 1.5 }}>
-          Upload logo and banner images here (max {MAX_IMAGE_MB} MB each). After upload, click <strong>Save section</strong>{' '}
-          so the homepage Recognition & Affiliation area updates.
-        </p>
-        {list.map((a, idx) => (
-          <div key={idx} style={subCard}>
-            <Field
-              label="Name"
-              value={a.name || ''}
-              onChange={(v) => {
-                const next = [...list];
-                next[idx] = { ...a, name: v };
-                setData({ ...data, affiliations: next });
-              }}
-            />
-            <Field
-              label="Affiliation no."
-              value={a.affiliationNo || ''}
-              onChange={(v) => {
-                const next = [...list];
-                next[idx] = { ...a, affiliationNo: v };
-                setData({ ...data, affiliations: next });
-              }}
-            />
-            <Field
-              label="Period"
-              value={a.period || ''}
-              onChange={(v) => {
-                const next = [...list];
-                next[idx] = { ...a, period: v };
-                setData({ ...data, affiliations: next });
-              }}
-            />
-            <Field
-              label="Govt reg no."
-              value={a.govtRegNo || ''}
-              onChange={(v) => {
-                const next = [...list];
-                next[idx] = { ...a, govtRegNo: v };
-                setData({ ...data, affiliations: next });
-              }}
-            />
-            <AffiliationMediaField
-              label="Logo"
-              hint="Square or circular logo works best (shown in the affiliation list and partner strip)."
-              value={a.logo || ''}
-              disabled={uploadBusy}
-              previewStyle={{ maxWidth: 120, aspectRatio: '1 / 1', objectFit: 'contain' }}
-              onChange={(v) => {
-                const next = [...list];
-                next[idx] = { ...a, logo: v };
-                setData({ ...data, affiliations: next });
-              }}
-              onUpload={(file) => uploadAffiliationImage(idx, 'logo', file)}
-            />
-            <AffiliationMediaField
-              label="Banner image (optional)"
-              hint="Wide credential banner shown under the affiliation text (e.g. CHBI header, iCEEDS accreditation row)."
-              value={a.banner || ''}
-              disabled={uploadBusy}
-              previewStyle={{ maxWidth: 520, aspectRatio: '16 / 5', objectFit: 'contain' }}
-              onChange={(v) => {
-                const next = [...list];
-                next[idx] = { ...a, banner: v };
-                setData({ ...data, affiliations: next });
-              }}
-              onUpload={(file) => uploadAffiliationImage(idx, 'banner', file)}
-            />
-            <Field
-              label="Detail / content"
-              value={a.detail || ''}
-              onChange={(v) => {
-                const next = [...list];
-                next[idx] = { ...a, detail: v };
-                setData({ ...data, affiliations: next });
-              }}
-              multiline
-            />
-            <button
-              type="button"
-              style={dangerBtn}
-              onClick={() => setData({ ...data, affiliations: list.filter((_, i) => i !== idx) })}
-            >
-              Remove
-            </button>
-          </div>
-        ))}
-        <button
-          type="button"
-          style={secondaryBtn}
-          onClick={() =>
-            setData({
-              ...data,
-              affiliations: [
-                ...list,
-                { name: '', affiliationNo: '', period: '', govtRegNo: '', logo: '', banner: '', detail: '' }
-              ]
-            })
-          }
-        >
-          Add affiliation
-        </button>
-      </section>
-    </>
-  );
-}
-
-function AffiliationMediaField({
-  label: labelText,
-  hint,
-  value,
-  previewStyle,
-  disabled,
-  onChange,
-  onUpload
-}: {
-  label: string;
-  hint?: string;
-  value: string;
-  disabled?: boolean;
-  previewStyle?: React.CSSProperties;
-  onChange: (v: string) => void;
-  onUpload: (file: File) => void | Promise<void>;
-}) {
-  const src = adminPreviewSrc(value);
-  return (
-    <div style={{ marginTop: 4 }}>
-      <label style={label}>{labelText}</label>
-      {hint ? (
-        <p style={{ margin: '0 0 8px', fontSize: 12, color: '#64748b', lineHeight: 1.45 }}>{hint}</p>
-      ) : null}
-      <input
-        style={input}
-        type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif"
-        disabled={disabled}
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) void onUpload(file);
-          e.target.value = '';
-        }}
-      />
-      <label style={{ ...label, marginTop: 8 }}>{labelText} path / URL</label>
-      <input
-        style={input}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="images/certificates/… or URL from upload"
-      />
-      {src ? (
-        <div
-          style={{
-            marginTop: 10,
-            borderRadius: 12,
-            overflow: 'hidden',
-            border: '1px solid #e2e8f0',
-            background: '#fff',
-            padding: 8,
-            maxWidth: previewStyle?.maxWidth || 420
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={src}
-            alt=""
-            style={{ width: '100%', display: 'block', background: '#f8fafc', ...previewStyle }}
-          />
-        </div>
-      ) : null}
-    </div>
   );
 }
 
