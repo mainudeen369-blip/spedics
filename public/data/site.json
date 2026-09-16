@@ -45,7 +45,7 @@
   "stats": [
     { "value": "13+", "label": "Courses" },
     { "value": "500+", "label": "Students Trained" },
-    { "value": "2", "label": "Affiliations" },
+    { "value": "4", "label": "Affiliations" },
     { "value": "100%", "label": "Practical Focus" }
   ],
   "social": {

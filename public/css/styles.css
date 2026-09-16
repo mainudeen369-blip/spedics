@@ -982,7 +982,7 @@ button, input, select, textarea { font: inherit; }
   background: var(--bg-warm);
   border-radius: var(--radius-sm);
   margin-bottom: 1rem;
-  align-items: center;
+  align-items: flex-start;
 }
 .affiliation-badge {
   width: 56px; height: 56px;
@@ -997,16 +997,44 @@ button, input, select, textarea { font: inherit; }
   flex-shrink: 0;
 }
 .affiliation-logo {
-  width: 72px;
-  height: 72px;
+  width: 88px;
+  height: 88px;
   object-fit: cover;
   border-radius: 10px;
   background: #fff;
-  padding: 4px;
+  padding: 6px;
   border: 1px solid rgba(13,148,136,0.08);
   flex-shrink: 0;
 }
 .affiliation-logo--contain {
+  object-fit: contain;
+  width: min(160px, 34vw);
+  height: 88px;
+}
+.affiliation-body {
+  min-width: 0;
+  flex: 1;
+}
+.affiliation-meta {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+.affiliation-detail {
+  font-size: 0.86rem;
+  color: var(--text-muted);
+  margin-top: 0.55rem;
+  line-height: 1.55;
+}
+.affiliation-banner {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  margin-top: 0.85rem;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid rgba(13, 148, 136, 0.1);
+  padding: 8px;
   object-fit: contain;
 }
 

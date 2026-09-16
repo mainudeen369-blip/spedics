@@ -7,14 +7,36 @@
       "affiliationNo": "2011/MMFRC/036",
       "period": "2026–2027",
       "govtRegNo": "199/2011",
-      "logo": "images/certificates/Recognition%20%26%20Affiliation/montImg.png"
+      "logo": "images/certificates/Recognition%20%26%20Affiliation/montImg.png",
+      "logoFit": "cover"
     },
     {
       "name": "Society for Rural & Urban Educational Development Organisation (SRUEDO)",
       "affiliationNo": "2011/SRUEDO/055",
       "period": "2026–2027",
       "govtRegNo": "251/2007/Pondy",
-      "logo": "images/certificates/Recognition%20%26%20Affiliation/sruedoImg.png"
+      "logo": "images/certificates/Recognition%20%26%20Affiliation/sruedoImg.png",
+      "logoFit": "cover"
+    },
+    {
+      "name": "CHBI TN — Central Higher Technical and Skill Development Board Institute",
+      "affiliationNo": "CHE/12/2026",
+      "period": "01.08.2026 – 31.07.2027",
+      "govtRegNo": "",
+      "logo": "images/certificates/Recognition%20%26%20Affiliation/chbiImg.png",
+      "logoFit": "contain",
+      "banner": "images/certificates/Recognition%20%26%20Affiliation/chbi-header.png",
+      "detail": "SPEDICS Skill Development Academy is an authorised training centre of CHBI TN (Training Partners of Skill India). Affiliated courses include Montessori Teacher Training, Child Psychology, Special Education, Dietician & Nutrition, Phonics, Vedic Math, School Administration & Management, and Spoken English & Hindi."
+    },
+    {
+      "name": "iCEEDS — Innovation Council for Exquisite Education & Development of Skills",
+      "affiliationNo": "KL/2023/0348375",
+      "period": "Govt. of India Registered",
+      "govtRegNo": "NGO DARPAN (NITI Aayog)",
+      "logo": "images/certificates/Recognition%20%26%20Affiliation/iceeds-mark.png",
+      "logoFit": "contain",
+      "banner": "images/certificates/Recognition%20%26%20Affiliation/iceedsImg.png",
+      "detail": "A Government of India registered certification body. ISO 9001:2015 certified for Quality Management System. NSDC (Skill India) certification partner associated with authorised training partners. Autonomous entity registered as a Trust under the Indian Trusts Act, 1882."
     }
   ],
   "note": "Affiliation and recognition apply according to the scope and validity stated in the respective official documents."

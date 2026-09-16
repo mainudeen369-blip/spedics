@@ -728,6 +728,25 @@ function AffiliationsForm({ data, setData }: { data: Doc; setData: (d: Doc) => v
                 setData({ ...data, affiliations: next });
               }}
             />
+            <Field
+              label="Banner image path (optional)"
+              value={a.banner || ''}
+              onChange={(v) => {
+                const next = [...list];
+                next[idx] = { ...a, banner: v };
+                setData({ ...data, affiliations: next });
+              }}
+            />
+            <Field
+              label="Detail / content"
+              value={a.detail || ''}
+              onChange={(v) => {
+                const next = [...list];
+                next[idx] = { ...a, detail: v };
+                setData({ ...data, affiliations: next });
+              }}
+              multiline
+            />
             <button
               type="button"
               style={dangerBtn}
@@ -745,7 +764,7 @@ function AffiliationsForm({ data, setData }: { data: Doc; setData: (d: Doc) => v
               ...data,
               affiliations: [
                 ...list,
-                { name: '', affiliationNo: '', period: '', govtRegNo: '', logo: '' }
+                { name: '', affiliationNo: '', period: '', govtRegNo: '', logo: '', banner: '', detail: '' }
               ]
             })
           }

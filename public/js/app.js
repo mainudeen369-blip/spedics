@@ -1230,16 +1230,36 @@ async function initHomePage() {
 
     const affList = document.getElementById('affiliation-list');
     if (affList) {
-      affList.innerHTML = (affiliations.affiliations || []).map((a) => `
+      affList.innerHTML = (affiliations.affiliations || []).map((a) => {
+        const fit =
+          a.logoFit === 'contain' ||
+          (a.logo || '').includes('official-seal') ||
+          (a.logo || '').includes('iceeds') ||
+          (a.logo || '').includes('chbi')
+            ? ' affiliation-logo--contain'
+            : '';
+        const metaBits = [
+          a.affiliationNo ? `Affiliation No. ${a.affiliationNo}` : '',
+          a.period ? `Period ${a.period}` : '',
+          a.govtRegNo ? `Reg. ${a.govtRegNo}` : '',
+        ].filter(Boolean);
+        const detail = a.detail
+          ? `<p class="affiliation-detail">${a.detail}</p>`
+          : '';
+        const banner = a.banner
+          ? `<img class="affiliation-banner" src="${publicMediaUrl(a.banner)}" alt="${a.name} credentials" loading="lazy">`
+          : '';
+        return `
         <div class="affiliation-item reveal">
-          <img class="affiliation-logo${(a.logo || '').includes('official-seal') ? ' affiliation-logo--contain' : ''}" src="${publicMediaUrl(a.logo)}" alt="${a.name} logo" loading="lazy">
-          <div>
+          <img class="affiliation-logo${fit}" src="${publicMediaUrl(a.logo)}" alt="${a.name} logo" loading="lazy">
+          <div class="affiliation-body">
             <strong>${a.name}</strong>
-            <p style="font-size:0.85rem;color:var(--text-muted);margin-top:0.25rem">
-              Affiliation No. ${a.affiliationNo} · Period ${a.period}
-            </p>
+            <p class="affiliation-meta">${metaBits.join(' · ')}</p>
+            ${detail}
+            ${banner}
           </div>
-        </div>`).join('');
+        </div>`;
+      }).join('');
     }
 
     const affStrip = document.getElementById('affiliation-strip');
@@ -1247,7 +1267,7 @@ async function initHomePage() {
       affStrip.innerHTML = (affiliations.affiliations || []).map((a) => `
         <div class="affiliation-strip-item reveal">
           <img src="${publicMediaUrl(a.logo)}" alt="${a.name}" loading="lazy">
-          <span>${a.name.replace(/\s*\([^)]*\)\s*/g, ' ').trim()}</span>
+          <span>${a.name.replace(/\s*[—-].*$/, '').replace(/\s*\([^)]*\)\s*/g, ' ').trim()}</span>
         </div>`).join('');
     }
 
